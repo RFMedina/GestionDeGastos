@@ -21,30 +21,29 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UsuarioGrupo {
-    
-    //Campos propios
+
+    // Campos propios
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
-    //el rol es booleano; true=admin,false="normal"
+
+    // el rol es booleano; true=admin,false="normal"
     private Boolean rol;
-    
-    
-    //Uniones de tablas
-    
-    //(Recibe el id de Usuario)
+
+    // Uniones de tablas
+
+    // (Recibe el id de Usuario)
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "id_usuario" )
+    @JoinColumn(name = "id_usuario")
     private Usuario usuario;
-    
-    //(Recibe el id de Grupo)    
+
+    // (Recibe el id de Grupo)
     @ManyToOne(cascade = CascadeType.MERGE)
-    @JoinColumn(name = "id_grupo" )
+    @JoinColumn(name = "id_grupo")
     private Grupo grupo;
-    
-    //(Envia el id a Movimiento)
-    
-    @OneToMany(mappedBy = "usuarioGrupo",cascade = CascadeType.ALL)
+
+    // (Envia el id a Movimiento)
+
+    @OneToMany(mappedBy = "usuarioGrupo", cascade = CascadeType.ALL)
     private List<Movimiento> movimiento;
 }
