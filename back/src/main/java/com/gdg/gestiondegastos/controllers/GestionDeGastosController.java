@@ -1,6 +1,8 @@
 package com.gdg.gestiondegastos.controllers;
 
+import com.gdg.gestiondegastos.dto.GrupoDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto;
+import com.gdg.gestiondegastos.dto.UsuarioGrupoDto;
 import com.gdg.gestiondegastos.entities.Grupo;
 import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Presupuesto;
@@ -66,7 +68,7 @@ public class GestionDeGastosController {
     }*/
     @PostMapping("/crear")
     public void crear(Usuario usuario) throws ClassNotFoundException, SQLException {
-        Usuario usu = repoUsuario.findByCorreo(usuario.getCorreo());
+        UsuarioDto usu = new UsuarioDto(repoUsuario.findByCorreo(usuario.getCorreo()));
         if (usu != null) {
             Map<String, Object> m = new HashMap<>();
             m.put("msg", "Correo ya registrado");
@@ -100,7 +102,7 @@ public class GestionDeGastosController {
 
         g.setUsuarioGrupo(repoUsuarioGrupo.leerPorUsuario(idUsuario));
 
-        m.put("grupo", g);
+        m.put("grupo", new GrupoDto(g));
         return m;
     }
 
@@ -140,7 +142,7 @@ public class GestionDeGastosController {
     @GetMapping("/inicio")
     public Map<String, Object> inicio(Integer idUsuario) {
 
-        Usuario user = repoUsuario.findById(idUsuario).get();
+        UsuarioDto user = new UsuarioDto(repoUsuario.findById(idUsuario).get()) ;
         // user = repoUsuario.getById(idUsuario);
 
         // Suma todas las cantidades iniciales indicadas en el presupuesto del usuario
@@ -156,7 +158,7 @@ public class GestionDeGastosController {
         m.put("movimientos",
                 repoMovimientos.leerPorUsuario(idUsuario).stream().limit(4).collect(Collectors.toList()));
 
-        m.put("usuarioGrupo", repoUsuarioGrupo.leerPorUsuario(idUsuario));
+        m.put("usuarioGrupo",repoUsuarioGrupo.leerPorUsuario(idUsuario));
 
         return m;
     }

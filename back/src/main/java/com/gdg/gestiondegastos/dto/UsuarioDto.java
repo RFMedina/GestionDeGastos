@@ -6,6 +6,7 @@
 package com.gdg.gestiondegastos.dto;
 
 import com.gdg.gestiondegastos.entities.Usuario;
+import com.gdg.gestiondegastos.entities.UsuarioGrupo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +31,7 @@ public class UsuarioDto {
     private String correo;
     private Boolean modoOscuro;
     private Boolean verificado;
-    
+     private List<UsuarioGrupo> usuarioGrupo;
     
     public UsuarioDto(Usuario usu){
         id=usu.getId();
@@ -40,6 +41,7 @@ public class UsuarioDto {
         contrasenya=usu.getContrasenya();
         modoOscuro=usu.getModoOscuro();
         verificado=usu.getVerificado();
+        usuarioGrupo=usu.getUsuarioGrupo();
     }
         
 }
