@@ -32,4 +32,10 @@ public class ApplicationConfig extends WebSecurityConfigurerAdapter{
                 .logout().logoutSuccessUrl("/paginaPrincipal").invalidateHttpSession(true)
                 .clearAuthentication(true).permitAll();
     }
+    
+     @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.requiresChannel()
+      .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
+      .requiresSecure();
 }
