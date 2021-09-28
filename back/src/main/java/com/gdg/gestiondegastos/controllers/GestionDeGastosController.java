@@ -164,18 +164,17 @@ public class GestionDeGastosController {
     @GetMapping("/perfil")
     public Map<String, Object> perfil(Integer idUsuario) {
         Map<String, Object> m = new HashMap<>();
-        m.put("usuario", repoUsuario.findById(idUsuario).get());
+        m.put("usuario", new UsuarioDto(repoUsuario.findById(idUsuario).get()));
 
         return m;
     }
 
     @PostMapping("/guardarPerfil")
-    public String guardarPerfil(Usuario usuario) {
+    public void guardarPerfil(Usuario usuario) {
 
         // Usuario user = repoUsuario.findById(usuario.getId()).get();
         repoUsuario.save(usuario);
 
-        return "redirect:/gestion/perfil";
     }
 
     @GetMapping("/contrasenya")
@@ -246,7 +245,7 @@ public class GestionDeGastosController {
     }
 
     @GetMapping("/grupo/nuevoUsuarioGrupo")
-    public String anadirUsuario(String correo, @RequestParam Integer idGrupo) {
+    public void anadirUsuario(String correo, @RequestParam Integer idGrupo) {
         Usuario nuevoUsuario = repoUsuario.findByCorreo(correo);
         UsuarioGrupo usuariosGrupo = repoUsuarioGrupo.leerPorUsuarioYGrupo(nuevoUsuario.getId(), idGrupo);
         Map<String, Object> m = new HashMap<>();
@@ -259,14 +258,12 @@ public class GestionDeGastosController {
         } else {
             m.put("msg", "El usuario que intenta agregar ya se encuentra en el grupo");
         }
-        return "redirect:/gestion/grupo/" + idGrupo;
     }
 
     @GetMapping("grupo/cambiarNombre")
-    public String cambiarNombreGrupo(String nombre, @RequestParam Integer idGrupo) {
+    public void cambiarNombreGrupo(String nombre, @RequestParam Integer idGrupo) {
 
         repoGrupo.cambiarNombre(idGrupo, nombre);
-        return "redirect:/gestion/grupo/" + idGrupo;
     }
 
     // Ejemplo ded url: http://localhost:8080/gestion/grupo/6
@@ -288,7 +285,7 @@ public class GestionDeGastosController {
 
     //
     @PostMapping("/grupo/guardarMovimiento")
-    public String guardarMovimiento(Movimiento mov, Integer idUsuarioGrupo, Integer idGrupo) {
+    public void guardarMovimiento(Movimiento mov, Integer idUsuarioGrupo, Integer idGrupo) {
         mov.setUsuarioGrupo(repoUsuarioGrupo.findById(idUsuarioGrupo).get());
         Movimiento movNuevo = repoMovimientos.save(mov);
         Presupuesto p = repoPresupuesto.findByIdGrupo(idGrupo);
@@ -299,7 +296,6 @@ public class GestionDeGastosController {
          */
         p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad());
         repoPresupuesto.save(p);
-        return "redirect:/gestion/grupo/" + idGrupo;
     }
 
     /*

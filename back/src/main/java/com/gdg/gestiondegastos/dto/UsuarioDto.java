@@ -22,18 +22,22 @@ import lombok.ToString;
 @ToString
 public class UsuarioDto {
 
-    private Integer id;
+   private Integer id;
     
-    private String correo;
+    private String nombre;
     private String contrasenya;
+    private String telefono;
+    private String correo;
+    private Boolean modoOscuro;
     
-    private List<String> roles;
     
     public UsuarioDto(Usuario usu){
         id=usu.getId();
+        nombre=usu.getNombre();
+        telefono=usu.getTelefono();
         correo=usu.getCorreo();
         contrasenya=usu.getContrasenya();
-        roles.add("ROLE_Usuario");
+        modoOscuro=usu.getModoOscuro();
     }
         
 }
