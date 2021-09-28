@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <title>Gestión de Gastos</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet" href="/styles.css" />
+
+<body>
+    <p th:text="${message}"></p>
+    <div align="center">
+        <div class="card">
+            <form name="ingreso" method="post" action="/gestion/ingresar">
+                <img src="/cartera_negra.svg" alt="" class="imgLogin">
+                <div class="card-body">
+                    <h5 class="card-title">Inicia sesión</h5>
+                    <input class="inputLogin" type="email" id="correo" name="correo" placeholder="Ingresa tu email "
+                        required>
+                    <br>
+                    <input class="inputLogin" type="password" id="contrasenya" name="contrasenya"
+                        placeholder="Ingresa tu password" required>
+
+                    <button class="btnLogin btnLoginColor" type="submit">Ingresar</button>
+                    <a class="btnNewUser" th:href="@{/gestion/agregar}" type="button">Nuevo usuario</a>
+            </form>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.js"></script>
+    <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+
+</body>
+
+
+</html>

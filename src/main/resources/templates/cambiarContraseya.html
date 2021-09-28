@@ -1,0 +1,34 @@
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <title>Nuevo grupo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/styles.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div>
+        <form method="post" action="guardarcontrasenya" th:object="${usuario}">
+
+            <div>
+                <input type="hidden" th:field="*{id}" />
+                <input type="hidden" th:field="*{nombre}" />
+                <input type="hidden" th:field="*{correo}" />
+                <input type="hidden" th:field="*{telefono}" />
+            </div>
+
+            <input class="cantidad" style="width: 100%;" type="password" id="contrasenya" name="contrasenya"
+                placeholder="Introduce tu nueva contraseña" th:field="*{contrasenya}" />
+
+            <button class="btnLogin" style="width: 100%;" id="cambio">Guardar contraseña</button>
+        </form>
+    </div>
+
+    <script>
+
+    </script>
+</body>
+
+</html>
