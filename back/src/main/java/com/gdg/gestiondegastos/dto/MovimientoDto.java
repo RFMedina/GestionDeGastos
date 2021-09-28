@@ -2,6 +2,7 @@ package com.gdg.gestiondegastos.dto;
 
 import com.gdg.gestiondegastos.entities.Movimiento;
 import java.util.Date;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,12 +18,4 @@ public class MovimientoDto {
     private Date fecha;
     private String concepto;
     private Double cantidad;
-
-    public MovimientoDto(Movimiento mov) {
-        id = mov.getId();
-        categoria = mov.getCategoria();
-        fecha = mov.getFecha();
-        concepto = mov.getConcepto();
-        cantidad = mov.getCantidad();
-    }
 }

@@ -1,6 +1,7 @@
 package com.gdg.gestiondegastos.controllers;
 
 import com.gdg.gestiondegastos.dto.GrupoDto;
+import com.gdg.gestiondegastos.dto.MovimientoDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto;
 import com.gdg.gestiondegastos.dto.UsuarioGrupoDto;
 import com.gdg.gestiondegastos.entities.Grupo;
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
 import org.springframework.ui.Model;
@@ -46,8 +48,8 @@ public class GestionDeGastosController {
     private PresupuestoRepository repoPresupuesto;
     @Autowired
     private MovimientosRepository repoMovimientos;
-    // @Autowired
-    // private ModelMapper obj;
+    @Autowired
+     private ModelMapper mapper;
 
     // Este es un get para ver la principal y asÃ­ ver los cambios
 
@@ -68,7 +70,8 @@ public class GestionDeGastosController {
     }*/
     @PostMapping("/crear")
     public void crear(Usuario usuario) throws ClassNotFoundException, SQLException {
-        UsuarioDto usu = new UsuarioDto(repoUsuario.findByCorreo(usuario.getCorreo()));
+        UsuarioDto usu = mapper.map(repoUsuario.findByCorreo(usuario.getCorreo()), UsuarioDto.class);
+        
         if (usu != null) {
             Map<String, Object> m = new HashMap<>();
             m.put("msg", "Correo ya registrado");
@@ -102,7 +105,7 @@ public class GestionDeGastosController {
 
         g.setUsuarioGrupo(repoUsuarioGrupo.leerPorUsuario(idUsuario));
 
-        m.put("grupo", new GrupoDto(g));
+        m.put("grupo", mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto.class));
         return m;
     }
 
@@ -141,8 +144,8 @@ public class GestionDeGastosController {
     // Antes del Security
     @GetMapping("/inicio")
     public Map<String, Object> inicio(Integer idUsuario) {
-
-        UsuarioDto user = new UsuarioDto(repoUsuario.findById(idUsuario).get()) ;
+        UsuarioDto user = mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto.class);
+        //UsuarioDto user = new UsuarioDto(repoUsuario.findById(idUsuario).get()) ;
         // user = repoUsuario.getById(idUsuario);
 
         // Suma todas las cantidades iniciales indicadas en el presupuesto del usuario
@@ -156,9 +159,9 @@ public class GestionDeGastosController {
         m.put("presupuestoPersonal", presupuestoPersonal);
 
         m.put("movimientos",
-                repoMovimientos.leerPorUsuario(idUsuario).stream().limit(4).collect(Collectors.toList()));
+                repoMovimientos.leerPorUsuario(idUsuario).stream().limit(4).map(x->mapper.map(x, MovimientoDto.class) ).collect(Collectors.toList()));
 
-        m.put("usuarioGrupo",repoUsuarioGrupo.leerPorUsuario(idUsuario));
+       m.put("usuarioGrupo",repoUsuarioGrupo.leerPorUsuario(idUsuario).stream().map(x->mapper.map(x.getGrupo(), GrupoDto.class)).collect(Collectors.toList()));
 
         return m;
     }
@@ -166,7 +169,7 @@ public class GestionDeGastosController {
     @GetMapping("/perfil")
     public Map<String, Object> perfil(Integer idUsuario) {
         Map<String, Object> m = new HashMap<>();
-        m.put("usuario", new UsuarioDto(repoUsuario.findById(idUsuario).get()));
+        m.put("usuario", mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto.class));
 
         return m;
     }

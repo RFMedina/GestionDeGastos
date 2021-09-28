@@ -25,10 +25,5 @@ public class GrupoDto {
     private String nombre;
     private Date fechaCreacion;
 
-    public GrupoDto(Grupo grupo) {
-        id = grupo.getId();
-        nombre = grupo.getNombre();
-        fechaCreacion = grupo.getFechaCreacion();
-    }
 
 }

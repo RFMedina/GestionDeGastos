@@ -28,14 +28,4 @@ public class UsuarioGrupoDto {
     private Boolean rol;
     private Usuario usuario;
     private Grupo grupo;
-    private List<Movimiento> movimiento;
-    
-    public UsuarioGrupoDto(UsuarioGrupo ug){
-        id=ug.getId();
-        rol = ug.getRol();
-        usuario=ug.getUsuario();
-        grupo=ug.getGrupo();
-        movimiento=ug.getMovimiento();
-        
-    }
 }

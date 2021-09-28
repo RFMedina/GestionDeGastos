@@ -14,7 +14,4 @@ import lombok.ToString;
 public class ContactosDto {
     private Integer id;
 
-    public ContactosDto(Contactos cont) {
-        id = cont.getId();
-    }
 }

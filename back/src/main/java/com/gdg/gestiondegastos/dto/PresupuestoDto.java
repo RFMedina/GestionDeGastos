@@ -18,11 +18,4 @@ public class PresupuestoDto {
     private Date fechaInicio;
     private Date fechaFinal;
 
-    public PresupuestoDto(Presupuesto pre) {
-        id = pre.getId();
-        cantidadInicio = pre.getCantidadInicio();
-        cantidadFinal = pre.getCantidadFinal();
-        fechaInicio = pre.getFechaInicio();
-        fechaFinal = pre.getFechaFinal();
-    }
 }

@@ -33,15 +33,5 @@ public class UsuarioDto {
     private Boolean verificado;
      private List<UsuarioGrupo> usuarioGrupo;
     
-    public UsuarioDto(Usuario usu){
-        id=usu.getId();
-        nombre=usu.getNombre();
-        telefono=usu.getTelefono();
-        correo=usu.getCorreo();
-        contrasenya=usu.getContrasenya();
-        modoOscuro=usu.getModoOscuro();
-        verificado=usu.getVerificado();
-        usuarioGrupo=usu.getUsuarioGrupo();
-    }
         
 }
