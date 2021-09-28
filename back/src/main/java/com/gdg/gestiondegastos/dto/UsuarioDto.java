@@ -26,12 +26,5 @@ public class UsuarioDto {
     private String correo;
     private String contrasenya;
    
-    /*
-    public UsuarioDto(Usuario usu){
-        id=usu.getId();
-        correo=usu.getCorreo();
-        contrasenya=usu.getContrasenya();
-       
-    }*/
     
 }
