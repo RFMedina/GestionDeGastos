@@ -32,6 +32,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     // Aquí se configura el acceso
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        
+         http.requiresChannel()
+      .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
+      .requiresSecure();
+        
         http.csrf().disable().authorizeRequests().antMatchers("/gestion/agregar").anonymous()
                 .antMatchers("/gestion/crear").anonymous().antMatchers("/gestion").permitAll()
                 .antMatchers("/gestion/ingresar").anonymous().antMatchers("/gestion/**").authenticated()
