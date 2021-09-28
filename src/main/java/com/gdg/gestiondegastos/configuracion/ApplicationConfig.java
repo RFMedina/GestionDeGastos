@@ -14,29 +14,19 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class ApplicationConfig extends WebSecurityConfigurerAdapter{
-    @Bean
-    public PasswordEncoder passEncoder(){
-        return new BCryptPasswordEncoder();
-    }
-    
-    @Override
-    protected void configure(HttpSecurity http) throws Exception{
-        http.anonymous().disable().csrf().disable().authorizeRequests().antMatchers("/gestion","/gestion/login", "/gestion/agregar")
-                .permitAll().anyRequest().authenticated()
-                .and()
-                .formLogin().loginPage("/login").usernameParameter("correo").passwordParameter("contrasenya")
-                .successForwardUrl("/paginaPrincipal/{id}").failureForwardUrl("/paginaPrincipal")
-                .permitAll()
-                .and()
-                .logout().logoutSuccessUrl("/paginaPrincipal").invalidateHttpSession(true)
-                .clearAuthentication(true).permitAll();
-    }
-    
-     @Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http.requiresChannel()
-      .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
-      .requiresSecure();
+public class ApplicationConfig extends WebSecurityConfigurerAdapter {
+  @Bean
+  public PasswordEncoder passEncoder() {
+    return new BCryptPasswordEncoder();
   }
+
+  @Override
+  protected void configure(HttpSecurity http) throws Exception {
+    http.anonymous().disable().csrf().disable().authorizeRequests()
+        .antMatchers("/gestion", "/gestion/login", "/gestion/agregar").permitAll().anyRequest().authenticated().and()
+        .formLogin().loginPage("/login").usernameParameter("correo").passwordParameter("contrasenya")
+        .successForwardUrl("/paginaPrincipal/{id}").failureForwardUrl("/paginaPrincipal").permitAll().and().logout()
+        .logoutSuccessUrl("/paginaPrincipal").invalidateHttpSession(true).clearAuthentication(true).permitAll();
+  }
+
 }
