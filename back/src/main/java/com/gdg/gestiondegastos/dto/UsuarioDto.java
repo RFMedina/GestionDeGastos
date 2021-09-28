@@ -29,6 +29,7 @@ public class UsuarioDto {
     private String telefono;
     private String correo;
     private Boolean modoOscuro;
+    private Boolean verificado;
     
     
     public UsuarioDto(Usuario usu){
@@ -38,6 +39,7 @@ public class UsuarioDto {
         correo=usu.getCorreo();
         contrasenya=usu.getContrasenya();
         modoOscuro=usu.getModoOscuro();
+        verificado=usu.getVerificado();
     }
         
 }
