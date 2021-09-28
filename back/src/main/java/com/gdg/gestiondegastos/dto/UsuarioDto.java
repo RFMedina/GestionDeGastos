@@ -10,60 +10,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import lombok.Data;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
+//Me encomiendo a los santos tocando el DTO, seguramente esto cambie por graves fallos
 
 @Data
-public class UsuarioDto implements UserDetails{
+public class UsuarioDto {
 
     private Integer id;
     
     private String correo;
     private String contrasenya;
-    private List<GrantedAuthority> roles=new ArrayList<GrantedAuthority>();
+    
+    private List<String> roles;
     
     public UsuarioDto(Usuario usu){
         id=usu.getId();
         correo=usu.getCorreo();
         contrasenya=usu.getContrasenya();
-        roles.add(new SimpleGrantedAuthority("ROLE_Usuario"));
+        roles.add("ROLE_Usuario");
     }
-    
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
-    }
-
-    @Override
-    public String getPassword() {
-        return contrasenya;
-    }
-
-    @Override
-    public String getUsername() {
-        return correo;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
-    
+        
 }

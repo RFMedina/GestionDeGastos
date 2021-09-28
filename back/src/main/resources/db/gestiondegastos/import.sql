@@ -8,16 +8,16 @@ INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro) VALUES ('Ma
 INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro) VALUES ('Jose María','$2a$10$R/YwN2b8AKfwxu0upaIA/Onufw7A5wCKZfgDc87sIFuFKdn8CSt26','JosemaHiberus@gmail.com','646582521',0);
 
 --#CONTACTOS#
-INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (1,2);
-INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (1,3);
-INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (2,1);
-INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (4,5);
-INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (4,2);
-INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (4,1);
-INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (5,1);
-INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (5,2);
-INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (5,3);
-INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (5,4);
+INSERT INTO contactos (usuario_host,usuario_inv) VALUES (1,2);
+INSERT INTO contactos (usuario_host,usuario_inv) VALUES (1,3);
+INSERT INTO contactos (usuario_host,usuario_inv) VALUES (2,1);
+INSERT INTO contactos (usuario_host,usuario_inv) VALUES (4,5);
+INSERT INTO contactos (usuario_host,usuario_inv) VALUES (4,2);
+INSERT INTO contactos (usuario_host,usuario_inv) VALUES (4,1);
+INSERT INTO contactos (usuario_host,usuario_inv) VALUES (5,1);
+INSERT INTO contactos (usuario_host,usuario_inv) VALUES (5,2);
+INSERT INTO contactos (usuario_host,usuario_inv) VALUES (5,3);
+INSERT INTO contactos (usuario_host,usuario_inv) VALUES (5,4);
 
 --#GRUPOS#
 
