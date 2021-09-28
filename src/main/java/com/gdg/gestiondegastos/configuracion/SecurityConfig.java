@@ -19,57 +19,56 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter{
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private UserDetailsService validacion;    
-    
-    
-    
+    private UserDetailsService validacion;
+
     @Bean
-    public PasswordEncoder passwordEncoder()
-    {
+    public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
-    
-    //Aquí se configura el acceso
+
+    // Aquí se configura el acceso
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        
-        
-        http.csrf().disable().authorizeRequests().antMatchers("/gestion/agregar").anonymous().antMatchers("/gestion/crear").anonymous().antMatchers("/gestion").permitAll().antMatchers("/gestion/ingresar").anonymous()
-        .antMatchers("/gestion/**").authenticated().antMatchers("/ingresar").authenticated()
-            .and().formLogin().loginPage("/gestion/login").permitAll().successForwardUrl("/gestion/paginaPrincipal").failureForwardUrl("/gestion/login");
-        //http.formLogin().loginPage("/gestion/login").successForwardUrl("/gestion/paginaPrincipal").failureForwardUrl("/gestion/login");
-        http.logout().logoutSuccessUrl("/gestion").invalidateHttpSession(true).deleteCookies("JSESSIONID").clearAuthentication(true);
+        http.requiresChannel().requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null).requiresSecure();
+        http.csrf().disable().authorizeRequests().antMatchers("/gestion/agregar").anonymous()
+                .antMatchers("/gestion/crear").anonymous().antMatchers("/gestion").permitAll()
+                .antMatchers("/gestion/ingresar").anonymous().antMatchers("/gestion/**").authenticated()
+                .antMatchers("/ingresar").authenticated().and().formLogin().loginPage("/gestion/login").permitAll()
+                .successForwardUrl("/gestion/paginaPrincipal").failureForwardUrl("/gestion/login");
+        // http.formLogin().loginPage("/gestion/login").successForwardUrl("/gestion/paginaPrincipal").failureForwardUrl("/gestion/login");
+        http.logout().logoutSuccessUrl("/gestion").invalidateHttpSession(true).deleteCookies("JSESSIONID")
+                .clearAuthentication(true);
         http.csrf().disable();
-        /*http.anonymous().disable().csrf().disable().authorizeRequests().antMatchers("/registro**")
-                .permitAll().anyRequest().authenticated()
-                .and()
-                .formLogin().loginPage("/login").usernameParameter("correo").passwordParameter("contrasenya")
-                .successForwardUrl("/paginaPrincipal/{id}").failureForwardUrl("/paginaPrincipal")
-                .permitAll()
-                .and()
-                .logout().logoutSuccessUrl("/paginaPrincipal").invalidateHttpSession(true)
-                .clearAuthentication(true).permitAll();*/
+
+        /*
+         * http.anonymous().disable().csrf().disable().authorizeRequests().antMatchers(
+         * "/registro**") .permitAll().anyRequest().authenticated() .and()
+         * .formLogin().loginPage("/login").usernameParameter("correo").
+         * passwordParameter("contrasenya")
+         * .successForwardUrl("/paginaPrincipal/{id}").failureForwardUrl(
+         * "/paginaPrincipal") .permitAll() .and()
+         * .logout().logoutSuccessUrl("/paginaPrincipal").invalidateHttpSession(true)
+         * .clearAuthentication(true).permitAll();
+         */
     }
-    
-    //Aquí se configura Usuario/Password
+
+    // Aquí se configura Usuario/Password
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        /*auth.inMemoryAuthentication()
-                 .withUser("jorge").password("{noop}1111").roles("Usuario")
-                 .and()
-                 .withUser("juan").password("{noop}1111").roles("Administrador");*/
+        /*
+         * auth.inMemoryAuthentication()
+         * .withUser("jorge").password("{noop}1111").roles("Usuario") .and()
+         * .withUser("juan").password("{noop}1111").roles("Administrador");
+         */
         auth.userDetailsService(validacion).passwordEncoder(passwordEncoder());
     }
 
     @Bean
     @Override
     public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean(); //To change body of generated methods, choose Tools | Templates.
+        return super.authenticationManagerBean(); // To change body of generated methods, choose Tools | Templates.
     }
-
-
-    
 }
