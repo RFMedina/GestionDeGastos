@@ -5,13 +5,13 @@
  */
 package com.gdg.gestiondegastos.repositories;
 
-import com.gdg.gestiondegastos.entities.Token;
+import com.gdg.gestiondegastos.entities.TokenEntity;
 import org.springframework.data.repository.CrudRepository;
 
 /**
  *
  * @author Usuario
  */
-public interface TokenRepository extends CrudRepository<Token, String>{
-    Token findByConfirmacion(String confirmacion);
+public interface TokenRepository extends CrudRepository<TokenEntity, String>{
+    TokenEntity findByConfirmacion(String confirmacion);
 }
