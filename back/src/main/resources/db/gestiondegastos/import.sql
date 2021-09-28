@@ -7,6 +7,17 @@ INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro) VALUES ('So
 INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro) VALUES ('Martin','$2a$10$H3yBhQpiyjqG02boZPcwlu7l5Je3Bu0E6N6mFb0Td4lxQT0GtyXW2','MartinHiberus@gmail.com','677826971',1);
 INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro) VALUES ('Jose María','$2a$10$R/YwN2b8AKfwxu0upaIA/Onufw7A5wCKZfgDc87sIFuFKdn8CSt26','JosemaHiberus@gmail.com','646582521',0);
 
+--#CONTACTOS#
+INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (1,2);
+INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (1,3);
+INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (2,1);
+INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (4,5);
+INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (4,2);
+INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (4,1);
+INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (5,1);
+INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (5,2);
+INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (5,3);
+INSERT INTO contactos (usuarioHost,usuarioInv) VALUES (5,4);
 
 --#GRUPOS#
 

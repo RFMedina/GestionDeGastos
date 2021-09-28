@@ -11,7 +11,6 @@ public interface UsuarioRepository extends JpaRepository<Usuario,Integer>{
     public Usuario findByCorreo( @Param("correo") String correo);
     
      
-     
     @Modifying
     @Query("update Usuario u set u.contrasenya = :contrasenya where u.id = :id_usuario")
     public void updateContrasenya(Integer id_usuario, String contrasenya);
