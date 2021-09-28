@@ -2,7 +2,6 @@ package com.gdg.gestiondegastos.entities;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;

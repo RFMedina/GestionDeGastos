@@ -14,15 +14,15 @@
         <div class="divPrincipal">
             <p type="button" id="grupo" class="presupuestoPrincipal" th:text="${grupo.nombre}"
                 th:onclick="|mostrarMiembrosGrupo(${idGrupo})|"></p>
-            <div th:if="${presupuesto.cantidadInicio == 0 }">
+            <div th:if="${presupuesto.cantidadInicio == '0' }">
                 <p id="presupuesto" class="presupuestoPrincipal" th:class="
-                ${presupuesto.cantidadFinal >= 0} ? 'presupuestoPrincipal Verde' : 'presupuestoPrincipal Rojo'"
-                    th:text="${presupuesto.cantidadFinal} + '€'"></p>
+                ${presupuesto.cantidadFinal+'' >= '0'} ? 'presupuestoPrincipal Verde' : 'presupuestoPrincipal Rojo'"
+                    th:text="${#numbers.formatDecimal(presupuesto.cantidadFinal, 0, 'COMMA', 2, 'POINT')} + '€'"></p>
             </div>
-            <div th:unless="${presupuesto.cantidadInicio == 0}">
+            <div th:unless="${presupuesto.cantidadInicio == '0'}">
                 <p id="presupuesto" class="presupuestoPrincipal" th:class="
-                ${presupuesto.cantidadFinal <= 0} ? 'presupuestoPrincipal Rojo' : 'presupuestoPrincipal Verde'"
-                    th:text="${presupuesto.cantidadFinal} + '€'"></p>
+                ${presupuesto.cantidadFinal+'' <= '0'} ? 'presupuestoPrincipal Rojo' : 'presupuestoPrincipal Verde'"
+                    th:text="${#numbers.formatDecimal(presupuesto.cantidadFinal, 0, 'COMMA', 2, 'POINT')} + '€'"></p>
             </div>
 
             <div class="divHr2elementos">
@@ -56,7 +56,7 @@
                                 <td th:text="${mov.categoria}"></td>
                                 <td th:text="${mov.usuarioGrupo.usuario.nombre}"></td>
                                 <td th:text="${mov.fecha}" class="fechaTabla"></td>
-                                <td style="text-align: center;" th:text="|${mov.cantidad}€|" th:class="
+                                <td style="text-align: center;"  th:text="${#numbers.formatDecimal(mov.cantidad, 0, 'COMMA', 2, 'POINT')} + '€'" th:class="
                                 ${mov.cantidad >= 0} ? 'Verde' : 'Rojo'"></td>
                             </tr>
                         </tbody>

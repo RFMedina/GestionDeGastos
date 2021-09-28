@@ -22,22 +22,22 @@ import org.springframework.format.annotation.DateTimeFormat;
 @AllArgsConstructor
 public class Presupuesto {
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    
+
     private Double cantidadInicio;
     private Double cantidadFinal;
-    
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaInicio;
-    
+
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date fechaFinal;
-    
-    //Uniones de tablas
-    
-    //-----------COMPROBAR 2----------  
-    //(Recibe id de grupo)
+
+    // Uniones de tablas
+
+    // -----------COMPROBAR 2----------
+    // (Recibe id de grupo)
     @ManyToOne(cascade = CascadeType.MERGE)
     @JoinColumn(name = "id_grupo")
     private Grupo grupo;

@@ -15,7 +15,7 @@
 
             <div class="divPrincipal">
                 <p class="presupuestoPrincipal" th:text="|${presupuestoPersonal}€|" th:class="
-                       ${presupuestoPersonal >= 0} ? 'presupuestoPrincipal Verde' : 'presupuestoPrincipal Rojo'"></p>
+                       ${presupuestoPersonal >= '0'} ? 'presupuestoPrincipal Verde' : 'presupuestoPrincipal Rojo'"></p>
             </div>
 
             <div class="divHr2Elementos">
@@ -47,7 +47,7 @@
                             <td th:text="${mov.concepto}" class="negritaPrincipal"></td>
                             <td th:text="${mov.categoria}"></td>
                             <td th:text="${mov.fecha}" class="fechaTabla"></td>
-                            <td style="text-align: center;" th:text="|${mov.cantidad}€|" th:class="
+                            <td style="text-align: center;" th:text="${#numbers.formatDecimal(mov.cantidad, 0, 'COMMA', 2, 'POINT')} + '€'" th:class="
                                 ${mov.cantidad >= 0} ? 'Verde' : 'Rojo'"></td>
                         </tr>
                     </tbody>

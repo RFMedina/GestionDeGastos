@@ -14,6 +14,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+//Me encomiendo a los santos tocando el DTO, seguramente esto cambie por graves fallos
 
 @Data
 @AllArgsConstructor
@@ -25,6 +26,14 @@ public class UsuarioDto {
     
     private String correo;
     private String contrasenya;
-   
     
+    private List<String> roles;
+    
+    public UsuarioDto(Usuario usu){
+        id=usu.getId();
+        correo=usu.getCorreo();
+        contrasenya=usu.getContrasenya();
+        roles.add("ROLE_Usuario");
+    }
+        
 }

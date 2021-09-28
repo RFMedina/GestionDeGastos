@@ -1,5 +1,15 @@
 package com.gdg.gestiondegastos.controllers;
 
+import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.time.Clock;
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import com.gdg.gestiondegastos.dto.UsuarioDto;
 import com.gdg.gestiondegastos.entities.Grupo;
 import com.gdg.gestiondegastos.entities.Movimiento;
@@ -11,22 +21,14 @@ import com.gdg.gestiondegastos.repositories.MovimientosRepository;
 import com.gdg.gestiondegastos.repositories.PresupuestoRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioGrupoRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioRepository;
-import java.sql.SQLException;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.temporal.TemporalAmount;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -34,13 +36,12 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
-import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/gestion")
 public class GestionDeGastosController {
+
+    DecimalFormat formateo = new DecimalFormat("#.00");
 
     @Autowired
     private UsuarioRepository repoUsuario;
@@ -177,7 +178,7 @@ public class GestionDeGastosController {
                     .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal()));
         }
 
-        m.addAttribute("presupuestoPersonal", presupuestoPersonal);
+        m.addAttribute("presupuestoPersonal", formateo.format(presupuestoPersonal).replace(",", "."));
 
         m.addAttribute("movimientos",
                 repoMovimientos.leerPorUsuario(usuValidado.getId()).stream().limit(4).collect(Collectors.toList()));
@@ -248,7 +249,9 @@ public class GestionDeGastosController {
 
         m.addAttribute("grupo", repoGrupo.findById(idGrupo).get());
         m.addAttribute("movimientos", repoMovimientos.leerPorGrupo(idGrupo));
+
         m.addAttribute("presupuesto", repoPresupuesto.findByIdGrupo(idGrupo));
+
         return "grupos";
     }
 
@@ -383,7 +386,7 @@ public class GestionDeGastosController {
             presupuestoPersonal = use.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst()
                     .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal()));
         }
-        m.addAttribute("presupuestoPersonal", presupuestoPersonal);
+        m.addAttribute("presupuestoPersonal", formateo.format(presupuestoPersonal).replace(",", "."));
         return "verMovimientos";
     }
 
