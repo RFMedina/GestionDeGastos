@@ -38,4 +38,5 @@ public class ApplicationConfig extends WebSecurityConfigurerAdapter{
     http.requiresChannel()
       .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
       .requiresSecure();
+  }
 }
