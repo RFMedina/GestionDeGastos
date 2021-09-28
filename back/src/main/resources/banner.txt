@@ -9,4 +9,4 @@ _____/\\\\\\\\\\\\_        __/\\\\\\\\\\\\____        _____/\\\\\\\\\\\\_
         __\////////////____        _\////////////_____        __\////////////____
 
 :: GESTOR DE GASTOS
-:: By Raúl, Jose María, Diego, Martín and Sofía
+:: By Raúl, Jose María, Diego and Martín
