@@ -53,14 +53,14 @@ public class GestionDeGastosController {
     @Autowired
     private ModelMapper mapper;
 
-    @GetMapping("/agregar")
+    @GetMapping("/agregar") // Terminado
     public Map<String, Object> agregarUsuario(Usuario usuario) {
         Map<String, Object> m = new HashMap<>();
         m.put("usuario", new Usuario());
         return m;
     }
 
-    @PostMapping("/crear")
+    @PostMapping("/crear") // Terminado
     public void crear(Usuario usuario) throws ClassNotFoundException, SQLException {
         UsuarioDto usu = mapper.map(repoUsuario.findByCorreo(usuario.getCorreo()), UsuarioDto.class);
 
@@ -163,7 +163,6 @@ public class GestionDeGastosController {
     @PostMapping("/guardarPerfil")
     public void guardarPerfil(Usuario usuario) {
         repoUsuario.save(usuario);
-
     }
 
     @GetMapping("/contrasenya") // Terminado
@@ -208,8 +207,10 @@ public class GestionDeGastosController {
 
         Map<String, Object> m = new HashMap<>();
 
-        m.put("usuarioGrupo", repoUsuarioGrupo.leerPorGrupo(idGrupo));
-        m.put("grupo", repoGrupo.findById(idGrupo).get());
+        m.put("grupo", mapper.map(repoGrupo.findById(idGrupo).get(), GrupoDto.class));
+
+        m.put("usuarioGrupo", repoUsuarioGrupo.leerPorGrupo(idGrupo).stream()
+                .map(x -> mapper.map(x, UsuarioGrupoDto.class)).collect(Collectors.toList()));
 
         return m;
     }
