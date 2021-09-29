@@ -9,30 +9,32 @@ import com.gdg.gestiondegastos.dto.PresupuestoDto;
 import com.gdg.gestiondegastos.entities.Grupo;
 import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Presupuesto;
+import com.gdg.gestiondegastos.entities.TokenEntity;
 import com.gdg.gestiondegastos.entities.Usuario;
 import com.gdg.gestiondegastos.entities.UsuarioGrupo;
 import com.gdg.gestiondegastos.repositories.GrupoRepository;
 import com.gdg.gestiondegastos.repositories.MovimientosRepository;
 import com.gdg.gestiondegastos.repositories.PresupuestoRepository;
+import com.gdg.gestiondegastos.repositories.TokenRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioGrupoRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioRepository;
+import com.gdg.gestiondegastos.services.CorreoService;
 import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
-import org.springframework.ui.Model;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -51,7 +53,12 @@ public class GestionDeGastosController {
     @Autowired
     private MovimientosRepository repoMovimientos;
     @Autowired
+    private TokenRepository repoToken;
+    @Autowired
     private ModelMapper mapper;
+    @Autowired
+    private CorreoService service;
+    
 
     @GetMapping("/agregar") // Terminado
     public Map<String, Object> agregarUsuario(Usuario usuario) {
@@ -60,15 +67,14 @@ public class GestionDeGastosController {
         return m;
     }
 
-    @PostMapping("/crear") // Terminado
-    public void crear(Usuario usuario) throws ClassNotFoundException, SQLException {
+    @PostMapping("/crear")
+    public String crear(Usuario usuario) throws ClassNotFoundException, SQLException {
         UsuarioDto usu = mapper.map(repoUsuario.findByCorreo(usuario.getCorreo()), UsuarioDto.class);
 
         if (usu != null) {
             Map<String, Object> m = new HashMap<>();
-            m.put("msg", "Correo ya registrado");
+            return "Correo ya registrado";
         } else {
-
             Grupo grupo = new Grupo();
             grupo.setNombre("Mi presupuesto personal");
             grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
@@ -83,6 +89,28 @@ public class GestionDeGastosController {
             ug.add(new UsuarioGrupo(0, Boolean.TRUE, usuario, grupoCreado, new ArrayList<>()));
             repoUsuarioGrupo.save(ug.get(0));
             usuario.setUsuarioGrupo(ug);
+            TokenEntity confirm=new TokenEntity(usuario);
+            repoToken.save(confirm);
+            SimpleMailMessage correo=new SimpleMailMessage();
+            correo.setTo(usuario.getCorreo());
+            correo.setSubject("Complete su registro");
+            correo.setFrom("gestiondegastoshiberus@gmail.com");
+            correo.setText("Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8080/confirmar?token="+confirm.getConfirmacion());
+            service.enviarCorreo(correo);
+            return "Se le ha enviado un correo de confirmación al correo "+usuario.getCorreo();
+        }
+    }
+    
+    @RequestMapping(value="/confirmar", method={RequestMethod.GET, RequestMethod.POST})
+    public String confirmarCuenta(@RequestParam("token") String token){
+        TokenEntity t=repoToken.findByConfirmacion(token);
+        if(t!=null){
+            Usuario usuario=repoUsuario.findByCorreo(t.getUsuario().getCorreo());
+            usuario.setVerificado(true);
+            repoUsuario.save(usuario);
+            return "Usuario validado con exito";
+        }else{
+            return "El link ha caducado.";
         }
     }
 
@@ -270,6 +298,21 @@ public class GestionDeGastosController {
         Presupuesto p = repoPresupuesto.findByIdGrupo(idGrupo);
         p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad());
         repoPresupuesto.save(p);
+        List<String> listaCorreo=repoUsuarioGrupo.leerPorGrupo(idGrupo).stream().map(x->x.getUsuario().getCorreo()).collect(Collectors.toList());
+        for(String c:listaCorreo){
+            if(!c.equals(repoUsuarioGrupo.findById(idUsuarioGrupo).get().getUsuario().getCorreo())){
+                SimpleMailMessage correo=new SimpleMailMessage();
+                correo.setTo(c);
+                correo.setSubject("Nuevo movimiento en su grupo "+repoGrupo.findById(idGrupo).get().getNombre());
+                correo.setFrom("gestiondegastoshiberus@gmail.com");
+                correo.setText("Se ha añadido un nuevo moviemiento a su grupo "+repoGrupo.findById(idGrupo).get().getNombre()+"\n "
+                        + "     Concepto: "+mov.getConcepto()+"\n Importe: "+mov.getCantidad()+
+                        "\n Añadido por: "+repoUsuarioGrupo.findById(idUsuarioGrupo).get().getUsuario().getNombre()+
+                        "\n Acceda a su grupo para ver todos los movimientos con el siguiente link "
+                      + "\n http://localhost:8080/gestion");
+                service.enviarCorreo(correo);
+            }   
+        }
     }
 
     @GetMapping("/misGrupos")//Terminaddo
