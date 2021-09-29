@@ -21,7 +21,7 @@ import lombok.ToString;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UsuarioDto {
+public class UsuarioDto2 {
 
    private Integer id;
 
@@ -31,5 +31,4 @@ public class UsuarioDto {
    private String correo;
    private Boolean modoOscuro;
    private Boolean verificado;
-   private List<UsuarioGrupo> usuarioGrupo;
 }

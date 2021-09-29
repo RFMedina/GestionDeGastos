@@ -13,5 +13,4 @@ import lombok.ToString;
 @ToString
 public class ContactosDto {
     private Integer id;
-
 }
