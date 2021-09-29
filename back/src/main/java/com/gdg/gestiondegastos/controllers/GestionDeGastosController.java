@@ -227,7 +227,7 @@ public class GestionDeGastosController {
     }
 
     @GetMapping("/grupo/nuevoUsuarioGrupo")
-    public void anadirUsuario(String correo, @RequestParam Integer idGrupo) {
+    public String anadirUsuario(String correo, @RequestParam Integer idGrupo) {
         Usuario nuevoUsuario = repoUsuario.findByCorreo(correo);
         UsuarioGrupo usuariosGrupo = repoUsuarioGrupo.leerPorUsuarioYGrupo(nuevoUsuario.getId(), idGrupo);
         Map<String, Object> m = new HashMap<>();
@@ -235,11 +235,12 @@ public class GestionDeGastosController {
             if (nuevoUsuario != null) {
                 repoUsuarioGrupo.anadirUsuario(nuevoUsuario.getId(), idGrupo, 0);
             } else {
-                m.put("msg", "Usuario no encontrado");
+                return "Usuario no encontrado";
             }
         } else {
-            m.put("msg", "El usuario que intenta agregar ya se encuentra en el grupo");
+            return "El usuario que intenta agregar ya se encuentra en el grupo";
         }
+        return "Usuario agregado";
     }
 
     @GetMapping("grupo/cambiarNombre")
@@ -248,13 +249,13 @@ public class GestionDeGastosController {
         repoGrupo.cambiarNombre(idGrupo, nombre);
     }
 
-    @GetMapping("/grupo/{idGrupo}/nuevoMovimiento")
+    @GetMapping("/grupo/{idGrupo}/nuevoMovimiento")//Terminado
     public Map<String, Object> nuevoMovimientos(@PathVariable Integer idGrupo, Integer idUsuario) {
         Map<String, Object> m = new HashMap<>();
         Movimiento mov = new Movimiento();
         UsuarioGrupo ug = repoUsuarioGrupo.leerPorUsuarioYGrupo(idUsuario, idGrupo);
         mov.setUsuarioGrupo(ug);
-        m.put("movimiento", mov);
+        m.put("movimiento", mapper.map(mov, MovimientoDto.class));
         m.put("idUsuarioGrupo", ug.getId());
         m.put("idGrupo", idGrupo);
 
