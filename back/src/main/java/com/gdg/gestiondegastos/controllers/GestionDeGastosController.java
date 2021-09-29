@@ -149,7 +149,7 @@ public class GestionDeGastosController {
         m.put("usuarioGrupo", repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
                 .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).collect(Collectors.toList()));
 
-        return m;
+        return m; 
     }
 
     @GetMapping("/perfil") // Terminado
@@ -271,19 +271,26 @@ public class GestionDeGastosController {
         repoPresupuesto.save(p);
     }
 
-    @GetMapping("/misGrupos")
+    @GetMapping("/misGrupos")//Terminaddo
     public Map<String, Object> misGrupos(Integer idUsuario) {
         Map<String, Object> m = new HashMap<>();
-        m.put("grupos", repoUsuarioGrupo.leerPorUsuario(idUsuario));
+        m.put("grupos", repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
+                .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).collect(Collectors.toList()));
         return m;
     }
 
-    @GetMapping("/misMovimientos")
+    @GetMapping("/misMovimientos")//Terminado
     public Map<String, Object> misMov(Integer idUsuario) {
+        
         Map<String, Object> m = new HashMap<>();
-        Usuario use = repoUsuario.findById(idUsuario).get();
-        m.put("movimientos", repoMovimientos.leerPorUsuario(idUsuario).stream().collect(Collectors.toList()));
-        m.put("usuarioGrupo", repoUsuarioGrupo.leerPorUsuario(idUsuario));
+         UsuarioDto use = mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto.class);
+         
+        m.put("movimientos", repoMovimientos.leerPorUsuario(idUsuario).stream()
+                .map(x -> mapper.map(x, MovimientoDto.class)).collect(Collectors.toList()));
+
+        m.put("usuarioGrupo", repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
+                .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).collect(Collectors.toList()));
+        
         Double presupuestoPersonal = 0d;
         if (use.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst().isPresent()) {
 
@@ -291,6 +298,7 @@ public class GestionDeGastosController {
                     .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal()));
         }
         m.put("presupuestoPersonal", presupuestoPersonal);
+        
         return m;
     }
 
