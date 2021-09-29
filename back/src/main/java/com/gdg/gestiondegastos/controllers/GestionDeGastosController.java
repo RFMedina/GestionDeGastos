@@ -1,6 +1,7 @@
 package com.gdg.gestiondegastos.controllers;
 
 import com.gdg.gestiondegastos.dto.GrupoDto;
+import com.gdg.gestiondegastos.dto.GrupoDto2;
 import com.gdg.gestiondegastos.dto.MovimientoDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto2;
@@ -114,7 +115,7 @@ public class GestionDeGastosController {
         }
     }
 
-    @GetMapping("/inicio/nuevoGrupo")
+    @GetMapping("/inicio/nuevoGrupo")//Terminado
     public Map<String, Object> nuevoGrupo(Integer idUsuario) {
 
         Map<String, Object> m = new HashMap<>();
@@ -123,7 +124,7 @@ public class GestionDeGastosController {
 
         g.setUsuarioGrupo(repoUsuarioGrupo.leerPorUsuario(idUsuario));
 
-        m.put("grupo", mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto.class));
+        m.put("grupo", mapper.map(g, GrupoDto2.class));
         return m;
     }
 
@@ -230,7 +231,7 @@ public class GestionDeGastosController {
 
     }
 
-    @GetMapping("/grupo/{idGrupo}/gestionar")
+    @GetMapping("/grupo/{idGrupo}/gestionar")//Terminado
     public Map<String, Object> gestionarGrupos(@PathVariable Integer idGrupo) {
 
         Map<String, Object> m = new HashMap<>();
@@ -238,7 +239,7 @@ public class GestionDeGastosController {
         m.put("grupo", mapper.map(repoGrupo.findById(idGrupo).get(), GrupoDto.class));
 
         m.put("usuarioGrupo", repoUsuarioGrupo.leerPorGrupo(idGrupo).stream()
-                .map(x -> mapper.map(x, UsuarioGrupoDto.class)).collect(Collectors.toList()));
+                .map(x -> mapper.map( x, UsuarioGrupoDto.class)).collect(Collectors.toList()));
 
         return m;
     }
