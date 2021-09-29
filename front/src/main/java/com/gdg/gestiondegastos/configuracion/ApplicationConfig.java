@@ -6,6 +6,7 @@
 package com.gdg.gestiondegastos.configuracion;
 
 import javax.sql.DataSource;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -32,4 +33,6 @@ public class ApplicationConfig extends WebSecurityConfigurerAdapter{
                 .logout().logoutSuccessUrl("/paginaPrincipal").invalidateHttpSession(true)
                 .clearAuthentication(true).permitAll();
     }
+    
+
 }
