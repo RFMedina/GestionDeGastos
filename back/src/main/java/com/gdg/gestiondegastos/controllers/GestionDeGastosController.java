@@ -169,7 +169,7 @@ public class GestionDeGastosController {
     @GetMapping("/perfil")
     public Map<String, Object> perfil(Integer idUsuario) {
         Map<String, Object> m = new HashMap<>();
-        m.put("usuario", mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto.class));
+       
 
         return m;
     }
