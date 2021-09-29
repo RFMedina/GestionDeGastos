@@ -5,6 +5,7 @@ import com.gdg.gestiondegastos.dto.MovimientoDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto2;
 import com.gdg.gestiondegastos.dto.UsuarioGrupoDto;
+import com.gdg.gestiondegastos.dto.PresupuestoDto;
 import com.gdg.gestiondegastos.entities.Grupo;
 import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Presupuesto;
@@ -130,7 +131,7 @@ public class GestionDeGastosController {
         return (usuario.getNombre() != null);
     }
 
-    @GetMapping("/inicio")
+    @GetMapping("/inicio") // Terminado
     public Map<String, Object> inicio(Integer idUsuario) {
         UsuarioDto user = mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto.class);
         Double presupuestoPersonal = 0d;
@@ -151,7 +152,7 @@ public class GestionDeGastosController {
         return m;
     }
 
-    @GetMapping("/perfil")
+    @GetMapping("/perfil") // Terminado
     public Map<String, Object> perfil(Integer idUsuario) {
         Map<String, Object> m = new HashMap<>();
         m.put("usuario", mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto2.class));
@@ -165,7 +166,7 @@ public class GestionDeGastosController {
 
     }
 
-    @GetMapping("/contrasenya")
+    @GetMapping("/contrasenya") // Terminado
     public Map<String, Object> contrasenya(Integer idUsuario) {
         Map<String, Object> m = new HashMap<>();
         m.put("usuario", mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto2.class));
@@ -180,14 +181,18 @@ public class GestionDeGastosController {
 
     }
 
-    @GetMapping("/grupo/{idGrupo}")
+    @GetMapping("/grupo/{idGrupo}") // Terminado
     public Map<String, Object> verGrupos(@PathVariable Integer idGrupo) {
 
         Map<String, Object> m = new HashMap<>();
 
-        m.put("grupo", repoGrupo.findById(idGrupo).get());
-        m.put("movimientos", repoMovimientos.leerPorGrupo(idGrupo));
-        m.put("presupuesto", repoPresupuesto.findByIdGrupo(idGrupo));
+        m.put("grupo", mapper.map(repoGrupo.findById(idGrupo).get(), GrupoDto.class));
+
+        m.put("movimientos", repoMovimientos.leerPorUsuario(idGrupo).stream()
+                .map(x -> mapper.map(x, MovimientoDto.class)).collect(Collectors.toList()));
+
+        m.put("presupuesto", mapper.map(repoPresupuesto.findById(idGrupo).get(), PresupuestoDto.class));
+
         return m;
     }
 
