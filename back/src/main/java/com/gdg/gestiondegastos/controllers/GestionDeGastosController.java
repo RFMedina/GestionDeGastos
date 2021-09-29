@@ -3,6 +3,7 @@ package com.gdg.gestiondegastos.controllers;
 import com.gdg.gestiondegastos.dto.GrupoDto;
 import com.gdg.gestiondegastos.dto.MovimientoDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto;
+import com.gdg.gestiondegastos.dto.UsuarioDto2;
 import com.gdg.gestiondegastos.dto.UsuarioGrupoDto;
 import com.gdg.gestiondegastos.entities.Grupo;
 import com.gdg.gestiondegastos.entities.Movimiento;
@@ -49,29 +50,19 @@ public class GestionDeGastosController {
     @Autowired
     private MovimientosRepository repoMovimientos;
     @Autowired
-     private ModelMapper mapper;
-
-    // Este es un get para ver la principal y asÃ­ ver los cambios
-
+    private ModelMapper mapper;
 
     @GetMapping("/agregar")
     public Map<String, Object> agregarUsuario(Usuario usuario) {
         Map<String, Object> m = new HashMap<>();
         m.put("usuario", new Usuario());
-        // repoUsuario.save(usuario);
         return m;
     }
 
-    /*
-    @GetMapping("/login") // Pagina de inicio principal
-    public String principal2(Model m) {
-        // m.addAttribute("usuario", new Usuario());
-        return "login";
-    }*/
     @PostMapping("/crear")
     public void crear(Usuario usuario) throws ClassNotFoundException, SQLException {
         UsuarioDto usu = mapper.map(repoUsuario.findByCorreo(usuario.getCorreo()), UsuarioDto.class);
-        
+
         if (usu != null) {
             Map<String, Object> m = new HashMap<>();
             m.put("msg", "Correo ya registrado");
@@ -81,7 +72,6 @@ public class GestionDeGastosController {
             grupo.setNombre("Mi presupuesto personal");
             grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
             Grupo grupoCreado = repoGrupo.save(grupo);
-            // ArrayList<Presupuesto> p = new ArrayList<>();
             Presupuesto pre = new Presupuesto();
             pre.setCantidadInicio(0.0);
             pre.setCantidadFinal(0.0);
@@ -92,7 +82,6 @@ public class GestionDeGastosController {
             ug.add(new UsuarioGrupo(0, Boolean.TRUE, usuario, grupoCreado, new ArrayList<>()));
             repoUsuarioGrupo.save(ug.get(0));
             usuario.setUsuarioGrupo(ug);
-            // repoUsuario.save(usuario);
         }
     }
 
@@ -126,7 +115,7 @@ public class GestionDeGastosController {
         repoUsuarioGrupo.save(ug.get(0));
     }
 
-    @PostMapping("/ingresar") // hacer login
+    @PostMapping("/ingresar")
     public Boolean ingresar(String correo[], String[] contrasenya) {
 
         Usuario usuario = new Usuario();
@@ -141,14 +130,9 @@ public class GestionDeGastosController {
         return (usuario.getNombre() != null);
     }
 
-    // Antes del Security
     @GetMapping("/inicio")
     public Map<String, Object> inicio(Integer idUsuario) {
         UsuarioDto user = mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto.class);
-        //UsuarioDto user = new UsuarioDto(repoUsuario.findById(idUsuario).get()) ;
-        // user = repoUsuario.getById(idUsuario);
-
-        // Suma todas las cantidades iniciales indicadas en el presupuesto del usuario
         Double presupuestoPersonal = 0d;
         if (user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst().isPresent()) {
 
@@ -158,10 +142,11 @@ public class GestionDeGastosController {
         Map<String, Object> m = new HashMap<>();
         m.put("presupuestoPersonal", presupuestoPersonal);
 
-        m.put("movimientos",
-                repoMovimientos.leerPorUsuario(idUsuario).stream().limit(4).map(x->mapper.map(x, MovimientoDto.class) ).collect(Collectors.toList()));
+        m.put("movimientos", repoMovimientos.leerPorUsuario(idUsuario).stream().limit(4)
+                .map(x -> mapper.map(x, MovimientoDto.class)).collect(Collectors.toList()));
 
-       m.put("usuarioGrupo",repoUsuarioGrupo.leerPorUsuario(idUsuario).stream().map(x->mapper.map(x.getGrupo(), GrupoDto.class)).collect(Collectors.toList()));
+        m.put("usuarioGrupo", repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
+                .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).collect(Collectors.toList()));
 
         return m;
     }
@@ -169,15 +154,13 @@ public class GestionDeGastosController {
     @GetMapping("/perfil")
     public Map<String, Object> perfil(Integer idUsuario) {
         Map<String, Object> m = new HashMap<>();
-        m.put("usuario", mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto.class));
+        m.put("usuario", mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto2.class));
 
         return m;
     }
 
     @PostMapping("/guardarPerfil")
     public void guardarPerfil(Usuario usuario) {
-
-        // Usuario user = repoUsuario.findById(usuario.getId()).get();
         repoUsuario.save(usuario);
 
     }
@@ -185,8 +168,7 @@ public class GestionDeGastosController {
     @GetMapping("/contrasenya")
     public Map<String, Object> contrasenya(Integer idUsuario) {
         Map<String, Object> m = new HashMap<>();
-        m.put("usuario", repoUsuario.findById(idUsuario).get());
-
+        m.put("usuario", mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto2.class));
         return m;
     }
 
@@ -195,7 +177,6 @@ public class GestionDeGastosController {
         Usuario user = repoUsuario.findById(idUsuario).get();
 
         repoUsuario.save(user);
-
 
     }
 
@@ -228,15 +209,6 @@ public class GestionDeGastosController {
         return m;
     }
 
-    /*
-     * //Sin ajax
-     * 
-     * @GetMapping("/grupo/{idGrupo}/borrarUsuario") public String
-     * borrarUsuario(Integer idUsuarioGrupo, Integer idGrupo) {
-     * repoUsuarioGrupo.deleteById(idUsuarioGrupo); return
-     * "redirect:/gestion/grupo/{idGrupo}/gestionar"; }
-     */
-    // Con ajax
     @GetMapping("/grupo/{idGrupo}/borrarUsuario")
     public Boolean borrarUsuario(Integer idUsuarioGrupo, Integer idGrupo) {
         repoUsuarioGrupo.deleteById(idUsuarioGrupo);
@@ -271,14 +243,10 @@ public class GestionDeGastosController {
         repoGrupo.cambiarNombre(idGrupo, nombre);
     }
 
-    // Ejemplo ded url: http://localhost:8080/gestion/grupo/6
     @GetMapping("/grupo/{idGrupo}/nuevoMovimiento")
     public Map<String, Object> nuevoMovimientos(@PathVariable Integer idGrupo, Integer idUsuario) {
         Map<String, Object> m = new HashMap<>();
         Movimiento mov = new Movimiento();
-        // UsuarioGrupo ug =
-        // repoGrupo.findById(idGrupo).get().getUsuarioGrupo().stream().filter(x->x.getUsuario().getId().equals(usuValidado.getId())).findFirst().get();
-        // mov.setUsuarioGrupo(repoUsuarioGrupo.findById(ug.getId()).get());
         UsuarioGrupo ug = repoUsuarioGrupo.leerPorUsuarioYGrupo(idUsuario, idGrupo);
         mov.setUsuarioGrupo(ug);
         m.put("movimiento", mov);
@@ -288,28 +256,15 @@ public class GestionDeGastosController {
         return m;
     }
 
-    //
     @PostMapping("/grupo/guardarMovimiento")
     public void guardarMovimiento(Movimiento mov, Integer idUsuarioGrupo, Integer idGrupo) {
         mov.setUsuarioGrupo(repoUsuarioGrupo.findById(idUsuarioGrupo).get());
         Movimiento movNuevo = repoMovimientos.save(mov);
         Presupuesto p = repoPresupuesto.findByIdGrupo(idGrupo);
-        /*
-         * if(p.getCantidadFinal().equals(p.getCantidadInicio())){
-         * p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad()); }else{
-         * p.setCantidadFinal(p.getCantidadFinal() + mov.getCantidad()); }
-         */
         p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad());
         repoPresupuesto.save(p);
     }
 
-    /*
-     * @GetMapping("/perfil") public String perfil(Model m) { UsuarioDto usu =
-     * (UsuarioDto)
-     * (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-     * Usuario user = repoUsuario.findById(usu.getId()).get();
-     * m.addAttribute("user", user); return "perfil"; }
-     */
     @GetMapping("/misGrupos")
     public Map<String, Object> misGrupos(Integer idUsuario) {
         Map<String, Object> m = new HashMap<>();
@@ -319,10 +274,9 @@ public class GestionDeGastosController {
 
     @GetMapping("/misMovimientos")
     public Map<String, Object> misMov(Integer idUsuario) {
-        Map<String, Object> m=new HashMap<>();
+        Map<String, Object> m = new HashMap<>();
         Usuario use = repoUsuario.findById(idUsuario).get();
-        m.put("movimientos",
-                repoMovimientos.leerPorUsuario(idUsuario).stream().collect(Collectors.toList()));
+        m.put("movimientos", repoMovimientos.leerPorUsuario(idUsuario).stream().collect(Collectors.toList()));
         m.put("usuarioGrupo", repoUsuarioGrupo.leerPorUsuario(idUsuario));
         Double presupuestoPersonal = 0d;
         if (use.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst().isPresent()) {

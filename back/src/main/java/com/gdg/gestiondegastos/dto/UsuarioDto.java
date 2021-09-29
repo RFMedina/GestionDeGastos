@@ -24,14 +24,12 @@ import lombok.ToString;
 public class UsuarioDto {
 
    private Integer id;
-    
-    private String nombre;
-    private String contrasenya;
-    private String telefono;
-    private String correo;
-    private Boolean modoOscuro;
-    private Boolean verificado;
-     private List<UsuarioGrupo> usuarioGrupo;
-    
-        
+
+   private String nombre;
+   private String contrasenya;
+   private String telefono;
+   private String correo;
+   private Boolean modoOscuro;
+   private Boolean verificado;
+   private List<UsuarioGrupoDto> usuarioGrupo;
 }

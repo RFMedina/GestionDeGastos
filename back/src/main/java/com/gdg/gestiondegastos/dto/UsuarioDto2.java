@@ -5,23 +5,30 @@
  */
 package com.gdg.gestiondegastos.dto;
 
-import com.gdg.gestiondegastos.entities.Grupo;
-import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Usuario;
 import com.gdg.gestiondegastos.entities.UsuarioGrupo;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
+//Me encomiendo a los santos tocando el DTO, seguramente esto cambie por graves fallos
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-public class UsuarioGrupoDto {
-    private Integer id;
-    private Boolean rol;
-    private Usuario usuario;
-    private Grupo grupo;
+public class UsuarioDto2 {
+
+   private Integer id;
+
+   private String nombre;
+   private String contrasenya;
+   private String telefono;
+   private String correo;
+   private Boolean modoOscuro;
+   private Boolean verificado;
 }
