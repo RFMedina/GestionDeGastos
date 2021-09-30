@@ -15,8 +15,8 @@
   <div id="fullpage">
     <div class="section">
       <div class="divPrincipal">
-        <p class="presupuestoPrincipal" th:text="|${presupuestoPersonal}€|" th:class="
-                       ${presupuestoPersonal >= '0'} ? 'presupuestoPrincipal Verde' : 'presupuestoPrincipal Rojo'">
+        <p class="presupuestoPrincipal" th:text="${#numbers.formatDecimal(presupuestoPersonal, 1, 'COMMA', 2, 'POINT')} + '€'" th:class="
+                       ${presupuestoPersonal >= 0} ? 'presupuestoPrincipal Verde' : 'presupuestoPrincipal Rojo'">
         </p>
       </div>
       <div class="divHrPrincipal">
@@ -34,7 +34,7 @@
           <tr th:each="mov:${movimientos}">
             <td class="negritaPrincipal" th:text="${mov.concepto}" />
             <td th:text="${mov.fecha}" class="fechaTabla" />
-            <td style="text-align: center;" th:text="${#numbers.formatDecimal(mov.cantidad, 0, 'COMMA', 2, 'POINT')} + '€'"
+            <td style="text-align: center;" th:text="${#numbers.formatDecimal(mov.cantidad, 1, 'COMMA', 2, 'POINT')} + '€'"
               th:class="${mov.cantidad >= 0} ? 'Verde' : 'Rojo'" />
           </tr>
 
@@ -60,7 +60,7 @@
             <td class="negritaPrincipal" th:text="${ug.grupo.nombre}"></td>
             <td th:text="${ug.grupo.fechaCreacion}"></td>
             <th:block th:each="p:${ug.grupo.presupuesto}">
-              <td style="text-align: center;" th:text="${#numbers.formatDecimal(p.cantidadFinal, 0, 'COMMA', 2, 'POINT')} + '€'" th:class="
+              <td style="text-align: center;" th:text="${#numbers.formatDecimal(p.cantidadFinal, 1, 'COMMA', 2, 'POINT')} + '€'" th:class="
                                 ${p.cantidadFinal >= 0} ? 'Verde' : 'Rojo'"></td>
             </th:block>
           </tr>
