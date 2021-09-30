@@ -1,11 +1,11 @@
 
 --USUARIOS
 
-INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro) VALUES ('Raul','$2a$10$PkHebxbh3IMniYV09VtQNu32xDLX8yZLkO0JX1/GNqjvyR0wMY7JS','RaulHiberus@gmail.com','665379845',1);
-INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro) VALUES ('Diego','$2a$10$YQAzwUghK2aSkISs3ok3Cu4Ha4gcebPisgp6qlOcUjvpI4lbfr2QK','DiegoHiberus@gmail.com','655352261',0);
-INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro) VALUES ('Sofia','$2a$10$Vj6jJOvVEtWqkIBWx5KIjuB3hkIcc0567UUblBbnoPXCM4n1mMMe6','SofiaHiberus@gmail.com','722161974',1);
-INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro) VALUES ('Martin','$2a$10$H3yBhQpiyjqG02boZPcwlu7l5Je3Bu0E6N6mFb0Td4lxQT0GtyXW2','MartinHiberus@gmail.com','677826971',1);
-INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro) VALUES ('Jose María','$2a$10$R/YwN2b8AKfwxu0upaIA/Onufw7A5wCKZfgDc87sIFuFKdn8CSt26','JosemaHiberus@gmail.com','646582521',0);
+INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro,verificado) VALUES ('Raul','$2a$10$PkHebxbh3IMniYV09VtQNu32xDLX8yZLkO0JX1/GNqjvyR0wMY7JS','RaulHiberus@gmail.com','665379845',1,1);
+INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro,verificado) VALUES ('Diego','$2a$10$YQAzwUghK2aSkISs3ok3Cu4Ha4gcebPisgp6qlOcUjvpI4lbfr2QK','DiegoHiberus@gmail.com','655352261',0,1);
+INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro,verificado) VALUES ('Sofia','$2a$10$Vj6jJOvVEtWqkIBWx5KIjuB3hkIcc0567UUblBbnoPXCM4n1mMMe6','SofiaHiberus@gmail.com','722161974',1,1);
+INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro,verificado) VALUES ('Martin','$2a$10$H3yBhQpiyjqG02boZPcwlu7l5Je3Bu0E6N6mFb0Td4lxQT0GtyXW2','MartinHiberus@gmail.com','677826971',1,1);
+INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro,verificado) VALUES ('Jose María','$2a$10$R/YwN2b8AKfwxu0upaIA/Onufw7A5wCKZfgDc87sIFuFKdn8CSt26','JosemaHiberus@gmail.com','646582521',0,1);
 
 
 --#GRUPOS#

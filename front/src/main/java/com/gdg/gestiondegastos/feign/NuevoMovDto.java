@@ -5,6 +5,7 @@
  */
 package com.gdg.gestiondegastos.feign;
 
+import com.gdg.gestiondegastos.entities.Movimiento;
 import lombok.Data;
 
 /**
@@ -14,4 +15,6 @@ import lombok.Data;
 @Data
 class NuevoMovDto {
     Integer idGrupo;
+    Integer idUsuario;
+    Movimiento mov; 
 }

@@ -301,13 +301,12 @@ public class GestionDeGastosController {
     }
 
     @PostMapping("/inicio/guardarGrupo")
-    public String guardarGrupo(GrupoDto grupo, Integer presupuesto) {
+    public String guardarGrupo(GrupoDto grupo, Double presupuesto) {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         feign.guardarGrupo(grupo.getId(), grupo.getNombre(), presupuesto, usuValidado.getId());
         return "redirect:/gestion/inicio";
     }
 
-    // Ejemplo ded url: http://localhost:8080/gestion/grupo/6
     @GetMapping("/grupo/{idGrupo}/nuevoMovimiento")
     public String nuevoMovimientos(Model m, @PathVariable Integer idGrupo) {
 
