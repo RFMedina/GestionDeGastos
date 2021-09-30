@@ -46,8 +46,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/gestion")
 public class GestionDeGastosController {
 
-    DecimalFormat formateo = new DecimalFormat("#.00");
-
     @Autowired
     private UsuarioRepository repoUsuario;
     @Autowired
@@ -154,7 +152,7 @@ public class GestionDeGastosController {
                     .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal()));
         }
 
-        m.addAttribute("presupuestoPersonal", formateo.format(presupuestoPersonal).replace(",", "."));
+        m.addAttribute("presupuestoPersonal", presupuestoPersonal);
 
         m.addAttribute("movimientos",
                 repoMovimientos.leerPorUsuario(usuValidado.getId()).stream().limit(4).collect(Collectors.toList()));
@@ -311,15 +309,16 @@ public class GestionDeGastosController {
     public String nuevoMovimientos(Model m, @PathVariable Integer idGrupo) {
 
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        /*Movimiento mov = new Movimiento();
-        // UsuarioGrupo ug =
-        // repoGrupo.findById(idGrupo).get().getUsuarioGrupo().stream().filter(x->x.getUsuario().getId().equals(usuValidado.getId())).findFirst().get();
-        // mov.setUsuarioGrupo(repoUsuarioGrupo.findById(ug.getId()).get());
-        UsuarioGrupo ug = repoUsuarioGrupo.leerPorUsuarioYGrupo(usuValidado.getId(), idGrupo);
-        mov.setUsuarioGrupo(ug);
-        m.addAttribute("movimiento", mov);
-        m.addAttribute("idUsuarioGrupo", ug.getId());
-        m.addAttribute("idGrupo", idGrupo);*/
+        /*
+         * Movimiento mov = new Movimiento(); // UsuarioGrupo ug = //
+         * repoGrupo.findById(idGrupo).get().getUsuarioGrupo().stream().filter(x->x.
+         * getUsuario().getId().equals(usuValidado.getId())).findFirst().get(); //
+         * mov.setUsuarioGrupo(repoUsuarioGrupo.findById(ug.getId()).get());
+         * UsuarioGrupo ug = repoUsuarioGrupo.leerPorUsuarioYGrupo(usuValidado.getId(),
+         * idGrupo); mov.setUsuarioGrupo(ug); m.addAttribute("movimiento", mov);
+         * m.addAttribute("idUsuarioGrupo", ug.getId()); m.addAttribute("idGrupo",
+         * idGrupo);
+         */
         feign.nuevoMovimientos(idGrupo, usuValidado.getId());
         return "nuevoMov";
     }
@@ -327,17 +326,18 @@ public class GestionDeGastosController {
     //
     @PostMapping("/grupo/guardarMovimiento")
     public String guardarMovimiento(Model m, Movimiento mov, Integer idUsuarioGrupo, Integer idGrupo) {
-        /*mov.setUsuarioGrupo(repoUsuarioGrupo.findById(idUsuarioGrupo).get());
-        Movimiento movNuevo = repoMovimientos.save(mov);
-        Presupuesto p = repoPresupuesto.findByIdGrupo(idGrupo);
         /*
+         * mov.setUsuarioGrupo(repoUsuarioGrupo.findById(idUsuarioGrupo).get());
+         * Movimiento movNuevo = repoMovimientos.save(mov); Presupuesto p =
+         * repoPresupuesto.findByIdGrupo(idGrupo); /*
          * if(p.getCantidadFinal().equals(p.getCantidadInicio())){
          * p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad()); }else{
          * p.setCantidadFinal(p.getCantidadFinal() + mov.getCantidad()); }
-         
-        p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad());
-        repoPresupuesto.save(p);*/
-      //  feign.guardarMovimiento(mov, idUsuarioGrupo, idGrupo);
+         * 
+         * p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad());
+         * repoPresupuesto.save(p);
+         */
+        // feign.guardarMovimiento(mov, idUsuarioGrupo, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }
 
@@ -378,7 +378,7 @@ public class GestionDeGastosController {
             presupuestoPersonal = use.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst()
                     .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal()));
         }
-        m.addAttribute("presupuestoPersonal", formateo.format(presupuestoPersonal).replace(",", "."));
+        m.addAttribute("presupuestoPersonal", presupuestoPersonal);
         return "verMovimientos";
     }
 
