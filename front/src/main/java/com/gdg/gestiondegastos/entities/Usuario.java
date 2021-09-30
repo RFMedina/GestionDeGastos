@@ -33,6 +33,7 @@ public class Usuario{
     private String telefono;
     private String correo;
     private Boolean modoOscuro;
+    private Boolean verificado;
     
     //Uniones de Tablas
     //(Envia el id a UsuarioGrupo)

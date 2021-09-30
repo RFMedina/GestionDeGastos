@@ -16,18 +16,22 @@ import com.gdg.gestiondegastos.dto.UsuarioDto;
 import com.gdg.gestiondegastos.entities.Grupo;
 import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Presupuesto;
+import com.gdg.gestiondegastos.entities.TokenEntity;
 import com.gdg.gestiondegastos.entities.Usuario;
 import com.gdg.gestiondegastos.entities.UsuarioGrupo;
 import com.gdg.gestiondegastos.feign.BackFeign;
 import com.gdg.gestiondegastos.repositories.GrupoRepository;
 import com.gdg.gestiondegastos.repositories.MovimientosRepository;
 import com.gdg.gestiondegastos.repositories.PresupuestoRepository;
+import com.gdg.gestiondegastos.repositories.TokenRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioGrupoRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioRepository;
+import com.gdg.gestiondegastos.services.CorreoService;
 import java.util.Map;
 import org.modelmapper.ModelMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,7 +48,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/gestion")
-public class GestionDeGastosController {
+public class GestionDeGastosFrontController {
 
     DecimalFormat formateo = new DecimalFormat("#.00");
 
@@ -59,11 +63,15 @@ public class GestionDeGastosController {
     @Autowired
     private MovimientosRepository repoMovimientos;
     @Autowired
+    private TokenRepository repoToken;
+    @Autowired
     private BackFeign feign;
     @Autowired
     private ModelMapper mapper;
     @Autowired
     private PasswordEncoder clave;
+    @Autowired
+    private CorreoService service;
 
     // Este es un get para ver la principal y asÃ­ ver los cambios
     @GetMapping("")
@@ -86,18 +94,15 @@ public class GestionDeGastosController {
 
     @PostMapping("/crear")
     public String crear(Model m, Usuario usuario) throws ClassNotFoundException, SQLException {
-        Usuario usu = repoUsuario.findByCorreo(usuario.getCorreo());
-        if (usu != null) {
-            m.addAttribute("msg", "Correo ya registrado");
-            return "crearUsuario";
-        } else {
-            usuario.setContrasenya(clave.encode(usuario.getContrasenya()));
+        UsuarioDto usu = mapper.map(repoUsuario.findByCorreo(usuario.getCorreo()), UsuarioDto.class);
 
+        if (usu != null) {
+            return "Correo ya registrado";
+        } else {
             Grupo grupo = new Grupo();
             grupo.setNombre("Mi presupuesto personal");
             grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
             Grupo grupoCreado = repoGrupo.save(grupo);
-            // ArrayList<Presupuesto> p = new ArrayList<>();
             Presupuesto pre = new Presupuesto();
             pre.setCantidadInicio(0.0);
             pre.setCantidadFinal(0.0);
@@ -108,8 +113,17 @@ public class GestionDeGastosController {
             ug.add(new UsuarioGrupo(0, Boolean.TRUE, usuario, grupoCreado, new ArrayList<>()));
             repoUsuarioGrupo.save(ug.get(0));
             usuario.setUsuarioGrupo(ug);
-            // repoUsuario.save(usuario);
-            return "login";
+            usuario.setVerificado(false);
+            usuario.setModoOscuro(false);
+            TokenEntity confirm=new TokenEntity(usuario);
+            repoToken.save(confirm);
+            SimpleMailMessage correo=new SimpleMailMessage();
+            correo.setTo(usuario.getCorreo());
+            correo.setSubject("Complete su registro");
+            correo.setFrom("gestiondegastoshiberus@gmail.com");
+            correo.setText("Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8080/confirmar?token="+confirm.getConfirmacion());
+            service.enviarCorreo(correo);
+            return "Se le ha enviado un correo de confirmación al correo "+usuario.getCorreo();
         }
     }
 
