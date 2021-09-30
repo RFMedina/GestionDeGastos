@@ -7,10 +7,10 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 
 //@SpringBootApplication
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class})
-public class Ejecutable {
+public class EjecutableBack {
 
 	public static void main(String[] args) {
-		SpringApplication.run(Ejecutable.class, args);
+		SpringApplication.run(EjecutableBack.class, args);
 	}
 
 }

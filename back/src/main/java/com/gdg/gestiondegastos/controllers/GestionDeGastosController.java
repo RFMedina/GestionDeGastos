@@ -40,7 +40,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/gestion")
+@RequestMapping("/gestionback")
 public class GestionDeGastosController {
 
     @Autowired
@@ -128,19 +128,20 @@ public class GestionDeGastosController {
         return m;
     }
 
+    //Nota de Jorge: El problema estaba en que dentro de grupo hay un campo presupuesto y se estaba intentando rellenar. He cambiado el parámetro de presupuesto a pPresupuesto.
     @PostMapping("/inicio/guardarGrupo")
-    public void guardarGrupo(Grupo grupo, Double presupuesto, Integer idUsuario) {
+    public void guardarGrupo(Grupo grupo, Double pPresupuesto, Integer pIdUsuario) {
         grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
         Grupo grupoCreado = repoGrupo.save(grupo);
         Presupuesto pre = new Presupuesto();
-        pre.setCantidadInicio(presupuesto);
-        pre.setCantidadFinal(presupuesto);
+        pre.setCantidadInicio(pPresupuesto);
+        pre.setCantidadFinal(pPresupuesto);
         pre.setFechaInicio(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
         pre.setGrupo(grupoCreado);
         repoPresupuesto.save(pre);
 
         ArrayList<UsuarioGrupo> ug = new ArrayList<>();
-        ug.add(new UsuarioGrupo(0, Boolean.TRUE, repoUsuario.findById(idUsuario).get(), grupoCreado,
+        ug.add(new UsuarioGrupo(0, Boolean.TRUE, repoUsuario.findById(pIdUsuario).get(), grupoCreado,
                 new ArrayList<>()));
         repoUsuarioGrupo.save(ug.get(0));
     }
