@@ -5,6 +5,9 @@
  */
 package com.gdg.gestiondegastos.dto;
 
+import com.gdg.gestiondegastos.entities.Contactos;
+import com.gdg.gestiondegastos.entities.Movimiento;
+import com.gdg.gestiondegastos.entities.TokenEntity;
 import com.gdg.gestiondegastos.entities.Usuario;
 import com.gdg.gestiondegastos.entities.UsuarioGrupo;
 import java.util.ArrayList;
@@ -20,21 +23,25 @@ import lombok.ToString;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class UsuarioDto {
+public class UsuarioDto3{
 
-   private Integer id;
-
+    private Integer id;
+    
+    private String correo;
+    private String contrasenya;
+    private List<UsuarioGrupo> usuarioGrupo;
+    private Double presupuestoPersonal;
+    private List<Movimiento> movimientos;
+    private List<Contactos> contactos;
+    private TokenEntity token;
+  
+    //añadiddod por JoseMari
+   private GrupoDto grupo;
    private String nombre;
-   private String contrasenya;
    private String telefono;
-   private String correo;
    private Boolean modoOscuro;
    private Boolean verificado;
-   private List<UsuarioGrupoDto2> usuarioGrupo;
    
-   //Añaddido por JoseMari 
-   private Double presupuestoPersonal;
-   private List<MovimientoDto> movimientos;
-   private GrupoDto grupo;
+    
+    
 }

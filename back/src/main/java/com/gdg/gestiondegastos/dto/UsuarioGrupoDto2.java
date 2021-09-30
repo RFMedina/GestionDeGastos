@@ -23,5 +23,5 @@ public class UsuarioGrupoDto2 {
     private Integer id;
     private Boolean rol;
     private GrupoDto grupo;
-    //private List<MovimientoDto> movimientos;
+    private List<MovimientoDto> movimientos;
 }

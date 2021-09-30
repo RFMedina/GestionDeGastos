@@ -7,6 +7,7 @@ import com.gdg.gestiondegastos.dto.UsuarioDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto2;
 import com.gdg.gestiondegastos.dto.UsuarioGrupoDto;
 import com.gdg.gestiondegastos.dto.PresupuestoDto;
+import com.gdg.gestiondegastos.dto.UsuarioDto3;
 import com.gdg.gestiondegastos.entities.Grupo;
 import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Presupuesto;
@@ -154,6 +155,12 @@ public class GestionDeGastosController {
     @GetMapping("/inicio") // Terminado
     public UsuarioDto inicio(Integer idUsuario) {
         UsuarioDto user = mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto.class);
+        user.setPresupuestoPersonal(user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst()
+                    .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal())));
+        user.setMovimientos(repoMovimientos.leerPorUsuarioGrupo(idUsuario).stream()
+                .map(x -> mapper.map(x, MovimientoDto.class)).collect(Collectors.toList()));
+        user.setGrupo(repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
+                .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).findFirst().get());
         return user;
         /*Double presupuestoPersonal = 0d;
         if (user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst().isPresent()) {
@@ -174,11 +181,11 @@ public class GestionDeGastosController {
     }
 
     @GetMapping("/perfil") // Terminado
-    public Map<String, Object> perfil(Integer idUsuario) {
-        Map<String, Object> m = new HashMap<>();
-        m.put("usuario", mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto2.class));
+    public UsuarioDto2 perfil(Integer idUsuario) {
+        UsuarioDto2 user= mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto2.class);
+        
 
-        return m;
+        return user;
     }
 
     @PostMapping("/guardarPerfil")
@@ -192,11 +199,20 @@ public class GestionDeGastosController {
         m.put("usuario", mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto2.class));
         return m;
     }
-
+/*
+    //comentado por el xema
     @PostMapping("/guardarcontrasenya")
     public void guardarContrasenya(Usuario usuario, String contrasenya, Integer idUsuario) {
         Usuario user = repoUsuario.findById(idUsuario).get();
 
+        repoUsuario.save(user);
+
+    }*/
+    
+    @PostMapping("/guardarcontrasenya")
+    public void guardarContrasenya(String contrasenya, Integer idUsuario) {
+        Usuario user = repoUsuario.findById(idUsuario).get();
+        user.setContrasenya(contrasenya);
         repoUsuario.save(user);
 
     }
@@ -277,6 +293,7 @@ public class GestionDeGastosController {
         Movimiento mov = new Movimiento();
         UsuarioGrupo ug = repoUsuarioGrupo.leerPorUsuarioYGrupo(idUsuario, idGrupo);
         mov.setUsuarioGrupo(ug);
+        mov.setFecha(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
         m.put("movimiento", mapper.map(mov, MovimientoDto.class));
         m.put("idUsuarioGrupo", ug.getId());
         m.put("idGrupo", idGrupo);
