@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gdg.gestiondegastos.dto.UsuarioDto;
+import com.gdg.gestiondegastos.dto.UsuarioDto3;
 import com.gdg.gestiondegastos.entities.Usuario;
 import com.gdg.gestiondegastos.entities.UsuarioGrupo;
 import com.gdg.gestiondegastos.feign.BackFeign;
@@ -142,6 +143,7 @@ public class GestionDeGastosController {
         //Usuario use=repoUsuario.findById(usuario.getId()).get();
         UsuarioDto use=feign.inicio(usuario.getId());
         m.addAttribute("usuario", use);
+        m.addAttribute("grupo", use.getGrupo());
         return "principal";
     }
 
@@ -154,8 +156,8 @@ public class GestionDeGastosController {
     }
 
     @PostMapping("/guardarPerfil")
-    public String guardarPerfil(Usuario usuario) {
-        feign.guardarPerfil(usuario);
+    public String guardarPerfil(UsuarioDto usuario) {
+        feign.guardarPerfil(usuario.getId(), usuario.getContrasenya(), usuario.getNombre(), usuario.getCorreo(), usuario.getTelefono(), Boolean.FALSE,Boolean.TRUE);
         return "redirect:/gestion/perfil";
     }
 
@@ -167,14 +169,11 @@ public class GestionDeGastosController {
     }
 
     @PostMapping("/guardarcontrasenya")
-    public String guardarContrasenya(Usuario usuario, String contrasenya) {
+    public String guardarContrasenya(String contrasenya) {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
-        Usuario user = repoUsuario.findById(usuValidado.getId()).get();
-
-        user.setContrasenya(clave.encode(contrasenya));
-        repoUsuario.save(user);
-
+        feign.guardarContrasenya(clave.encode(contrasenya), usuValidado.getId());
+        
         return "redirect:/gestion/perfil";
     }
 

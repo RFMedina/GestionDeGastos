@@ -20,8 +20,8 @@
         </p>
       </div>
       <div class="divHrPrincipal">
-        <!--<button class="botonAzul"
-          th:onclick="|mostrarFormularioNuevoMovimiento(${usuarioGrupo[0].grupo.id})|">Nuevo importe</button>-->
+        <button class="botonAzul"
+          th:onclick="|mostrarFormularioNuevoMovimiento(${grupo.id})|">Nuevo importe</button>
         <hr />
       </div>
       <div id="movimientos">
@@ -31,7 +31,7 @@
             <th>Fecha</th>
             <th>Importe</th>
           </tr>
-          <tr th:each="mov:${usuario.usuarioGrupo.grupo.movimientos}">
+          <tr th:each="mov:${usuario.movimientos}">
             <td class="negritaPrincipal" th:text="${mov.concepto}" />
             <td th:text="${mov.fecha}" class="fechaTabla" />
             <td style="text-align: center;" th:text="${#numbers.formatDecimal(mov.cantidad, 1, 'COMMA', 2, 'POINT')} + '€'"

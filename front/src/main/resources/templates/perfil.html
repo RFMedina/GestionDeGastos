@@ -12,14 +12,14 @@
     <div class="container" style="padding: 80px;">
         <form method="post" action="guardarPerfil" th:object="${usuario}">
             <div class="divPrincipal">
-                <input type="hidden" th:field="*{id}" />
-                <input type="hidden" th:field="*{contrasenya}" />
+                <input type="hidden" name="id" th:field="*{id}" />
+                <input type="hidden" name="contrasenya" th:field="*{contrasenya}" />
                 <input class="inputLogin" style="width: 100%;" id="nombre" type="text" name="nombre"
                     th:field="*{nombre}" />
                 <input class="inputLogin" style="width: 100%;" id="correo" name="correo" type="email"
                     th:field="*{correo}" />
                 <input class="inputLogin" style="width: 100%;" id="tlf" name="tlf" type="number"
-                    th:field="*{telefono}" />
+                   th:field="*{telefono}" />
                 <a type="button" class="btnCambiarPass" th:onclick="cambiarContraseña()">Cambiar
                     contraseña</a>
                 <button class="btnLogin btnLoginColor" style="width: 100%;" type="submit">Guardar</button>

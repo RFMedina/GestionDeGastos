@@ -8,6 +8,9 @@ package com.gdg.gestiondegastos.feign;
 import com.gdg.gestiondegastos.dto.GrupoDto;
 import com.gdg.gestiondegastos.dto.NuevoGrupoDto;
 import com.gdg.gestiondegastos.dto.NuevoMovDto;
+import com.gdg.gestiondegastos.dto.UsuarioDto;
+import com.gdg.gestiondegastos.dto.UsuarioDto2;
+import com.gdg.gestiondegastos.dto.UsuarioDto3;
 import com.gdg.gestiondegastos.entities.Grupo;
 import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Usuario;
@@ -22,6 +25,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,36 +52,38 @@ public interface BackFeign {
                                   @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fecha,
                                   @RequestParam Integer idUsuarioGrupo, @RequestParam Integer idGrupo);
     
-    /*
-    
-    @GetMapping("/agregar")
-    public Map<String,Object> agregarUsuario(@SpringQueryMap Usuario usuario);
+     @GetMapping("/agregar")
+    public UsuarioDto agregarUsuario(@SpringQueryMap Usuario usuario);
     
     @PostMapping("/crear")
     public void crear(@SpringQueryMap Usuario usuario);
     
-    @RequestMapping(value="/confirmar", method={RequestMethod.GET, RequestMethod.POST})
-    public String confirmarCuenta(@RequestParam("token") String token);
-    
-    @GetMapping("/inicio")
-    public Map<String, Object> inicio(@RequestParam Integer idUsuario);
-    
-    
-    
     @PostMapping("/ingresar")
     public Boolean ingresar(@RequestParam String correo, @RequestParam String contrasenya);
     
+    @GetMapping("/inicio")
+    public UsuarioDto inicio(@RequestParam Integer idUsuario);
+    
     @GetMapping("/perfil")
-    public Map<String, Object> perfil(Integer idUsuario);
+    public UsuarioDto3 perfil(@RequestParam Integer idUsuario); 
     
     @PostMapping("/guardarPerfil")
-    public void guardarPerfil(@SpringQueryMap Usuario usuario);
+    public void guardarPerfil(@RequestParam Integer id, @RequestParam String contrasenya, 
+                              @RequestParam String nombre, @RequestParam String correo, @RequestParam String telefono, @RequestParam Boolean modoOscuro, @RequestParam Boolean verificado);
     
     @GetMapping("/contrasenya")
-    public Map<String, Object> contrasenya(Integer idUsuario);
+    public UsuarioDto contrasenya(@RequestParam Integer idUsuario);
     
-    @PostMapping("/guardarcontrasenya")
-    public void guardarContrasenya(@SpringQueryMap Usuario usuario, @RequestParam String contrasenya, @RequestParam Integer idUsuario);
+     @PostMapping("/guardarcontrasenya")
+    public void guardarContrasenya(@RequestParam String contrasenya, @RequestParam Integer idUsuario);
+    
+    /*
+    
+    
+    @PostMapping("/crear")
+    public void crear(@SpringQueryMap Usuario usuario);
+    
+    
     
     @GetMapping("/grupo/{idGrupo}")
     public Map<String, Object> verGrupos(@PathVariable Integer idGrupo);
@@ -104,6 +110,5 @@ public interface BackFeign {
     
     @GetMapping("/misMovimientos")
     public Map<String, Object> misMov(Integer idUsuario);
-
-    */
+*/
 }

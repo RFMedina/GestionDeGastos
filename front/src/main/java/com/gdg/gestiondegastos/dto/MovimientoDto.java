@@ -15,8 +15,10 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class MovimientoDto { 
     private Integer id;
     private String categoria;
+    
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fecha;
+    
     private String concepto;
     private Double cantidad;
     private UsuarioGrupo usuarioGrupo;

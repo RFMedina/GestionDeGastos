@@ -5,16 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../static/styles.css" />
-    <script>
-        $(document).ready(function () {
-            var campo = document.querySelector('#fecha');
-            var fecha = new Date();
-            fecha.setHours(fecha.getHours());
-            campo.value = fecha.getFullYear().toString() + '-' + (fecha.getMonth() + 1).toString().padStart(2,
-                    0) + '-' + fecha.getDate().toString().padStart(2, 0) + " " + (fecha.getHours()) + ":" +
-                fecha.getMinutes() + ":" + fecha.getSeconds();
-        });
-    </script>
+    
 </head>
 
 <body>
@@ -26,7 +17,7 @@
                 <input type="hidden" name="idUsuarioGrupo" th:value="${idUsuarioGrupo}" />
                 <input type="hidden" name="idGrupo" th:value="${idGrupo}" />
                 <input type="hidden" th:field="*{id}" />
-                <input type="hidden" id="fecha" th:field="*{fecha}" />
+                <input type="hidden" name="fecha" th:field="*{fecha}" />
             </div>
 
             <div class="espaciado">
@@ -93,6 +84,7 @@
                 }
             });
         });
+        
     </script>
 </body>
 

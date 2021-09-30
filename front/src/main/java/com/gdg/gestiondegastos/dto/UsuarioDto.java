@@ -31,11 +31,19 @@ public class UsuarioDto implements UserDetails{
     private String correo;
     private String contrasenya;
     private List<UsuarioGrupo> usuarioGrupo;
-    private double presupuestoPersonal;
+    private Double presupuestoPersonal;
     private List<Movimiento> movimientos;
     private List<Contactos> contactos;
     private TokenEntity token;
     private List<GrantedAuthority> roles=new ArrayList<GrantedAuthority>();
+    
+    //añadiddod por JoseMari
+   private GrupoDto grupo;
+   private String nombre;
+   private String telefono;
+   private Boolean modoOscuro;
+   private Boolean verificado;
+   
     
     public UsuarioDto(Usuario usu){
         id=usu.getId();
