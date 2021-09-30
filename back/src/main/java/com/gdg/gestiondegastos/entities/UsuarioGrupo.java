@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UsuarioGrupo {
+public class UsuarioGrupo { 
 
     // Campos propios
     @Id

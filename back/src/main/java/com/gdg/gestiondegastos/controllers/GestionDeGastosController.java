@@ -70,11 +70,7 @@ public class GestionDeGastosController {
 
     @PostMapping("/crear")
     public String crear(Usuario usuario) throws ClassNotFoundException, SQLException {
-        UsuarioDto usu = mapper.map(repoUsuario.findByCorreo(usuario.getCorreo()), UsuarioDto.class);
-
-        if (usu != null) {
-            return "Correo ya registrado";
-        } else {
+       
             Grupo grupo = new Grupo();
             grupo.setNombre("Mi presupuesto personal");
             grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
@@ -100,7 +96,7 @@ public class GestionDeGastosController {
             correo.setText("Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8080/confirmar?token="+confirm.getConfirmacion());
             service.enviarCorreo(correo);
             return "Se le ha enviado un correo de confirmación al correo "+usuario.getCorreo();
-        }
+        
     }
     
     @RequestMapping(value="/confirmar", method={RequestMethod.GET, RequestMethod.POST})
@@ -153,12 +149,13 @@ public class GestionDeGastosController {
         if(!usuario.getVerificado())
             return false;
         return (usuario.getNombre() != null);
-    }
+    } 
 
     @GetMapping("/inicio") // Terminado
-    public Map<String, Object> inicio(Integer idUsuario) {
+    public UsuarioDto inicio(Integer idUsuario) {
         UsuarioDto user = mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto.class);
-        Double presupuestoPersonal = 0d;
+        return user;
+        /*Double presupuestoPersonal = 0d;
         if (user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst().isPresent()) {
 
             presupuestoPersonal = user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst()
@@ -173,7 +170,7 @@ public class GestionDeGastosController {
         m.put("usuarioGrupo", repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
                 .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).collect(Collectors.toList()));
 
-        return m; 
+        return m; */
     }
 
     @GetMapping("/perfil") // Terminado

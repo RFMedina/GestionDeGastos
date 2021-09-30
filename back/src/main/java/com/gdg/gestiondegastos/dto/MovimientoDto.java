@@ -1,6 +1,7 @@
 package com.gdg.gestiondegastos.dto;
 
 import com.gdg.gestiondegastos.entities.Movimiento;
+import com.gdg.gestiondegastos.entities.UsuarioGrupo;
 import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -18,4 +19,6 @@ public class MovimientoDto {
     private Date fecha;
     private String concepto;
     private Double cantidad;
+    
+    
 }

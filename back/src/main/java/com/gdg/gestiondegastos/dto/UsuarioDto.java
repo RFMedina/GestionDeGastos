@@ -31,5 +31,5 @@ public class UsuarioDto {
    private String correo;
    private Boolean modoOscuro;
    private Boolean verificado;
-   private List<UsuarioGrupo> usuarioGrupo;
+   private List<UsuarioGrupoDto2> usuarioGrupo;
 }
