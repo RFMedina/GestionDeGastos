@@ -1,23 +1,16 @@
 package com.gdg.gestiondegastos.controllers;
 
 import com.gdg.gestiondegastos.dto.GrupoDto;
+import com.gdg.gestiondegastos.dto.MovimientoDto;
 import com.gdg.gestiondegastos.dto.NuevoGrupoDto;
+import com.gdg.gestiondegastos.dto.NuevoMovDto;
 import java.sql.SQLException;
-import java.text.DecimalFormat;
-import java.time.Clock;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gdg.gestiondegastos.dto.UsuarioDto;
-import com.gdg.gestiondegastos.dto.UsuarioDto2;
-import com.gdg.gestiondegastos.entities.Grupo;
-import com.gdg.gestiondegastos.entities.Movimiento;
-import com.gdg.gestiondegastos.entities.Presupuesto;
-import com.gdg.gestiondegastos.entities.TokenEntity;
 import com.gdg.gestiondegastos.entities.Usuario;
 import com.gdg.gestiondegastos.entities.UsuarioGrupo;
 import com.gdg.gestiondegastos.feign.BackFeign;
@@ -28,12 +21,9 @@ import com.gdg.gestiondegastos.repositories.TokenRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioGrupoRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioRepository;
 import com.gdg.gestiondegastos.services.CorreoService;
-import java.util.List;
-import java.util.Map;
 import org.modelmapper.ModelMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -306,13 +296,19 @@ public class GestionDeGastosController {
          * m.addAttribute("idUsuarioGrupo", ug.getId()); m.addAttribute("idGrupo",
          * idGrupo);
          */
-        feign.nuevoMovimientos(idGrupo, usuValidado.getId());
+        
+
+          NuevoMovDto mov = feign.nuevoMovimientos(idGrupo, usuValidado.getId()) ;
+        
+        m.addAttribute("movimiento",mov.getMovimiento());
+        m.addAttribute("idUsuarioGrupo",mov.getIdUsuarioGrupo() );
+        m.addAttribute("idGrupo",mov.getIdGrupo());
         return "nuevoMov";
     }
 
     //
     @PostMapping("/grupo/guardarMovimiento")
-    public String guardarMovimiento(Model m, Movimiento mov, Integer idUsuarioGrupo, Integer idGrupo) {
+    public String guardarMovimiento(Model m, MovimientoDto mov, Integer idUsuarioGrupo, Integer idGrupo) {
         /*
          * mov.setUsuarioGrupo(repoUsuarioGrupo.findById(idUsuarioGrupo).get());
          * Movimiento movNuevo = repoMovimientos.save(mov); Presupuesto p =
@@ -324,22 +320,7 @@ public class GestionDeGastosController {
          * p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad());
          * repoPresupuesto.save(p);
          */
-        List<String> listaCorreo=repoUsuarioGrupo.leerPorGrupo(idGrupo).stream().map(x->x.getUsuario().getCorreo()).collect(Collectors.toList());
-        for(String c:listaCorreo){
-            if(!c.equals(repoUsuarioGrupo.findById(idUsuarioGrupo).get().getUsuario().getCorreo())){
-                SimpleMailMessage correo=new SimpleMailMessage();
-                correo.setTo(c);
-                correo.setSubject("Nuevo movimiento en su grupo "+repoGrupo.findById(idGrupo).get().getNombre());
-                correo.setFrom("gestiondegastoshiberus@gmail.com");
-                correo.setText("Se ha añadido un nuevo moviemiento a su grupo "+repoGrupo.findById(idGrupo).get().getNombre()+"\n "
-                        + "     Concepto: "+mov.getConcepto()+"\n Importe: "+mov.getCantidad()+
-                        "\n Añadido por: "+repoUsuarioGrupo.findById(idUsuarioGrupo).get().getUsuario().getNombre()+
-                        "\n Acceda a su grupo para ver todos los movimientos con el siguiente link "
-                      + "\n http://localhost:8080/gestion");
-                service.enviarCorreo(correo);
-            }   
-        }
-        // feign.guardarMovimiento(mov, idUsuarioGrupo, idGrupo);
+        feign.guardarMovimiento(mov.getId(), mov.getCategoria(), mov.getCantidad(),mov.getConcepto(),mov.getFecha(), idUsuarioGrupo, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }
 
