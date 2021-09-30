@@ -27,6 +27,7 @@ import com.gdg.gestiondegastos.repositories.TokenRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioGrupoRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioRepository;
 import com.gdg.gestiondegastos.services.CorreoService;
+import java.util.List;
 import java.util.Map;
 import org.modelmapper.ModelMapper;
 
@@ -48,9 +49,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 @RequestMapping("/gestion")
-public class GestionDeGastosFrontController {
-
-    DecimalFormat formateo = new DecimalFormat("#.00");
+public class GestionDeGastosController {
 
     @Autowired
     private UsuarioRepository repoUsuario;
@@ -168,7 +167,7 @@ public class GestionDeGastosFrontController {
                     .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal()));
         }
 
-        m.addAttribute("presupuestoPersonal", formateo.format(presupuestoPersonal).replace(",", "."));
+        m.addAttribute("presupuestoPersonal", presupuestoPersonal);
 
         m.addAttribute("movimientos",
                 repoMovimientos.leerPorUsuario(usuValidado.getId()).stream().limit(4).collect(Collectors.toList()));
@@ -325,15 +324,16 @@ public class GestionDeGastosFrontController {
     public String nuevoMovimientos(Model m, @PathVariable Integer idGrupo) {
 
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        /*Movimiento mov = new Movimiento();
-        // UsuarioGrupo ug =
-        // repoGrupo.findById(idGrupo).get().getUsuarioGrupo().stream().filter(x->x.getUsuario().getId().equals(usuValidado.getId())).findFirst().get();
-        // mov.setUsuarioGrupo(repoUsuarioGrupo.findById(ug.getId()).get());
-        UsuarioGrupo ug = repoUsuarioGrupo.leerPorUsuarioYGrupo(usuValidado.getId(), idGrupo);
-        mov.setUsuarioGrupo(ug);
-        m.addAttribute("movimiento", mov);
-        m.addAttribute("idUsuarioGrupo", ug.getId());
-        m.addAttribute("idGrupo", idGrupo);*/
+        /*
+         * Movimiento mov = new Movimiento(); // UsuarioGrupo ug = //
+         * repoGrupo.findById(idGrupo).get().getUsuarioGrupo().stream().filter(x->x.
+         * getUsuario().getId().equals(usuValidado.getId())).findFirst().get(); //
+         * mov.setUsuarioGrupo(repoUsuarioGrupo.findById(ug.getId()).get());
+         * UsuarioGrupo ug = repoUsuarioGrupo.leerPorUsuarioYGrupo(usuValidado.getId(),
+         * idGrupo); mov.setUsuarioGrupo(ug); m.addAttribute("movimiento", mov);
+         * m.addAttribute("idUsuarioGrupo", ug.getId()); m.addAttribute("idGrupo",
+         * idGrupo);
+         */
         feign.nuevoMovimientos(idGrupo, usuValidado.getId());
         return "nuevoMov";
     }
@@ -341,17 +341,33 @@ public class GestionDeGastosFrontController {
     //
     @PostMapping("/grupo/guardarMovimiento")
     public String guardarMovimiento(Model m, Movimiento mov, Integer idUsuarioGrupo, Integer idGrupo) {
-        /*mov.setUsuarioGrupo(repoUsuarioGrupo.findById(idUsuarioGrupo).get());
-        Movimiento movNuevo = repoMovimientos.save(mov);
-        Presupuesto p = repoPresupuesto.findByIdGrupo(idGrupo);
         /*
+         * mov.setUsuarioGrupo(repoUsuarioGrupo.findById(idUsuarioGrupo).get());
+         * Movimiento movNuevo = repoMovimientos.save(mov); Presupuesto p =
+         * repoPresupuesto.findByIdGrupo(idGrupo); /*
          * if(p.getCantidadFinal().equals(p.getCantidadInicio())){
          * p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad()); }else{
          * p.setCantidadFinal(p.getCantidadFinal() + mov.getCantidad()); }
-         
-        p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad());
-        repoPresupuesto.save(p);*/
-      //  feign.guardarMovimiento(mov, idUsuarioGrupo, idGrupo);
+         * 
+         * p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad());
+         * repoPresupuesto.save(p);
+         */
+        List<String> listaCorreo=repoUsuarioGrupo.leerPorGrupo(idGrupo).stream().map(x->x.getUsuario().getCorreo()).collect(Collectors.toList());
+        for(String c:listaCorreo){
+            if(!c.equals(repoUsuarioGrupo.findById(idUsuarioGrupo).get().getUsuario().getCorreo())){
+                SimpleMailMessage correo=new SimpleMailMessage();
+                correo.setTo(c);
+                correo.setSubject("Nuevo movimiento en su grupo "+repoGrupo.findById(idGrupo).get().getNombre());
+                correo.setFrom("gestiondegastoshiberus@gmail.com");
+                correo.setText("Se ha añadido un nuevo moviemiento a su grupo "+repoGrupo.findById(idGrupo).get().getNombre()+"\n "
+                        + "     Concepto: "+mov.getConcepto()+"\n Importe: "+mov.getCantidad()+
+                        "\n Añadido por: "+repoUsuarioGrupo.findById(idUsuarioGrupo).get().getUsuario().getNombre()+
+                        "\n Acceda a su grupo para ver todos los movimientos con el siguiente link "
+                      + "\n http://localhost:8080/gestion");
+                service.enviarCorreo(correo);
+            }   
+        }
+        // feign.guardarMovimiento(mov, idUsuarioGrupo, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }
 
@@ -392,8 +408,13 @@ public class GestionDeGastosFrontController {
             presupuestoPersonal = use.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst()
                     .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal()));
         }
-        m.addAttribute("presupuestoPersonal", formateo.format(presupuestoPersonal).replace(",", "."));
+        m.addAttribute("presupuestoPersonal", presupuestoPersonal);
         return "verMovimientos";
+    }
+
+    @GetMapping("/contactos")
+    public String contactos(Model m) {
+        return "contactos";
     }
 
 }
