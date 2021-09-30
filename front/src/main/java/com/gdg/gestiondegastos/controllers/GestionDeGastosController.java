@@ -382,4 +382,9 @@ public class GestionDeGastosController {
         return "verMovimientos";
     }
 
+    @GetMapping("/contactos")
+    public String contactos(Model m) {
+        return "contactos";
+    }
+
 }
