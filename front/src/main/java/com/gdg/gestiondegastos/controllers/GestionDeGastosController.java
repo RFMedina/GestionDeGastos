@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gdg.gestiondegastos.dto.UsuarioDto;
+import com.gdg.gestiondegastos.dto.UsuarioDto2;
 import com.gdg.gestiondegastos.entities.Grupo;
 import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Presupuesto;
@@ -93,8 +94,7 @@ public class GestionDeGastosController {
 
     @PostMapping("/crear")
     public String crear(Model m, Usuario usuario) throws ClassNotFoundException, SQLException {
-        UsuarioDto usu = mapper.map(repoUsuario.findByCorreo(usuario.getCorreo()), UsuarioDto.class);
-
+        /*UsuarioDto usu = mapper.map(repoUsuario.findByCorreo(usuario.getCorreo()), UsuarioDto.class);
         if (usu != null) {
             return "Correo ya registrado";
         } else {
@@ -112,8 +112,6 @@ public class GestionDeGastosController {
             ug.add(new UsuarioGrupo(0, Boolean.TRUE, usuario, grupoCreado, new ArrayList<>()));
             repoUsuarioGrupo.save(ug.get(0));
             usuario.setUsuarioGrupo(ug);
-            usuario.setVerificado(false);
-            usuario.setModoOscuro(false);
             TokenEntity confirm=new TokenEntity(usuario);
             repoToken.save(confirm);
             SimpleMailMessage correo=new SimpleMailMessage();
@@ -122,8 +120,11 @@ public class GestionDeGastosController {
             correo.setFrom("gestiondegastoshiberus@gmail.com");
             correo.setText("Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8080/confirmar?token="+confirm.getConfirmacion());
             service.enviarCorreo(correo);
-            return "Se le ha enviado un correo de confirmación al correo "+usuario.getCorreo();
-        }
+            
+        }*/
+        m.addAttribute("usuario", feign.agregarUsuario(usuario));
+        //return "Se le ha enviado un correo de confirmación al correo "+usuario.getCorreo();
+        return "redirect:/gestion/login";
     }
 
     @Autowired
@@ -134,73 +135,44 @@ public class GestionDeGastosController {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(correo[0], contrasenya[0]);
         Authentication auth = am.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(auth);
-
-        Usuario usuario = new Usuario();
-        System.out.println(" USUARIO  1    " + correo);
-        try {
-            usuario = repoUsuario.findByCorreo(correo[0]);
-            System.out.println(" USUARIO   2   " + usuario.getNombre());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        if (usuario.getNombre() != null) {
+        //Usuario usuario = repoUsuario.findByCorreo(correo[0]);
+        Boolean v=feign.ingresar(correo[0], contrasenya[0]);
+        System.out.println("Bo:" + v);
+        if (v) {
             return "redirect:inicio";
         } else {
             return "login";
-        }
+        }        
     }
 
     // Antes del Security
-    @GetMapping("/inicio")
+    @GetMapping("/inicio")//Falla movimientos, no los coge
     public String inicio(Model m) {
-        UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-        Usuario user = repoUsuario.findById(usuValidado.getId()).get();
-        // user = repoUsuario.getById(idUsuario);
-
-        // Suma todas las cantidades iniciales indicadas en el presupuesto del usuario
-        Double presupuestoPersonal = 0d;
-        if (user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst().isPresent()) {
-
-            presupuestoPersonal = user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst()
-                    .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal()));
-        }
-
-        m.addAttribute("presupuestoPersonal", presupuestoPersonal);
-
-        m.addAttribute("movimientos",
-                repoMovimientos.leerPorUsuario(usuValidado.getId()).stream().limit(4).collect(Collectors.toList()));
-
-        m.addAttribute("usuarioGrupo", repoUsuarioGrupo.leerPorUsuario(usuValidado.getId()));
-
+        UsuarioDto usuario = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        //Usuario use=repoUsuario.findById(usuario.getId()).get();
+        UsuarioDto use=feign.inicio(usuario.getId());
+        m.addAttribute("usuario", use);
         return "principal";
     }
 
     @GetMapping("/perfil")
     public String perfil(Model m) {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-        m.addAttribute("usuario", repoUsuario.findById(usuValidado.getId()).get());
-
+        //Usuario user=repoUsuario.findById(usuValidado.getId()).get();
+        m.addAttribute("usuario", feign.perfil(usuValidado.getId()));
         return "perfil";
     }
 
     @PostMapping("/guardarPerfil")
     public String guardarPerfil(Usuario usuario) {
-
-        // Usuario user = repoUsuario.findById(usuario.getId()).get();
-        repoUsuario.save(usuario);
-
+        feign.guardarPerfil(usuario);
         return "redirect:/gestion/perfil";
     }
 
     @GetMapping("/contrasenya")
     public String contrasenya(Model m) {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-
-        m.addAttribute("usuario", repoUsuario.findById(usuValidado.getId()).get());
-
+        m.addAttribute("usuario", feign.contrasenya(usuValidado.getId()));
         return "cambiarContraseya";
     }
 

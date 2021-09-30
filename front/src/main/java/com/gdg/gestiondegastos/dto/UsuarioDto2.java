@@ -5,16 +5,24 @@
  */
 package com.gdg.gestiondegastos.dto;
 
-import java.util.Date;
+import com.gdg.gestiondegastos.entities.Movimiento;
+import com.gdg.gestiondegastos.entities.Presupuesto;
+import com.gdg.gestiondegastos.entities.UsuarioGrupo;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
 
+/**
+ *
+ * @author Usuario
+ */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GrupoDto { 
+public class UsuarioDto2 {
     private Integer id;
-    private String nombre;
+    private List<UsuarioGrupo> usuarioGrupo;
+    private double presupuesto;
+    private List<Movimiento> movimientos;
 }

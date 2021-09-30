@@ -43,7 +43,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
             .and().formLogin().loginPage("/gestion/login").permitAll().successForwardUrl("/gestion/paginaPrincipal").failureForwardUrl("/gestion/login");
         //http.formLogin().loginPage("/gestion/login").successForwardUrl("/gestion/paginaPrincipal").failureForwardUrl("/gestion/login");
         http.logout().logoutSuccessUrl("/gestion").invalidateHttpSession(true).deleteCookies("JSESSIONID").clearAuthentication(true);
-        http.csrf().disable();
         /*http.anonymous().disable().csrf().disable().authorizeRequests().antMatchers("/registro**")
                 .permitAll().anyRequest().authenticated()
                 .and()
