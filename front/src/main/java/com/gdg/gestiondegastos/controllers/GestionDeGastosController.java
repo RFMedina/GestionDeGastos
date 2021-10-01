@@ -236,7 +236,7 @@ public class GestionDeGastosController {
     }
 
     @GetMapping("{idGrupo}/borrar")
-    public String verGrupos(@PathVariable Integer idGrupo) {
+    public String borrarGrupos(@PathVariable Integer idGrupo) {
 
         repoGrupo.deleteById(idGrupo);
 
