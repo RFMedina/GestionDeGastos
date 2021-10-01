@@ -176,7 +176,7 @@ public class GestionDeGastosController {
     }
 
     // Antes del Security
-    @GetMapping("/inicio")//Falla movimientos, no los coge
+    @GetMapping("/inicio")
     public String inicio(Model m) {
         UsuarioDto usuario = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         //Usuario use=repoUsuario.findById(usuario.getId()).get();
@@ -216,23 +216,6 @@ public class GestionDeGastosController {
         return "redirect:/gestion/perfil";
     }
 
-    /*
-     * //Despues del Security
-     * 
-     * @GetMapping("/inicio") public String inicio(Model m,@RequestParam Integer
-     * idUsuario) { Usuario user = repoUsuario.findById(idUsuario).get(); // user =
-     * repoUsuario.getById(idUsuario);
-     * 
-     * // Suma todas las cantidades iniciales indicadas en el presupuesto del
-     * usuario m.addAttribute("presupuestoPersonal",
-     * user.getUsuarioGrupo().stream().map(x ->
-     * x.getGrupo().getPresupuesto()).collect(Collectors .summingDouble(p ->
-     * p.stream().collect(Collectors.summingDouble(z -> z.getCantidadInicio())))));
-     * 
-     * m.addAttribute("movimientos", repoMovimientos.leerPorUsuario(idUsuario));
-     * 
-     * return "principal"; }
-     */
     @GetMapping("/grupo/{idGrupo}")
     public String verGrupos(Model m, @PathVariable Integer idGrupo) {
         GrupoDto2 g=feign.verGrupos(idGrupo);
@@ -252,8 +235,7 @@ public class GestionDeGastosController {
     @GetMapping("/grupo/{idGrupo}/gestionar")
     public String gestionarGrupos(Model m, @PathVariable Integer idGrupo) {
 
-        m.addAttribute("usuarioGrupo", repoUsuarioGrupo.leerPorGrupo(idGrupo));
-        m.addAttribute("grupo", repoGrupo.findById(idGrupo).get());
+        m.addAttribute("grupos", feign.gestionarGrupos(idGrupo));
 
         return "gestionGrupos";
     }
@@ -269,36 +251,22 @@ public class GestionDeGastosController {
     // Con ajax
     @GetMapping("/grupo/{idGrupo}/borrarUsuario")
     public String borrarUsuario(Integer idUsuarioGrupo, Integer idGrupo) {
-        repoUsuarioGrupo.deleteById(idUsuarioGrupo);
-
-        if (repoUsuarioGrupo.leerPorGrupo(idGrupo).isEmpty()) {
-            repoGrupo.deleteById(idGrupo);
+        Boolean b=feign.borrarUsuario(idUsuarioGrupo, idGrupo);
+        if(b)
             return "redirect:/gestion/inicio";
-        }
-
-        return "redirect:/gestion/grupo/{idGrupo}";
+        else
+            return "redirect:/gestion/grupo/{idGrupo}";
     }
 
     @GetMapping("/grupo/nuevoUsuarioGrupo")
-    public String anadirUsuario(Model m, String correo, @RequestParam Integer idGrupo) {
-        Usuario nuevoUsuario = repoUsuario.findByCorreo(correo);
-        UsuarioGrupo usuariosGrupo = repoUsuarioGrupo.leerPorUsuarioYGrupo(nuevoUsuario.getId(), idGrupo);
-        if (usuariosGrupo == null) {
-            if (nuevoUsuario != null) {
-                repoUsuarioGrupo.anadirUsuario(nuevoUsuario.getId(), idGrupo, 0);
-            } else {
-                m.addAttribute("msg", "Usuario no encontrado");
-            }
-        } else {
-            m.addAttribute("msg", "El usuario que intenta agregar ya se encuentra en el grupo");
-        }
+    public String anadirUsuario(Model m, String correo, @PathVariable Integer idGrupo) {
+        feign.anadirUsuario(correo, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }
 
     @GetMapping("grupo/cambiarNombre")
-    public String cambiarNombreGrupo(String nombre, @RequestParam Integer idGrupo) {
-
-        repoGrupo.cambiarNombre(idGrupo, nombre);
+    public String cambiarNombreGrupo(String nombre,@PathVariable Integer idGrupo) {
+        feign.cambiarNombreGrupo(nombre, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }
 
@@ -319,22 +287,8 @@ public class GestionDeGastosController {
 
     @GetMapping("/grupo/{idGrupo}/nuevoMovimiento")
     public String nuevoMovimientos(Model m, @PathVariable Integer idGrupo) {
-
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        /*
-         * Movimiento mov = new Movimiento(); // UsuarioGrupo ug = //
-         * repoGrupo.findById(idGrupo).get().getUsuarioGrupo().stream().filter(x->x.
-         * getUsuario().getId().equals(usuValidado.getId())).findFirst().get(); //
-         * mov.setUsuarioGrupo(repoUsuarioGrupo.findById(ug.getId()).get());
-         * UsuarioGrupo ug = repoUsuarioGrupo.leerPorUsuarioYGrupo(usuValidado.getId(),
-         * idGrupo); mov.setUsuarioGrupo(ug); m.addAttribute("movimiento", mov);
-         * m.addAttribute("idUsuarioGrupo", ug.getId()); m.addAttribute("idGrupo",
-         * idGrupo);
-         */
-        
-
-          NuevoMovDto mov = feign.nuevoMovimientos(idGrupo, usuValidado.getId()) ;
-        
+        NuevoMovDto mov = feign.nuevoMovimientos(idGrupo, usuValidado.getId()) ;
         m.addAttribute("movimiento",mov.getMovimiento());
         m.addAttribute("idUsuarioGrupo",mov.getIdUsuarioGrupo() );
         m.addAttribute("idGrupo",mov.getIdGrupo());
@@ -344,29 +298,9 @@ public class GestionDeGastosController {
     //
     @PostMapping("/grupo/guardarMovimiento")
     public String guardarMovimiento(Model m, MovimientoDto mov, Integer idUsuarioGrupo, Integer idGrupo) {
-        /*
-         * mov.setUsuarioGrupo(repoUsuarioGrupo.findById(idUsuarioGrupo).get());
-         * Movimiento movNuevo = repoMovimientos.save(mov); Presupuesto p =
-         * repoPresupuesto.findByIdGrupo(idGrupo); /*
-         * if(p.getCantidadFinal().equals(p.getCantidadInicio())){
-         * p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad()); }else{
-         * p.setCantidadFinal(p.getCantidadFinal() + mov.getCantidad()); }
-         * 
-         * p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad());
-         * repoPresupuesto.save(p);
-         */
         feign.guardarMovimiento(mov.getId(), mov.getCategoria(), mov.getCantidad(),mov.getConcepto(),mov.getFecha(), idUsuarioGrupo, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }
-
-    /*
-     * @GetMapping("/perfil") public String perfil(Model m) { UsuarioDto usu =
-     * (UsuarioDto)
-     * (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-     * Usuario user = repoUsuario.findById(usu.getId()).get();
-     * m.addAttribute("user", user); return "perfil"; }
-     */
-
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -376,12 +310,13 @@ public class GestionDeGastosController {
         return "redirect:/gestion/paginaInicial";
     }
 
-    @GetMapping("/misGrupos")
+    /*@GetMapping("/misGrupos")
     public String misGrupos(Model m) {
         UsuarioDto user = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        m.addAttribute("grupos", feign.misGrupos(user.getId()));
+        System.out.print("****************************************************************************"+feign.misGrupos(user.getId()).getUsuarioGrupo()+"******************************************************");
+        m.addAttribute("grupos",feign.misGrupos(user.getId()));
         return "verGrupos";
-    }
+    }*/
 
     @GetMapping("/misMovimientos")
     public String misMov(Model m) {

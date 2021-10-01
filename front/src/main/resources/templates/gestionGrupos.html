@@ -8,8 +8,8 @@
     <div>
         <form action="/gestion/grupo/cambiarNombre">
             <div style="float:left; width: 70%;">
-                <input class="cantidad" name="nombre" type="text" th:value="${grupo.nombre}" />
-                <input class="cantidad" name="idGrupo" type="hidden" th:value="${grupo.id}" />
+                <input class="cantidad" name="nombre" type="text" th:value="${nombre}" />
+                <input class="cantidad" name="idGrupo" type="hidden" th:value="${id}" />
             </div>
             <button style="float:left; width: 30%;" type="submit" class="botonAzul">Cambiar
                 nombre</button>
@@ -18,7 +18,7 @@
         <form action="/gestion/grupo/nuevoUsuarioGrupo">
             <div style="float:left; width: 70%;">
                 <input class="cantidad" name="correo" placeholder="Pon el correo del usuario">
-                <input type="hidden" name="idGrupo" th:value="${grupo.id}"/>
+                <input type="hidden" name="idGrupo" th:value="${id}"/>
             </div>
             <button style="float:left; width: 30%;" type="submit" class="botonAzul">Añadir usuario</button>
         </form>
@@ -33,9 +33,9 @@
             </thead>
             <tbody>
                 <tr th:each="ug:${usuarioGrupo}" class="item">
-                    <td class='align-middle' th:text="${ug.usuario.nombre}"></td>
-                    <td class='align-middle' th:text="${ug.usuario.correo}"></td>
-                    <td class='align-middle' th:text="${ug.usuario.telefono}"></td>
+                    <td class='align-middle' th:text="${ug.usuarios.nombre}"></td>
+                    <td class='align-middle' th:text="${ug.usuarios.correo}"></td>
+                    <td class='align-middle' th:text="${ug.usuarios.telefono}"></td>
                     <td><a class="botonRojo"
                             th:href="@{|${idGrupo}/borrarUsuario|(idUsuarioGrupo=${ug.id},idGrupo=${idGrupo})}">Eliminar</a>
                     </td>
