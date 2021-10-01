@@ -27,7 +27,7 @@ public class Grupo {
     private Integer id;
     
     private String nombre;
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date fechaCreacion;
     
     //Uniones de tablas

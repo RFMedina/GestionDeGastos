@@ -33,6 +33,7 @@
                 <table class="tablaPrincipal" id="pager">
                     <thead>
                         <tr>
+                            <th>Grupo del movimiento</th>
                             <th>Concepto</th>
                             <th>Categoría
                             </th>
@@ -44,9 +45,10 @@
                     </thead>
                     <tbody>
                         <tr th:each="mov:${movimientos}" class="item">
+                            <td th:text="${mov.usuarioGrupo.grupo.nombre}" class="negritaPrincipal"></td>
                             <td th:text="${mov.concepto}" class="negritaPrincipal"></td>
                             <td th:text="${mov.categoria}"></td>
-                            <td th:text="${#dates.format(mov.fecha, 'dd-MM-yy HH:mm') }" class="fechaTabla"></td>
+                            <td th:text="${#temporals.format(mov.fecha, 'dd-MM-yyyy HH:mm')}" class="fechaTabla"></td>
                             <td style="text-align: center;" th:text="${#numbers.formatDecimal(mov.cantidad, 1, 'COMMA', 2, 'POINT')} + '€'" th:class="
                                 ${mov.cantidad >= 0} ? 'Verde' : 'Rojo'"></td>
                         </tr>

@@ -24,13 +24,18 @@ import com.gdg.gestiondegastos.services.CorreoService;
 import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -157,27 +162,13 @@ public class GestionDeGastosController {
         UsuarioDto user = mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto.class);
         user.setPresupuestoPersonal(user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst()
                     .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal())));
+        
         user.setMovimientos(repoMovimientos.leerPorUsuarioGrupo(idUsuario).stream()
                 .map(x -> mapper.map(x, MovimientoDto.class)).collect(Collectors.toList()));
+        
         user.setGrupo(repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
                 .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).findFirst().get());
         return user;
-        /*Double presupuestoPersonal = 0d;
-        if (user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst().isPresent()) {
-
-            presupuestoPersonal = user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst()
-                    .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal()));
-        }
-        Map<String, Object> m = new HashMap<>();
-        m.put("presupuestoPersonal", presupuestoPersonal);
-
-        m.put("movimientos", repoMovimientos.leerPorUsuario(idUsuario).stream().limit(4)
-                .map(x -> mapper.map(x, MovimientoDto.class)).collect(Collectors.toList()));
-
-        m.put("usuarioGrupo", repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
-                .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).collect(Collectors.toList()));
-
-        return m; */
     }
 
     @GetMapping("/perfil") // Terminado
@@ -221,10 +212,11 @@ public class GestionDeGastosController {
     public Map<String, Object> verGrupos(@PathVariable Integer idGrupo) {
 
         Map<String, Object> m = new HashMap<>();
-
+        Pageable pa = PageRequest.of(0, 10000);
+        
         m.put("grupo", mapper.map(repoGrupo.findById(idGrupo).get(), GrupoDto.class));
 
-        m.put("movimientos", repoMovimientos.leerPorUsuario(idGrupo).stream()
+        m.put("movimientos", repoMovimientos.leerPorGrupo(idGrupo,"", pa).stream()
                 .map(x -> mapper.map(x, MovimientoDto.class)).collect(Collectors.toList()));
 
         m.put("presupuesto", mapper.map(repoPresupuesto.findById(idGrupo).get(), PresupuestoDto.class));
@@ -293,7 +285,10 @@ public class GestionDeGastosController {
         Movimiento mov = new Movimiento();
         UsuarioGrupo ug = repoUsuarioGrupo.leerPorUsuarioYGrupo(idUsuario, idGrupo);
         mov.setUsuarioGrupo(ug);
-        mov.setFecha(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
+        
+        Date today = java.sql.Date.from(Instant.now(Clock.systemDefaultZone()));
+        LocalDateTime ldt = LocalDateTime.ofInstant(today.toInstant(), ZoneId.systemDefault());
+        mov.setFecha(ldt);
         m.put("movimiento", mapper.map(mov, MovimientoDto.class));
         m.put("idUsuarioGrupo", ug.getId());
         m.put("idGrupo", idGrupo);
@@ -304,7 +299,7 @@ public class GestionDeGastosController {
     @PostMapping("/grupo/guardarMovimiento")
     public void guardarMovimiento(Movimiento mov, Integer idUsuarioGrupo, Integer idGrupo) {
         mov.setUsuarioGrupo(repoUsuarioGrupo.findById(idUsuarioGrupo).get());
-        Movimiento movNuevo = repoMovimientos.save(mov);
+        Movimiento movNuevo = repoMovimientos.save(mov); 
         Presupuesto p = repoPresupuesto.findByIdGrupo(idGrupo);
         p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad());
         repoPresupuesto.save(p);

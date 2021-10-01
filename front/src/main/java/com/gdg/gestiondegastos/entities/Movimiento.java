@@ -5,6 +5,7 @@
  */
 package com.gdg.gestiondegastos.entities;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -34,7 +35,7 @@ public class Movimiento {
 
     // @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date fecha;
+    private LocalDateTime fecha;
 
     private String concepto;
     private Double cantidad;

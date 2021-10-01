@@ -6,6 +6,7 @@
 package com.gdg.gestiondegastos.feign;
 
 import com.gdg.gestiondegastos.dto.GrupoDto;
+import com.gdg.gestiondegastos.dto.GrupoDto2;
 import com.gdg.gestiondegastos.dto.NuevoGrupoDto;
 import com.gdg.gestiondegastos.dto.NuevoMovDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto;
@@ -55,8 +56,9 @@ public interface BackFeign {
      @GetMapping("/agregar")
     public UsuarioDto agregarUsuario(@SpringQueryMap Usuario usuario);
     
-    @PostMapping("/crear")
-    public void crear(@SpringQueryMap Usuario usuario);
+    /*@PostMapping("/crear")
+    public void crear(@RequestParam String nombre, @RequestParam String correo, @RequestParam String contrasenya, 
+                      @RequestParam String telefono, @RequestParam Boolean modoOscuro, @RequestParam Boolean verificado);*/
     
     @PostMapping("/ingresar")
     public Boolean ingresar(@RequestParam String correo, @RequestParam String contrasenya);
@@ -74,12 +76,21 @@ public interface BackFeign {
     @GetMapping("/contrasenya")
     public UsuarioDto contrasenya(@RequestParam Integer idUsuario);
     
-     @PostMapping("/guardarcontrasenya")
+    @PostMapping("/guardarcontrasenya")
     public void guardarContrasenya(@RequestParam String contrasenya, @RequestParam Integer idUsuario);
     
     
     @GetMapping("/misMovimientos")
     public UsuarioDto misMov(@RequestParam Integer idUsuario);
+    
+    @GetMapping("/grupo/{idGrupo}")
+    public GrupoDto2 verGrupos(@RequestParam Integer idGrupo);
+    
+    @GetMapping("{idGrupo}/borrar")
+    public void borrarGrupos(@RequestParam Integer idGrupo);
+    
+    @GetMapping("/misGrupos")
+    public GrupoDto misGrupos(Integer idUsuario);
     
     /*
     
@@ -89,11 +100,12 @@ public interface BackFeign {
     
     
     
-    @GetMapping("/grupo/{idGrupo}")
-    public Map<String, Object> verGrupos(@PathVariable Integer idGrupo);
+ 
+    /*  
     
-    @GetMapping("{idGrupo}/borrar")
-    public void borrarGrupos(@PathVariable Integer idGrupo);
+    
+    
+    
     
     @GetMapping("/grupo/{idGrupo}/gestionar")
     public Map<String, Object> gestionarGrupos(@PathVariable Integer idGrupo);
@@ -109,8 +121,7 @@ public interface BackFeign {
     
     
     
-    @GetMapping("/misGrupos")
-    public Map<String, Object> misGrupos(Integer idUsuario);
+    
     
 */
 }
