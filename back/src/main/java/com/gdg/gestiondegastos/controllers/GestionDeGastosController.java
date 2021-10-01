@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -205,10 +207,11 @@ public class GestionDeGastosController {
     public Map<String, Object> verGrupos(@PathVariable Integer idGrupo) {
 
         Map<String, Object> m = new HashMap<>();
-
+        Pageable pa = PageRequest.of(0, 10000);
+        
         m.put("grupo", mapper.map(repoGrupo.findById(idGrupo).get(), GrupoDto.class));
 
-        m.put("movimientos", repoMovimientos.leerPorGrupo(idGrupo).stream()
+        m.put("movimientos", repoMovimientos.leerPorGrupo(idGrupo,"", pa).stream()
                 .map(x -> mapper.map(x, MovimientoDto.class)).collect(Collectors.toList()));
 
         m.put("presupuesto", mapper.map(repoPresupuesto.findById(idGrupo).get(), PresupuestoDto.class));
