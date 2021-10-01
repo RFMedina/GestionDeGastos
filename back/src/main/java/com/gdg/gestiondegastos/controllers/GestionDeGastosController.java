@@ -162,22 +162,6 @@ public class GestionDeGastosController {
         user.setGrupo(repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
                 .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).findFirst().get());
         return user;
-        /*Double presupuestoPersonal = 0d;
-        if (user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst().isPresent()) {
-
-            presupuestoPersonal = user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst()
-                    .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal()));
-        }
-        Map<String, Object> m = new HashMap<>();
-        m.put("presupuestoPersonal", presupuestoPersonal);
-
-        m.put("movimientos", repoMovimientos.leerPorUsuario(idUsuario).stream().limit(4)
-                .map(x -> mapper.map(x, MovimientoDto.class)).collect(Collectors.toList()));
-
-        m.put("usuarioGrupo", repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
-                .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).collect(Collectors.toList()));
-
-        return m; */
     }
 
     @GetMapping("/perfil") // Terminado
@@ -224,7 +208,7 @@ public class GestionDeGastosController {
 
         m.put("grupo", mapper.map(repoGrupo.findById(idGrupo).get(), GrupoDto.class));
 
-        m.put("movimientos", repoMovimientos.leerPorUsuario(idGrupo).stream()
+        m.put("movimientos", repoMovimientos.leerPorGrupo(idGrupo).stream()
                 .map(x -> mapper.map(x, MovimientoDto.class)).collect(Collectors.toList()));
 
         m.put("presupuesto", mapper.map(repoPresupuesto.findById(idGrupo).get(), PresupuestoDto.class));
