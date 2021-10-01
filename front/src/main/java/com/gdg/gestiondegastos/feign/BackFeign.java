@@ -83,14 +83,6 @@ public interface BackFeign {
     @GetMapping("/misMovimientos")
     public UsuarioDto misMov(@RequestParam Integer idUsuario);
     
-    /*
-    
-    
-    @PostMapping("/crear")
-    public void crear(@SpringQueryMap Usuario usuario);
-    
-    
-    
     @GetMapping("/grupo/{idGrupo}")
     public GrupoDto2 verGrupos(@RequestParam Integer idGrupo);
     
@@ -99,6 +91,16 @@ public interface BackFeign {
     
     @GetMapping("/misGrupos")
     public GrupoDto misGrupos(Integer idUsuario);
+    
+    /*
+    
+    
+    @PostMapping("/crear")
+    public void crear(@SpringQueryMap Usuario usuario);
+    
+    
+    
+ 
     /*  
     
     
