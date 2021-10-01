@@ -1,6 +1,7 @@
 package com.gdg.gestiondegastos.controllers;
 
 import com.gdg.gestiondegastos.dto.GrupoDto;
+import com.gdg.gestiondegastos.dto.GrupoDto2;
 import com.gdg.gestiondegastos.dto.MovimientoDto;
 import com.gdg.gestiondegastos.dto.NuevoGrupoDto;
 import com.gdg.gestiondegastos.dto.NuevoMovDto;
@@ -196,20 +197,17 @@ public class GestionDeGastosController {
      */
     @GetMapping("/grupo/{idGrupo}")
     public String verGrupos(Model m, @PathVariable Integer idGrupo) {
-
-        m.addAttribute("grupo", repoGrupo.findById(idGrupo).get());
-        m.addAttribute("movimientos", repoMovimientos.leerPorGrupo(idGrupo));
-
-        m.addAttribute("presupuesto", repoPresupuesto.findByIdGrupo(idGrupo));
-
+        GrupoDto2 g=feign.verGrupos(idGrupo);
+        
+        m.addAttribute("grupo", g.getGrupo());
+        m.addAttribute("movimientos", g.getMovimientos());
+        m.addAttribute("presupuesto", g.getPresupuesto());
         return "grupos";
     }
 
     @GetMapping("{idGrupo}/borrar")
     public String verGrupos(@PathVariable Integer idGrupo) {
-
-        repoGrupo.deleteById(idGrupo);
-
+        feign.borrarGrupos(idGrupo);
         return "redirect:/gestion/misGrupos";
     }
 
@@ -343,7 +341,7 @@ public class GestionDeGastosController {
     @GetMapping("/misGrupos")
     public String misGrupos(Model m) {
         UsuarioDto user = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        m.addAttribute("grupos", repoUsuarioGrupo.leerPorUsuario(user.getId()));
+        m.addAttribute("grupos", feign.misGrupos(user.getId()));
         return "verGrupos";
     }
 
