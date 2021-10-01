@@ -33,7 +33,7 @@
           </tr>
           <tr th:each="mov:${usuario.movimientos}">
             <td class="negritaPrincipal" th:text="${mov.concepto}" />
-            <td th:text="${mov.fecha}" class="fechaTabla" />
+            <td th:text="${#dates.format(mov.fecha, 'dd-MM-yy HH:mm') }" class="fechaTabla" />
             <td style="text-align: center;" th:text="${#numbers.formatDecimal(mov.cantidad, 1, 'COMMA', 2, 'POINT')} + '€'"
               th:class="${mov.cantidad >= 0} ? 'Verde' : 'Rojo'" />
           </tr>
@@ -58,7 +58,7 @@
           <tr style="cursor: pointer;" type="url" id="grupo" th:each="ug:${usuario.usuarioGrupo}"
             th:onclick="|mostrarGrupo(${ug.grupo.id})|">
             <td class="negritaPrincipal" th:text="${ug.grupo.nombre}"></td>
-            <td th:text="${ug.grupo.fechaCreacion}"></td>
+            <td th:text="${#dates.format(ug.grupo.fechaCreacion, 'dd-MM-yy HH:mm') }"></td>
             <th:block th:each="p:${ug.grupo.presupuesto}">
               <td style="text-align: center;" th:text="${#numbers.formatDecimal(p.cantidadFinal, 1, 'COMMA', 2, 'POINT')} + '€'" th:class="
                                 ${p.cantidadFinal >= 0} ? 'Verde' : 'Rojo'"></td>
