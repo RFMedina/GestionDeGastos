@@ -8,11 +8,14 @@ import com.gdg.gestiondegastos.dto.NuevoMovDto;
 import java.sql.SQLException;
 import java.util.stream.Collectors;
 
+import com.gdg.gestiondegastos.dto.MovimientoGrupoDto;
+import com.gdg.gestiondegastos.dto.TablaBSDto;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gdg.gestiondegastos.dto.UsuarioDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto3;
+import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Usuario;
 import com.gdg.gestiondegastos.entities.UsuarioGrupo;
 import com.gdg.gestiondegastos.feign.BackFeign;
@@ -26,6 +29,10 @@ import com.gdg.gestiondegastos.services.CorreoService;
 import org.modelmapper.ModelMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -39,6 +46,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 @RequestMapping("/gestion")
@@ -65,7 +73,37 @@ public class GestionDeGastosController {
     @Autowired
     private CorreoService service;
 
-    // Este es un get para ver la principal y asÃ­ ver los cambios
+    
+    @GetMapping("/tablaGrupos")
+    @ResponseBody
+    public TablaBSDto obtenerMovimientos(Integer idGrupo, String search, String sort, String order, Integer offset,
+            Integer limit) {
+
+        Sort sT = Sort.by("cantidad").descending();
+        if (sort != null) {
+            if ("nombreUsuario".equals(sort)) {
+                sT = Sort.by("usuarioGrupo.usuario.nombre");
+            } else {
+                sT = Sort.by(sort).ascending();
+            }
+            if ("desc".equals(order)) {
+                sT = sT.descending();
+            }
+        }
+
+        Pageable pa = PageRequest.of(offset / limit, limit, sT);
+
+        Page<Movimiento> p = repoMovimientos.leerPorGrupo(idGrupo, search, pa);
+
+        return new TablaBSDto(p.getTotalElements(),
+                p.get().map(x -> new MovimientoGrupoDto(x.getConcepto(), x.getCategoria(),
+                        x.getUsuarioGrupo().getUsuario().getNombre(), x.getFecha(), x.getCantidad()))
+                        .collect(Collectors.toList()));
+    }
+    
+
+
+// Este es un get para ver la principal y asÃ­ ver los cambios
     @GetMapping("")
     public String principal() {
         return "paginaInicial";
