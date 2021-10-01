@@ -117,13 +117,13 @@ public class GestionDeGastosController {
     }
 
     @PostMapping("/inicio/guardarGrupo")
-    public String guardarGrupo(Grupo grupo, Double presupuesto) {
+    public String guardarGrupo(Grupo grupo, Double pPresupuesto) {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
         Grupo grupoCreado = repoGrupo.save(grupo);
         Presupuesto pre = new Presupuesto();
-        pre.setCantidadInicio(presupuesto);
-        pre.setCantidadFinal(presupuesto);
+        pre.setCantidadInicio(pPresupuesto);
+        pre.setCantidadFinal(pPresupuesto);
         pre.setFechaInicio(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
         pre.setGrupo(grupoCreado);
         repoPresupuesto.save(pre);
@@ -205,7 +205,7 @@ public class GestionDeGastosController {
         return "redirect:/gestion/perfil";
     }
 
-    @GetMapping("/contrasenya") 
+    @GetMapping("/contrasenya")
     public String contrasenya(Model m) {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
@@ -219,7 +219,7 @@ public class GestionDeGastosController {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         Usuario user = repoUsuario.findById(usuValidado.getId()).get();
-        
+
         user.setContrasenya(clave.encode(contrasenya));
         repoUsuario.save(user);
 
