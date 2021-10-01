@@ -10,6 +10,21 @@
 </head>
 
 <body>
+    <script>
+        function definirParametros(params) {
+            return {
+                idGrupo: $('#idGrupo').val(),
+                search: $("#buscar").val(),
+                sort: params.sort,
+                order: params.order,
+                offset: params.offset,
+                limit: params.limit
+            }
+        }
+    </script>
+
+
+    <input id='idGrupo' type='hidden' th:value='${idGrupo}' />
     <div>
         <div class="divPrincipal">
             <p type="button" id="grupo" class="presupuestoPrincipal" th:text="${grupo.nombre}"
@@ -29,49 +44,51 @@
                 <button class="botonAzul" th:onclick="|mostrarFormularioNuevoMovimiento(${idGrupo})|">Nuevo
                     importe</button>
                 <hr />
-                <div class="search-box ">
+                <div class="search-box">
                     <button class="btn-search"><i class="fas fa-search"></i></button>
-                    <input type="text" id="buscar" class="input-search" placeholder="Búsqueda">
+                    <input type="search" onkeyup="refrescarBST()" name="buscar" id="buscar" class="input-search form-control search-input" placeholder="Búsqueda">
                 </div>
             </div>
+
             <div id="grupos">
                 <div id="movimientos">
-                    <table class="tablaPrincipal" id="pager">
+                    <table class="tablaPrincipal" id="pager"
+                       data-toggle="table"
+                       data-url="/gestion/tablaGrupos"
+                       data-side-pagination="server"
+
+                       data-query-params="definirParametros"
+                       data-pagination="true"
+                       data-search="false"
+                       rowsPerPageOptions="false"
+                       data-page-size = "9"
+                       data-pagination-parts = "['pageList']"
+                       data-pagination-next-text = "Siguiente"
+                       data-pagination-pre-text = "Anterior"
+                       data-pagination-h-align = "left"
+                       >
+                       
                         <thead>
                             <tr>
-                                <th>Concepto</th>
-                                <th>Categoría </i>
-                                </th>
-                                <th>Usuario </i>
-                                </th>
-                                <th>Fecha </i>
-                                </th>
-                                <th>Cantidad </i>
-                                </th>
+                                <th data-field="concepto" data-sortable="true">Concepto</th>
+                                <th data-field="categoria" data-sortable="true">Categoría</th>
+                                <th data-field="nombreUsuario" data-sortable="true">Usuario </th>
+                                <th data-field="fecha" data-sortable="true">Fecha </th>
+                                <th data-field="cantidad" data-sortable="true">Cantidad </th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr th:each="mov:${movimientos}" class="item">
-                                <td th:text="${mov.concepto}" class="negritaPrincipal"></td>
-                                <td th:text="${mov.categoria}"></td>
-                                <td th:text="${mov.usuarioGrupo.usuario.nombre}"></td>
-                                <td th:text="${mov.fecha}" class="fechaTabla"></td>
-                                <td style="text-align: center;"  th:text="${#numbers.formatDecimal(mov.cantidad, 1, 'COMMA', 2, 'POINT')} + '€'" th:class="
-                                ${mov.cantidad >= 0} ? 'Verde' : 'Rojo'"></td>
-                            </tr>
                         </tbody>
                     </table>
                 </div>
             </div>
-            <div id="pageNavPosition" class="pager-nav"></div>
         </div>
         <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.js"></script>
         <script src="/paginador.js"></script>
-        <script>
-
-        </script>
+       <script>
+       </script>
 </body>
 
 </html>
