@@ -20,7 +20,7 @@
 
             <div class="divHr2Elementos">
                 <button th:if="${usuarioGrupo.size} != 0" class="botonAzul"
-                    th:onclick="|mostrarFormularioNuevoMovimiento(${usuarioGrupo[0].grupo.id})|">Nuevo importe</button>
+                    th:onclick="|mostrarFormularioNuevoMovimiento(${usuarioGrupo[0].id})|">Nuevo importe</button>
                 <hr />
                 <div class="search-box ">
                     <button class="btn-search"><i class="fas fa-search"></i></button>
@@ -46,7 +46,7 @@
                         <tr th:each="mov:${movimientos}" class="item">
                             <td th:text="${mov.concepto}" class="negritaPrincipal"></td>
                             <td th:text="${mov.categoria}"></td>
-                            <td th:text="${mov.fecha}" class="fechaTabla"></td>
+                            <td th:text="${#dates.format(mov.fecha, 'dd-MM-yy HH:mm') }" class="fechaTabla"></td>
                             <td style="text-align: center;" th:text="${#numbers.formatDecimal(mov.cantidad, 1, 'COMMA', 2, 'POINT')} + '€'" th:class="
                                 ${mov.cantidad >= 0} ? 'Verde' : 'Rojo'"></td>
                         </tr>

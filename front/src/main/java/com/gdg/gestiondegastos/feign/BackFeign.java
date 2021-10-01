@@ -79,6 +79,18 @@ public interface BackFeign {
     @PostMapping("/guardarcontrasenya")
     public void guardarContrasenya(@RequestParam String contrasenya, @RequestParam Integer idUsuario);
     
+    
+    @GetMapping("/misMovimientos")
+    public UsuarioDto misMov(@RequestParam Integer idUsuario);
+    
+    /*
+    
+    
+    @PostMapping("/crear")
+    public void crear(@SpringQueryMap Usuario usuario);
+    
+    
+    
     @GetMapping("/grupo/{idGrupo}")
     public GrupoDto2 verGrupos(@RequestParam Integer idGrupo);
     
@@ -109,7 +121,5 @@ public interface BackFeign {
     
     
     
-    @GetMapping("/misMovimientos")
-    public Map<String, Object> misMov(Integer idUsuario);
 */
 }
