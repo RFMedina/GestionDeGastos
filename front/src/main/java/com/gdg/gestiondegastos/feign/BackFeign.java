@@ -10,6 +10,7 @@ import com.gdg.gestiondegastos.dto.GrupoDto2;
 import com.gdg.gestiondegastos.dto.GrupoDto4;
 import com.gdg.gestiondegastos.dto.NuevoGrupoDto;
 import com.gdg.gestiondegastos.dto.NuevoMovDto;
+import com.gdg.gestiondegastos.dto.TablaBSDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto2;
 import com.gdg.gestiondegastos.dto.UsuarioDto3;
@@ -38,54 +39,70 @@ import org.springframework.web.bind.annotation.RequestParam;
  * 
  * @author Usuario
  */
-@FeignClient(name="GestionBack", url="http://localhost:8080") 
+@FeignClient(name = "GestionBack", url = "http://localhost:8080")
 @RequestMapping("/gestionback")
 public interface BackFeign {
 
+    @GetMapping("/tablaMovimientos")
+    public TablaBSDto obtenerMovimientos2(@RequestParam Integer idUsuario, @RequestParam String search,
+            @RequestParam String sort, @RequestParam String order, @RequestParam Integer offset,
+            @RequestParam Integer limit);
+
+    @GetMapping("/tablaGrupos")
+    public TablaBSDto obtenerMovimientos(@RequestParam Integer idGrupo, @RequestParam String search,
+            @RequestParam String sort, @RequestParam String order, @RequestParam Integer offset,
+            @RequestParam Integer limit);
+
     @GetMapping("/inicio/nuevoGrupo")
-    public NuevoGrupoDto nuevoGrupo(@RequestParam Integer idUsuario); 
+    public NuevoGrupoDto nuevoGrupo(@RequestParam Integer idUsuario);
 
     @PostMapping("/inicio/guardarGrupo")
-    public void guardarGrupo(@RequestParam Integer id, @RequestParam String nombre, @RequestParam Double pPresupuesto, @RequestParam Integer pIdUsuario);
-    
-   @GetMapping("/grupo/{idGrupo}/nuevoMovimiento")
+    public void guardarGrupo(@RequestParam Integer id, @RequestParam String nombre, @RequestParam Double pPresupuesto,
+            @RequestParam Integer pIdUsuario);
+
+    @GetMapping("/grupo/{idGrupo}/nuevoMovimiento")
     public NuevoMovDto nuevoMovimientos(@RequestParam Integer idGrupo, @RequestParam Integer idUsuario);
-    
+
     @PostMapping("/grupo/guardarMovimiento")
-    public void guardarMovimiento(@RequestParam Integer id, @RequestParam String categoria,@RequestParam Double cantidad, @RequestParam String concepto,
-                                  @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fecha,
-                                  @RequestParam Integer idUsuarioGrupo, @RequestParam Integer idGrupo);
-    
-     @GetMapping("/agregar")
+    public void guardarMovimiento(@RequestParam Integer id, @RequestParam String categoria,
+            @RequestParam Double cantidad, @RequestParam String concepto,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") LocalDateTime fecha,
+            @RequestParam Integer idUsuarioGrupo, @RequestParam Integer idGrupo);
+
+    @GetMapping("/agregar")
     public UsuarioDto agregarUsuario(@SpringQueryMap Usuario usuario);
-    
-    /*@PostMapping("/crear")
-    public void crear(@RequestParam String nombre, @RequestParam String correo, @RequestParam String contrasenya, 
-                      @RequestParam String telefono, @RequestParam Boolean modoOscuro, @RequestParam Boolean verificado);*/
-    
+
+    /*
+     * @PostMapping("/crear") public void crear(@RequestParam String
+     * nombre, @RequestParam String correo, @RequestParam String contrasenya,
+     * 
+     * @RequestParam String telefono, @RequestParam Boolean
+     * modoOscuro, @RequestParam Boolean verificado);
+     */
+
     @PostMapping("/ingresar")
     public Boolean ingresar(@RequestParam String correo, @RequestParam String contrasenya);
-    
+
     @GetMapping("/inicio")
     public UsuarioDto inicio(@RequestParam Integer idUsuario);
-    
+
     @GetMapping("/perfil")
-    public UsuarioDto3 perfil(@RequestParam Integer idUsuario); 
-    
+    public UsuarioDto3 perfil(@RequestParam Integer idUsuario);
+
     @PostMapping("/guardarPerfil")
-    public void guardarPerfil(@RequestParam Integer id, @RequestParam String contrasenya, 
-                              @RequestParam String nombre, @RequestParam String correo, @RequestParam String telefono, @RequestParam Boolean modoOscuro, @RequestParam Boolean verificado);
-    
+    public void guardarPerfil(@RequestParam Integer id, @RequestParam String contrasenya, @RequestParam String nombre,
+            @RequestParam String correo, @RequestParam String telefono, @RequestParam Boolean modoOscuro,
+            @RequestParam Boolean verificado);
+
     @GetMapping("/contrasenya")
     public UsuarioDto contrasenya(@RequestParam Integer idUsuario);
-    
+
     @PostMapping("/guardarcontrasenya")
     public void guardarContrasenya(@RequestParam String contrasenya, @RequestParam Integer idUsuario);
-    
-    
+
     @GetMapping("/misMovimientos")
     public UsuarioDto misMov(@RequestParam Integer idUsuario);
-    
+
     @GetMapping("/grupo/{idGrupo}")
     public GrupoDto2 verGrupos(@RequestParam Integer idGrupo);
     

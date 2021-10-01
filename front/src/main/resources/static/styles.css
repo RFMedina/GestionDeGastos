@@ -349,6 +349,11 @@ input::-webkit-inner-spin-button {
 }
 
 .tablaPrincipal tr:hover {
+  background: #ddd !important;
+}
+
+.tablaPrincipal td:hover {
+  border-right: 1px solid #ddd !important;
 }
 
 .negritaPrincipal {

@@ -73,37 +73,7 @@ public class GestionDeGastosController {
     @Autowired
     private CorreoService service;
 
-    
-    @GetMapping("/tablaGrupos")
-    @ResponseBody
-    public TablaBSDto obtenerMovimientos(Integer idGrupo, String search, String sort, String order, Integer offset,
-            Integer limit) {
-
-        Sort sT = Sort.by("cantidad").descending();
-        if (sort != null) {
-            if ("nombreUsuario".equals(sort)) {
-                sT = Sort.by("usuarioGrupo.usuario.nombre");
-            } else {
-                sT = Sort.by(sort).ascending();
-            }
-            if ("desc".equals(order)) {
-                sT = sT.descending();
-            }
-        }
-
-        Pageable pa = PageRequest.of(offset / limit, limit, sT);
-
-        Page<Movimiento> p = repoMovimientos.leerPorGrupo(idGrupo, search, pa);
-
-        return new TablaBSDto(p.getTotalElements(),
-                p.get().map(x -> new MovimientoGrupoDto(x.getConcepto(), x.getCategoria(),
-                        x.getUsuarioGrupo().getUsuario().getNombre(), x.getFecha(), x.getCantidad()))
-                        .collect(Collectors.toList()));
-    }
-    
-
-
-// Este es un get para ver la principal y asÃ­ ver los cambios
+    // Este es un get para ver la principal y asÃ­ ver los cambios
     @GetMapping("")
     public String principal() {
         return "paginaInicial";
@@ -124,36 +94,30 @@ public class GestionDeGastosController {
 
     @PostMapping("/crear")
     public String crear(Model m, Usuario usuario) throws ClassNotFoundException, SQLException {
-        /*UsuarioDto usu = mapper.map(repoUsuario.findByCorreo(usuario.getCorreo()), UsuarioDto.class);
-        if (usu != null) {
-            return "Correo ya registrado";
-        } else {
-            Grupo grupo = new Grupo();
-            grupo.setNombre("Mi presupuesto personal");
-            grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
-            Grupo grupoCreado = repoGrupo.save(grupo);
-            Presupuesto pre = new Presupuesto();
-            pre.setCantidadInicio(0.0);
-            pre.setCantidadFinal(0.0);
-            pre.setFechaInicio(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
-            pre.setGrupo(grupoCreado);
-            repoPresupuesto.save(pre);
-            ArrayList<UsuarioGrupo> ug = new ArrayList<>();
-            ug.add(new UsuarioGrupo(0, Boolean.TRUE, usuario, grupoCreado, new ArrayList<>()));
-            repoUsuarioGrupo.save(ug.get(0));
-            usuario.setUsuarioGrupo(ug);
-            TokenEntity confirm=new TokenEntity(usuario);
-            repoToken.save(confirm);
-            SimpleMailMessage correo=new SimpleMailMessage();
-            correo.setTo(usuario.getCorreo());
-            correo.setSubject("Complete su registro");
-            correo.setFrom("gestiondegastoshiberus@gmail.com");
-            correo.setText("Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8080/confirmar?token="+confirm.getConfirmacion());
-            service.enviarCorreo(correo);
-            
-        }*/
+        /*
+         * UsuarioDto usu = mapper.map(repoUsuario.findByCorreo(usuario.getCorreo()),
+         * UsuarioDto.class); if (usu != null) { return "Correo ya registrado"; } else {
+         * Grupo grupo = new Grupo(); grupo.setNombre("Mi presupuesto personal");
+         * grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone
+         * ()))); Grupo grupoCreado = repoGrupo.save(grupo); Presupuesto pre = new
+         * Presupuesto(); pre.setCantidadInicio(0.0); pre.setCantidadFinal(0.0);
+         * pre.setFechaInicio(java.sql.Date.from(Instant.now(Clock.systemDefaultZone()))
+         * ); pre.setGrupo(grupoCreado); repoPresupuesto.save(pre);
+         * ArrayList<UsuarioGrupo> ug = new ArrayList<>(); ug.add(new UsuarioGrupo(0,
+         * Boolean.TRUE, usuario, grupoCreado, new ArrayList<>()));
+         * repoUsuarioGrupo.save(ug.get(0)); usuario.setUsuarioGrupo(ug); TokenEntity
+         * confirm=new TokenEntity(usuario); repoToken.save(confirm); SimpleMailMessage
+         * correo=new SimpleMailMessage(); correo.setTo(usuario.getCorreo());
+         * correo.setSubject("Complete su registro");
+         * correo.setFrom("gestiondegastoshiberus@gmail.com"); correo.
+         * setText("Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8080/confirmar?token="
+         * +confirm.getConfirmacion()); service.enviarCorreo(correo);
+         * 
+         * }
+         */
         m.addAttribute("usuario", feign.agregarUsuario(usuario));
-        //return "Se le ha enviado un correo de confirmación al correo "+usuario.getCorreo();
+        // return "Se le ha enviado un correo de confirmación al correo
+        // "+usuario.getCorreo();
         return "redirect:/gestion/login";
     }
 
@@ -165,22 +129,22 @@ public class GestionDeGastosController {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(correo[0], contrasenya[0]);
         Authentication auth = am.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(auth);
-        //Usuario usuario = repoUsuario.findByCorreo(correo[0]);
-        Boolean v=feign.ingresar(correo[0], contrasenya[0]);
+        // Usuario usuario = repoUsuario.findByCorreo(correo[0]);
+        Boolean v = feign.ingresar(correo[0], contrasenya[0]);
         System.out.println("Bo:" + v);
         if (v) {
             return "redirect:inicio";
         } else {
             return "login";
-        }        
+        }
     }
 
     // Antes del Security
     @GetMapping("/inicio")
     public String inicio(Model m) {
         UsuarioDto usuario = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        //Usuario use=repoUsuario.findById(usuario.getId()).get();
-        UsuarioDto use=feign.inicio(usuario.getId());
+        // Usuario use=repoUsuario.findById(usuario.getId()).get();
+        UsuarioDto use = feign.inicio(usuario.getId());
         m.addAttribute("usuario", use);
         m.addAttribute("grupo", use.getGrupo());
         return "principal";
@@ -189,14 +153,15 @@ public class GestionDeGastosController {
     @GetMapping("/perfil")
     public String perfil(Model m) {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        //Usuario user=repoUsuario.findById(usuValidado.getId()).get();
+        // Usuario user=repoUsuario.findById(usuValidado.getId()).get();
         m.addAttribute("usuario", feign.perfil(usuValidado.getId()));
         return "perfil";
     }
 
     @PostMapping("/guardarPerfil")
     public String guardarPerfil(UsuarioDto usuario) {
-        feign.guardarPerfil(usuario.getId(), usuario.getContrasenya(), usuario.getNombre(), usuario.getCorreo(), usuario.getTelefono(), Boolean.FALSE,Boolean.TRUE);
+        feign.guardarPerfil(usuario.getId(), usuario.getContrasenya(), usuario.getNombre(), usuario.getCorreo(),
+                usuario.getTelefono(), Boolean.FALSE, Boolean.TRUE);
         return "redirect:/gestion/perfil";
     }
 
@@ -212,14 +177,14 @@ public class GestionDeGastosController {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         feign.guardarContrasenya(clave.encode(contrasenya), usuValidado.getId());
-        
+
         return "redirect:/gestion/perfil";
     }
 
     @GetMapping("/grupo/{idGrupo}")
     public String verGrupos(Model m, @PathVariable Integer idGrupo) {
-        GrupoDto2 g=feign.verGrupos(idGrupo);
-        
+        GrupoDto2 g = feign.verGrupos(idGrupo);
+
         m.addAttribute("grupo", g.getGrupo());
         m.addAttribute("movimientos", g.getMovimientos());
         m.addAttribute("presupuesto", g.getPresupuesto());
@@ -318,10 +283,24 @@ public class GestionDeGastosController {
         return "verGrupos";
     }*/
 
+    @GetMapping("/tablaMovimientos")
+    @ResponseBody
+    public TablaBSDto obtenerMovimientos2(String search, String sort, String order, Integer offset, Integer limit) {
+        UsuarioDto usuario = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        return feign.obtenerMovimientos2(usuario.getId(), search, sort, order, offset, limit);
+    }
+
+    @GetMapping("/tablaGrupos")
+    @ResponseBody
+    public TablaBSDto obtenerMovimientos(Integer idGrupo, String search, String sort, String order, Integer offset,
+            Integer limit) {
+        return feign.obtenerMovimientos(idGrupo, search, sort, order, offset, limit);
+    }
+
     @GetMapping("/misMovimientos")
     public String misMov(Model m) {
         UsuarioDto usuario = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        UsuarioDto use=feign.misMov(usuario.getId());
+        UsuarioDto use = feign.misMov(usuario.getId());
         m.addAttribute("movimientos", use.getMovimientos());
         m.addAttribute("usuarioGrupo", use.getUsuarioGrupo());
         m.addAttribute("presupuestoPersonal", use.getPresupuestoPersonal());

@@ -21,9 +21,20 @@
                 limit: params.limit
             }
         }
+
+        function formatFecha(value, row, index) {
+            return moment(value).format('DD/MM/YYYY HH:MM');
+        }
+
+        function formatValor(value, row, index) {
+            if (value >= 0) {
+                return "<span class='verde'>" + value + '€' + "<span>"
+            } else {
+                return "<span class='rojo'>" + value + '€' + "<span>"
+            }
+        }
     </script>
-
-
+    <script src="https://momentjs.com/downloads/moment.min.js"></script>
     <input id='idGrupo' type='hidden' th:value='${idGrupo}' />
     <div>
         <div class="divPrincipal">
@@ -40,13 +51,13 @@
                     th:text="${#numbers.formatDecimal(presupuesto.cantidadFinal, 1, 'COMMA', 2, 'POINT')} + '€'"></p>
             </div>
 
-            <div class="divHr2elementos">
+            <div class="divHr2Elementos">
                 <button class="botonAzul" th:onclick="|mostrarFormularioNuevoMovimiento(${idGrupo})|">Nuevo
                     importe</button>
                 <hr />
-                <div class="search-box">
+                <div class="search-box ">
                     <button class="btn-search"><i class="fas fa-search"></i></button>
-                    <input type="search" onkeyup="refrescarBST()" name="buscar" id="buscar" class="input-search form-control search-input" placeholder="Búsqueda">
+                    <input type="text" onkeyup="refrescarBST()" id="buscar" class="input-search" placeholder="Búsqueda">
                 </div>
             </div>
 
@@ -73,8 +84,8 @@
                                 <th data-field="concepto" data-sortable="true">Concepto</th>
                                 <th data-field="categoria" data-sortable="true">Categoría</th>
                                 <th data-field="nombreUsuario" data-sortable="true">Usuario </th>
-                                <th data-field="fecha" data-sortable="true">Fecha </th>
-                                <th data-field="cantidad" data-sortable="true">Cantidad </th>
+                                <th data-field="fecha" data-sortable="true" data-formatter="formatFecha">Fecha</th>
+                                <th data-field="cantidad" data-sortable="true" data-formatter="formatValor">Cantidad </th>
                             </tr>
                         </thead>
                         <tbody>

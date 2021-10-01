@@ -7,9 +7,36 @@
 
     <script src="https://www.w3schools.com/lib/w3.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
 </head>
 
 <body>
+    <script>
+        function definirParametros(params) {
+            return {
+                a: '4',
+                //idUsuario: $('#idUsuario').val(),
+                search: $("#buscar").val(),
+                sort: params.sort,
+                order: params.order,
+                offset: params.offset,
+                limit: params.limit
+            }
+        }
+
+        function formatFecha(value, row, index) {
+            return moment(value).format('DD/MM/YYYY HH:MM');
+        }
+
+        function formatValor(value, row, index) {
+            if (value >= 0) {
+                return "<span class='verde'>" + value + '€' + "<span>"
+            } else {
+                return "<span class='rojo'>" + value + '€' + "<span>"
+            }
+        }
+    </script>
+    <script src="https://momentjs.com/downloads/moment.min.js"></script>
     <div>
         <div class="divPrincipal" style="margin: 0 auto; margin-top: 10%;">
 
@@ -24,32 +51,35 @@
                 <hr />
                 <div class="search-box ">
                     <button class="btn-search"><i class="fas fa-search"></i></button>
-                    <input type="text" id="buscar" class="input-search" placeholder="Búsqueda">
+                    <input type="text" onkeyup="refrescarBST()" id="buscar" class="input-search" placeholder="Búsqueda">
                 </div>
             </div>
 
 
             <div id="movimientos">
-                <table class="tablaPrincipal" id="pager">
+                <table class="tablaPrincipal" id="pager"
+                data-toggle="table"
+                data-url="/gestion/tablaMovimientos"
+                data-side-pagination="server"
+                data-query-params="definirParametros"
+                data-pagination="true"
+                data-search="false"
+                rowsPerPageOptions="false"
+                data-page-size = "9"
+                data-pagination-parts = "['pageList']"
+                data-pagination-next-text = "Siguiente"
+                data-pagination-pre-text = "Anterior"
+                data-pagination-h-align = "left"
+                >
                     <thead>
                         <tr>
-                            <th>Concepto</th>
-                            <th>Categoría
-                            </th>
-                            <th>Fecha
-                            </th>
-                            <th>Cantidad
-                            </th>
+                            <th data-field="concepto" data-sortable="true">Concepto</th>
+                            <th data-field="categoria" data-sortable="true">Categoría</th>
+                            <th data-field="fecha" data-sortable="true" data-formatter="formatFecha">Fecha</th>
+                            <th data-field="cantidad" data-sortable="true" data-formatter="formatValor">Cantidad </th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr th:each="mov:${movimientos}" class="item">
-                            <td th:text="${mov.concepto}" class="negritaPrincipal"></td>
-                            <td th:text="${mov.categoria}"></td>
-                            <td th:text="${#dates.format(mov.fecha, 'dd-MM-yy HH:mm') }" class="fechaTabla"></td>
-                            <td style="text-align: center;" th:text="${#numbers.formatDecimal(mov.cantidad, 1, 'COMMA', 2, 'POINT')} + '€'" th:class="
-                                ${mov.cantidad >= 0} ? 'Verde' : 'Rojo'"></td>
-                        </tr>
                     </tbody>
                 </table>
             </div>
