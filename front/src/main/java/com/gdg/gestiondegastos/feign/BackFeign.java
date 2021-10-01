@@ -7,12 +7,15 @@ package com.gdg.gestiondegastos.feign;
 
 import com.gdg.gestiondegastos.dto.GrupoDto;
 import com.gdg.gestiondegastos.dto.GrupoDto2;
+import com.gdg.gestiondegastos.dto.GrupoDto4;
 import com.gdg.gestiondegastos.dto.NuevoGrupoDto;
 import com.gdg.gestiondegastos.dto.NuevoMovDto;
 import com.gdg.gestiondegastos.dto.TablaBSDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto2;
 import com.gdg.gestiondegastos.dto.UsuarioDto3;
+import com.gdg.gestiondegastos.dto.UsuarioGrupoDto;
+import com.gdg.gestiondegastos.dto.UsuarioGrupoDto2;
 import com.gdg.gestiondegastos.entities.Grupo;
 import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Usuario;
@@ -102,42 +105,49 @@ public interface BackFeign {
 
     @GetMapping("/grupo/{idGrupo}")
     public GrupoDto2 verGrupos(@RequestParam Integer idGrupo);
-
+    
+    @GetMapping("/grupo/{idGrupo}/gestionar")
+    public GrupoDto4 gestionarGrupos(@RequestParam Integer idGrupo);
+    @GetMapping("/grupo/{idGrupo}/borrarUsuario")
+    public Boolean borrarUsuario(Integer idUsuarioGrupo, @PathVariable Integer idGrupo);
+    @GetMapping("/grupo/nuevoUsuarioGrupo")
+    public void anadirUsuario(String correo, @RequestParam Integer idGrupo);
+    
     @GetMapping("{idGrupo}/borrar")
     public void borrarGrupos(@RequestParam Integer idGrupo);
-
-    @GetMapping("/misGrupos")
-    public GrupoDto misGrupos(Integer idUsuario);
-
+    
+    @GetMapping("grupo/cambiarNombre")
+    public void cambiarNombreGrupo(String nombre, @RequestParam Integer idGrupo);
+    
+    /*@GetMapping("/misGrupos")
+    public UsuarioDto2 misGrupos(@RequestParam Integer idUsuario);*/
+    
     /*
-     * 
-     * 
-     * @PostMapping("/crear") public void crear(@SpringQueryMap Usuario usuario);
-     * 
-     * 
-     * 
-     * 
-     * /*
-     * 
-     * 
-     * 
-     * 
-     * 
-     * @GetMapping("/grupo/{idGrupo}/gestionar") public Map<String, Object>
-     * gestionarGrupos(@PathVariable Integer idGrupo);
-     * 
-     * @GetMapping("/grupo/{idGrupo}/borrarUsuario") public Boolean
-     * borrarUsuario(Integer idUsuarioGrupo, @PathVariable Integer idGrupo);
-     * 
-     * @GetMapping("/grupo/nuevoUsuarioGrupo") public void anadirUsuario(String
-     * correo, @RequestParam Integer idGrupo);
-     * 
-     * @GetMapping("grupo/cambiarNombre") public void cambiarNombreGrupo(String
-     * nombre, @RequestParam Integer idGrupo);
-     * 
-     * 
-     * 
-     * 
-     * 
-     */
+    
+    
+    @PostMapping("/crear")
+    public void crear(@SpringQueryMap Usuario usuario);
+    
+    
+    
+ 
+    /*  
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+*/
 }

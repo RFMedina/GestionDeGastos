@@ -1,4 +1,3 @@
-
 --USUARIOS
 
 INSERT INTO usuario (nombre,contrasenya,correo,telefono,modo_oscuro,verificado) VALUES ('Raul','$2a$10$PkHebxbh3IMniYV09VtQNu32xDLX8yZLkO0JX1/GNqjvyR0wMY7JS','RaulHiberus@gmail.com','665379845',1,1);
