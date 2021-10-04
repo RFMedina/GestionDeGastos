@@ -33,10 +33,4 @@ public class ApplicationConfig extends WebSecurityConfigurerAdapter{
                 .clearAuthentication(true).permitAll();
     }
     
-     /*@Override
-  protected void configure(HttpSecurity http) throws Exception {
-    http.requiresChannel()
-      .requestMatchers(r -> r.getHeader("X-Forwarded-Proto") != null)
-      .requiresSecure();
-  }*/
 }

@@ -8,9 +8,10 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 //@SpringBootApplication
 @SpringBootApplication(exclude = { SecurityAutoConfiguration.class})
 public class Ejecutable {
-
+    
 	public static void main(String[] args) {
 		SpringApplication.run(Ejecutable.class, args);
+               
 	}
 
 }

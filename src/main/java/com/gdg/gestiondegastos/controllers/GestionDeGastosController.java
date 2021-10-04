@@ -6,11 +6,13 @@ import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Presupuesto;
 import com.gdg.gestiondegastos.entities.Usuario;
 import com.gdg.gestiondegastos.entities.UsuarioGrupo;
+import com.gdg.gestiondegastos.interfaces.IGeneracionDatos;
 import com.gdg.gestiondegastos.repositories.GrupoRepository;
 import com.gdg.gestiondegastos.repositories.MovimientosRepository;
 import com.gdg.gestiondegastos.repositories.PresupuestoRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioGrupoRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioRepository;
+import com.gdg.gestiondegastos.services.GeneracionDatos;
 import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
@@ -57,9 +59,13 @@ public class GestionDeGastosController {
     @Autowired
     private PasswordEncoder clave;
 
+    @Autowired
+    IGeneracionDatos generarDatos;
+    
     // Este es un get para ver la principal y asÃ­ ver los cambios
     @GetMapping("")
     public String principal() {
+        generarDatos.generarDatos();
         return "paginaInicial";
     }
 
@@ -73,6 +79,7 @@ public class GestionDeGastosController {
     @GetMapping("/login") // Pagina de inicio principal
     public String principal2(Model m) {
         // m.addAttribute("usuario", new Usuario());
+        
         return "login";
     }
 
@@ -117,13 +124,13 @@ public class GestionDeGastosController {
     }
 
     @PostMapping("/inicio/guardarGrupo")
-    public String guardarGrupo(Grupo grupo, Double pPresupuesto) {
+    public String guardarGrupo(Grupo grupo, Double presupuesto) {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
         Grupo grupoCreado = repoGrupo.save(grupo);
         Presupuesto pre = new Presupuesto();
-        pre.setCantidadInicio(pPresupuesto);
-        pre.setCantidadFinal(pPresupuesto);
+        pre.setCantidadInicio(presupuesto);
+        pre.setCantidadFinal(presupuesto);
         pre.setFechaInicio(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
         pre.setGrupo(grupoCreado);
         repoPresupuesto.save(pre);
@@ -219,7 +226,7 @@ public class GestionDeGastosController {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
 
         Usuario user = repoUsuario.findById(usuValidado.getId()).get();
-
+        
         user.setContrasenya(clave.encode(contrasenya));
         repoUsuario.save(user);
 
