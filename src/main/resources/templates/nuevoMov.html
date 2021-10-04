@@ -46,8 +46,8 @@
             </div>
 
             <div style="float:left; width: 74.3%;">
-                <input class="cantidad" id="cantidad" placeholder="Introduce la cantidad" type="text"
-                    th:field="*{cantidad}" onkeyup="this.value=Numeros(this.value)" />
+                <input class="cantidad" id="cantidad" placeholder="Introduce la cantidad" step="any" type="number"
+                    th:field="*{cantidad}" />
             </div>
             <div style="float:left;">
                 <label class="switch">
@@ -72,16 +72,6 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.js"></script>
     <script>
-        function Numeros(string) {
-            var out = '';
-            var filtro = '1234567890.';
-
-            for (var i = 0; i < string.length; i++)
-                if (filtro.indexOf(string.charAt(i)) != -1)
-                    out += string.charAt(i);
-            return out;
-        }
-
         $(document).ready(function () {
             $('.switch-input').click(function () {
                 var c = $('#cantidad').val();
