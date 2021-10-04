@@ -20,7 +20,6 @@ public class MovimientoDto {
     private Integer id;
     private String categoria;
     
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fecha;
     
     private String concepto;
