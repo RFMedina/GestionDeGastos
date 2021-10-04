@@ -5,9 +5,7 @@
  */
 package com.gdg.gestiondegastos.dto;
 
-import com.gdg.gestiondegastos.entities.Movimiento;
-import com.gdg.gestiondegastos.entities.Presupuesto;
-import com.gdg.gestiondegastos.entities.UsuarioGrupo;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -20,9 +18,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UsuarioDto2 {
+public class GrupoDto4 {
     private Integer id;
-    private UsuarioGrupoDto2 usuarioGrupo;
-    private double presupuesto;
-    private List<Movimiento> movimientos;
+    private String nombre;
+    private List<UsuarioGrupoDto> usuarioGrupo;
 }

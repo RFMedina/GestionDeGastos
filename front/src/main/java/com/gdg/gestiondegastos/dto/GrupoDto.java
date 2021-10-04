@@ -19,7 +19,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 public class GrupoDto { 
     private Integer id;
     private String nombre;
-    private Grupo grupo;
+    private GrupoDto3 grupo;
     private List<MovimientoDto> movimientos;
-    
 }

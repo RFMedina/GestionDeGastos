@@ -34,11 +34,11 @@
                     </thead>
                     <tbody>
 
-                        <tr style="cursor: pointer;" type="url" id="grupo" th:each="ug:${grupos}"
-                            th:onclick="|mostrarGrupo(${ug.grupo.id})|">
-                            <td class="negritaPrincipal" th:text="${ug.grupo.nombre}"></td>
-                            <td th:text="${#dates.format(ug.grupo.fechaCreacion, 'dd-MM-yy HH:mm') }"></td>
-                            <th:block th:each="p:${ug.grupo.presupuesto}">
+                        <tr style="cursor: pointer;" type="url" id="grupo" th:each="ug:${usuarioGrupo.grupo}"
+                            th:onclick="|mostrarGrupo(${ug.id})|">
+                            <td class="negritaPrincipal" th:text="${ug.nombre}"></td>
+                            <td th:text="${#dates.format(ug.fechaCreacion, 'dd-MM-yy HH:mm') }"></td>
+                            <th:block th:each="p:${ug.presupuesto}">
                                 <td style="text-align: center;" th:text="${#numbers.formatDecimal(p.cantidadFinal, 1, 'COMMA', 2, 'POINT')} + '€'" th:class="
                                 ${p.cantidadFinal >= 0} ? 'Verde' : 'Rojo'"></td>
                             </th:block>

@@ -29,7 +29,11 @@
         }
 
         function formatValor(value, row, index) {
-            return value + "€"
+            if (value >= 0) {
+                return "<span class='verde'>" + value + '€' + "<span>"
+            } else {
+                return "<span class='rojo'>" + value + '€' + "<span>"
+            }
         }
     </script>
     <script src="https://momentjs.com/downloads/moment.min.js"></script>
