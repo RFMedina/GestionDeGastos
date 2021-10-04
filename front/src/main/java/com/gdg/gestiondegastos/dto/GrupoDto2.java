@@ -11,7 +11,6 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -21,7 +20,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
 public class GrupoDto2 {
     private Integer id;
     private String nombre;
