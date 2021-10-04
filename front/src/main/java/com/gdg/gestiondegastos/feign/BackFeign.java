@@ -5,9 +5,11 @@
  */
 package com.gdg.gestiondegastos.feign;
 
+import com.gdg.gestiondegastos.dto.GestionarResponseDto;
 import com.gdg.gestiondegastos.dto.GrupoDto;
 import com.gdg.gestiondegastos.dto.GrupoDto2;
 import com.gdg.gestiondegastos.dto.GrupoDto4;
+import com.gdg.gestiondegastos.dto.GrupoDto5;
 import com.gdg.gestiondegastos.dto.NuevoGrupoDto;
 import com.gdg.gestiondegastos.dto.NuevoMovDto;
 import com.gdg.gestiondegastos.dto.TablaBSDto;
@@ -72,13 +74,11 @@ public interface BackFeign {
     @GetMapping("/agregar")
     public UsuarioDto agregarUsuario(@SpringQueryMap Usuario usuario);
 
-    /*
-     * @PostMapping("/crear") public void crear(@RequestParam String
-     * nombre, @RequestParam String correo, @RequestParam String contrasenya,
-     * 
-     * @RequestParam String telefono, @RequestParam Boolean
-     * modoOscuro, @RequestParam Boolean verificado);
-     */
+   
+    @PostMapping("/crear") 
+    public void crear(@RequestParam String nombre, @RequestParam String correo, @RequestParam String contrasenya,
+            @RequestParam String telefono, @RequestParam Boolean modoOscuro, @RequestParam Boolean verificado);
+     
 
     @PostMapping("/ingresar")
     public Boolean ingresar(@RequestParam String correo, @RequestParam String contrasenya);
@@ -107,9 +107,11 @@ public interface BackFeign {
     public GrupoDto2 verGrupos(@RequestParam Integer idGrupo);
     
     @GetMapping("/grupo/{idGrupo}/gestionar")
-    public GrupoDto4 gestionarGrupos(@RequestParam Integer idGrupo);
+    public GestionarResponseDto gestionarGrupos(@RequestParam Integer idGrupo);
+    
     @GetMapping("/grupo/{idGrupo}/borrarUsuario")
     public Boolean borrarUsuario(Integer idUsuarioGrupo, @PathVariable Integer idGrupo);
+    
     @GetMapping("/grupo/nuevoUsuarioGrupo")
     public void anadirUsuario(String correo, @RequestParam Integer idGrupo);
     
@@ -119,8 +121,8 @@ public interface BackFeign {
     @GetMapping("grupo/cambiarNombre")
     public void cambiarNombreGrupo(String nombre, @RequestParam Integer idGrupo);
     
-    /*@GetMapping("/misGrupos")
-    public UsuarioDto2 misGrupos(@RequestParam Integer idUsuario);*/
+    @GetMapping("/misGrupos")
+    public GrupoDto5 misGrupos(@RequestParam Integer idUsuario);
     
     /*
     

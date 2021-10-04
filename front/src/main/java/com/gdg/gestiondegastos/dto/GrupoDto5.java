@@ -12,15 +12,16 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.format.annotation.DateTimeFormat;
+
+/**
+ *
+ * @author Usuario
+ */
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GrupoDto { 
-    private Integer id;
-    private String nombre;
-    private GrupoDto3 grupo;
-    private List<MovimientoDto> movimientos;
-    private String fechaCreacion;
+public class GrupoDto5 {
+      
+    private List<GrupoDto3> grupos;
 }

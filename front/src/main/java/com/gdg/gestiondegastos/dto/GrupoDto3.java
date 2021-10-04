@@ -6,6 +6,7 @@
 package com.gdg.gestiondegastos.dto;
 
 import java.util.Date;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,5 +22,5 @@ public class GrupoDto3 {
     private Integer id;
     private String nombre;
     private Date fechaCreacion;
-    private PresupuestoDto presupuesto;
+    private List<PresupuestoDto> presupuesto;
 }

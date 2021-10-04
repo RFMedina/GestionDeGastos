@@ -1,7 +1,7 @@
 <html lang="es" xmlns:th="https://www.thymeleaf.org" th:replace="layout::layout( ~{::body})">
 
 <head>
-    <title th:text="${grupo.nombre}"></title>
+    <title>Mis grupos</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
 
@@ -34,7 +34,7 @@
                     </thead>
                     <tbody>
 
-                        <tr style="cursor: pointer;" type="url" id="grupo" th:each="ug:${usuarioGrupo.grupo}"
+                        <tr style="cursor: pointer;" type="url" id="grupo" th:each="ug:${grupos.grupos}"
                             th:onclick="|mostrarGrupo(${ug.id})|">
                             <td class="negritaPrincipal" th:text="${ug.nombre}"></td>
                             <td th:text="${#dates.format(ug.fechaCreacion, 'dd-MM-yy HH:mm') }"></td>
@@ -43,7 +43,7 @@
                                 ${p.cantidadFinal >= 0} ? 'Verde' : 'Rojo'"></td>
                             </th:block>
                             <td>
-                                <a class="botonRojo" th:href="@{|${ug.grupo.id}/borrar|}">Eliminar grupo</a>
+                                <a class="botonRojo" th:href="@{|${ug.id}/borrar|}">Eliminar grupo</a>
                             </td>
 
                         </tr>
