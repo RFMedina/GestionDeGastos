@@ -168,7 +168,7 @@ public class GestionDeGastosController {
         UsuarioDto user = mapper.map(repoUsuario.findById(idUsuario).get(), UsuarioDto.class);
         user.setPresupuestoPersonal(user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst()
                 .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal())));
-        user.setMovimientos(repoMovimientos.leerPorUsuarioGrupo(idUsuario).stream()
+        user.setMovimientos(repoMovimientos.leerPorUsuarioGrupo(idUsuario).stream().limit(4)
                 .map(x -> mapper.map(x, MovimientoDto.class)).collect(Collectors.toList()));
         user.setGrupo(repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
                 .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).findFirst().get());

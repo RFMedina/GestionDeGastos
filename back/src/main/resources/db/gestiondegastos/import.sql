@@ -46,7 +46,7 @@ INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (4,7,0);
 INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (-12.0,'Alimentacion','Compra de 5 yatekomo',now(),7);
 INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (12.0,'Alimentacion','Vendi 5 yatekomo caducados',now(),9);
 
-INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (-50,'Hogar','Aspiradora Turbo3000',now(),1);
+INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (-50,'Hogar','Aspiradora Turbo3000',"1995,11,17",1);
 INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (-9.0,'Entretenimiento','2 Entradas Cruella',now(),2);
 INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (+1200.75,'Hogar','PAY-DAY BABY',now(),3);
 INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (-40,'Ropa','Pantalones Talla L y Camisa',now(),4);
@@ -72,9 +72,9 @@ INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALU
 INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (-3.00,'Transporte','Mas viajes de tranvia :(',now(),8);
 INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (-30.50,'Alimentacion','Cena UDON',now(),6);
 
-INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (-30.50,'Entretenimiento','Nintendo Switch',now(),1);
-INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (+30.50,'Entretenimiento','Cancelación "Nintendo Switch"',now(),1);
-INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (5,'Regalo','Reintegro cupon ONCE',now(),1);
+INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (-30.50,'Entretenimiento','Nintendo Switch',"1995,11,17",1);
+INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (+30.50,'Entretenimiento','Cancelación "Nintendo Switch"',"1995,11,17",1);
+INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (5,'Regalo','Reintegro cupon ONCE',"1995,11,17",1);
 
 INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (-20.50,'Entretenimiento','Dark Souls REMASTERED',now(),2);
 INSERT INTO movimiento (cantidad,categoria,concepto,fecha,id_usuario_grupo) VALUES (1000,'Hogar','Beca grado NICE',now(),2);
