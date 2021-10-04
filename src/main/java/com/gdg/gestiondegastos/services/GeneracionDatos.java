@@ -91,18 +91,18 @@ public class GeneracionDatos implements IGeneracionDatos {
             usuarioGrupos.save(new UsuarioGrupo(6,false,usuarios.findById(3).get(),grupos.findById(4).get(),null)); //6= Jose    8=Jose
             presupuestos.save(new Presupuesto(4, 1000d, 1433.13, Date.from(Instant.now()), Date.from(Instant.now().plusSeconds(100000)), grupo));
             //6 7 y 8
-            movimientos.save(new Movimiento(9, "Alimentacion", Date.from(Instant.now()), "Compra de 5 yatekomo", 1100.75, usuarioGrupos.getById(5)));
-            movimientos.save(new Movimiento(9, "Regalo", Date.from(Instant.now()), "Propina de la abuela", 1100.75, usuarioGrupos.getById(4)));
-            movimientos.save(new Movimiento(9, "Transporte", Date.from(Instant.now()), "Monedas en el suelo", 1100.75, usuarioGrupos.getById(5)));
-            movimientos.save(new Movimiento(9, "Regalo", Date.from(Instant.now()), "Libro de Stephen King para Paloma", 1100.75, usuarioGrupos.getById(6)));
-            movimientos.save(new Movimiento(9, "Entretenimiento", Date.from(Instant.now()), "Cascos New Skill Kimera V2", 1100.75, usuarioGrupos.getById(4)));
-            movimientos.save(new Movimiento(9, "Comunicacion", Date.from(Instant.now()), "Resolución juicio del bar", 1100.75, usuarioGrupos.getById(4)));
-            movimientos.save(new Movimiento(9, "Higiene", Date.from(Instant.now()), "Cremas, pasta de dientes etc", 1100.75, usuarioGrupos.getById(6)));
-            movimientos.save(new Movimiento(9, "Entretenimiento", Date.from(Instant.now()), "Humble Bundle", 1100.75, usuarioGrupos.getById(5)));
-            movimientos.save(new Movimiento(9, "Regalo", Date.from(Instant.now()), "Tarjeta reagalo hipercor", 1100.75, usuarioGrupos.getById(4)));
-            movimientos.save(new Movimiento(9, "Alimentacion", Date.from(Instant.now()), "Carro de la compra", 1100.75, usuarioGrupos.getById(5)));
-            movimientos.save(new Movimiento(9, "Transporte", Date.from(Instant.now()), "Mas viajes de tranvia", 1100.75, usuarioGrupos.getById(6)));
-            movimientos.save(new Movimiento(9, "Alimentacion", Date.from(Instant.now()), "Cena UDON", 1100.75, usuarioGrupos.getById(4)));
+            movimientos.save(new Movimiento(13, "Alimentacion", Date.from(Instant.now()), "Compra de 5 yatekomo", 1100.75, usuarioGrupos.getById(5)));
+            movimientos.save(new Movimiento(14, "Regalo", Date.from(Instant.now()), "Propina de la abuela", 1100.75, usuarioGrupos.getById(4)));
+            movimientos.save(new Movimiento(15, "Transporte", Date.from(Instant.now()), "Monedas en el suelo", 1100.75, usuarioGrupos.getById(5)));
+            movimientos.save(new Movimiento(16, "Regalo", Date.from(Instant.now()), "Libro de Stephen King para Paloma", 1100.75, usuarioGrupos.getById(6)));
+            movimientos.save(new Movimiento(17, "Entretenimiento", Date.from(Instant.now()), "Cascos New Skill Kimera V2", 1100.75, usuarioGrupos.getById(4)));
+            movimientos.save(new Movimiento(18, "Comunicacion", Date.from(Instant.now()), "Resolución juicio del bar", 1100.75, usuarioGrupos.getById(4)));
+            movimientos.save(new Movimiento(19, "Higiene", Date.from(Instant.now()), "Cremas, pasta de dientes etc", 1100.75, usuarioGrupos.getById(6)));
+            movimientos.save(new Movimiento(20, "Entretenimiento", Date.from(Instant.now()), "Humble Bundle", 1100.75, usuarioGrupos.getById(5)));
+            movimientos.save(new Movimiento(21, "Regalo", Date.from(Instant.now()), "Tarjeta reagalo hipercor", 1100.75, usuarioGrupos.getById(4)));
+            movimientos.save(new Movimiento(22, "Alimentacion", Date.from(Instant.now()), "Carro de la compra", 1100.75, usuarioGrupos.getById(5)));
+            movimientos.save(new Movimiento(23, "Transporte", Date.from(Instant.now()), "Mas viajes de tranvia", 1100.75, usuarioGrupos.getById(6)));
+            movimientos.save(new Movimiento(24, "Alimentacion", Date.from(Instant.now()), "Cena UDON", 1100.75, usuarioGrupos.getById(4)));
 
 
             
