@@ -13,6 +13,6 @@ public class MovimientoGrupoDto {
     private String concepto;
     private String categoria;
     private String nombreUsuario;
-    private LocalDateTime fecha;
+    private Date fecha;
     private Double cantidad;
 }
