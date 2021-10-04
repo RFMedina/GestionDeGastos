@@ -305,6 +305,7 @@ public class GestionDeGastosController {
     @PostMapping("/grupo/guardarMovimiento")
     public void guardarMovimiento(Movimiento mov, Integer idUsuarioGrupo, Integer idGrupo) {
         mov.setUsuarioGrupo(repoUsuarioGrupo.findById(idUsuarioGrupo).get());
+        mov.setFecha(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
         Movimiento movNuevo = repoMovimientos.save(mov);
         Presupuesto p = repoPresupuesto.findByIdGrupo(idGrupo);
         p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad());
@@ -376,7 +377,7 @@ public class GestionDeGastosController {
 
         Pageable pa = PageRequest.of(offset / limit, limit, sT);
 
-        Page<Movimiento> p = repoMovimientos.leerPorGrupo(idUsuario, search, pa);
+        Page<Movimiento> p = repoMovimientos.leerPorUsuario(idUsuario, search, pa);
 
         return new TablaBSDto(p.getTotalElements(),
                 p.get().map(
