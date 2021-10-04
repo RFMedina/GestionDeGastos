@@ -54,8 +54,8 @@
             <th>Fecha de creación</th>
             <th>Presupuesto</th>
           </tr>
-          <tr style="cursor: pointer;" type="url" id="grupo" th:each="ug:${usuarioGrupo}"
-            th:onclick="|mostrarGrupo(${ug.grupo.id})|">
+          <tr style="cursor: pointer;" type="url" id="grupo" th:each="ug,index:${usuarioGrupo}"
+            th:onclick="|mostrarGrupo(${ug.grupo.id})|" th:if="${!index.first}">
             <td class="negritaPrincipal" th:text="${ug.grupo.nombre}"></td>
             <td th:text="${ug.grupo.fechaCreacion}"></td>
             <th:block th:each="p:${ug.grupo.presupuesto}">

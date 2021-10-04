@@ -34,7 +34,7 @@
                     </thead>
                     <tbody>
 
-                        <tr style="cursor: pointer;" type="url" id="grupo" th:each="ug:${grupos}"
+                        <tr style="cursor: pointer;" type="url" id="grupo" th:each="ug,index:${grupos}"
                             th:onclick="|mostrarGrupo(${ug.grupo.id})|">
                             <td class="negritaPrincipal" th:text="${ug.grupo.nombre}"></td>
                             <td th:text="${ug.grupo.fechaCreacion}"></td>
@@ -43,7 +43,7 @@
                                 ${p.cantidadFinal >= 0} ? 'Verde' : 'Rojo'"></td>
                             </th:block>
                             <td>
-                                <a class="botonRojo" th:href="@{|${ug.grupo.id}/borrar|}">Eliminar grupo</a>
+                                <a class="botonRojo" th:href="@{|${ug.grupo.id}/borrar|}" th:if="${!index.first}">Eliminar grupo</a>
                             </td>
 
                         </tr>
