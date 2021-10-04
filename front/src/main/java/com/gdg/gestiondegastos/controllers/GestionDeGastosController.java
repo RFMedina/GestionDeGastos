@@ -1,5 +1,6 @@
 package com.gdg.gestiondegastos.controllers;
 
+import com.gdg.gestiondegastos.dto.GestionarResponseDto;
 import com.gdg.gestiondegastos.dto.GrupoDto;
 import com.gdg.gestiondegastos.dto.GrupoDto2;
 import com.gdg.gestiondegastos.dto.MovimientoDto;
@@ -93,31 +94,10 @@ public class GestionDeGastosController {
     }
 
     @PostMapping("/crear")
-    public String crear(Model m, Usuario usuario) throws ClassNotFoundException, SQLException {
-        /*
-         * UsuarioDto usu = mapper.map(repoUsuario.findByCorreo(usuario.getCorreo()),
-         * UsuarioDto.class); if (usu != null) { return "Correo ya registrado"; } else {
-         * Grupo grupo = new Grupo(); grupo.setNombre("Mi presupuesto personal");
-         * grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone
-         * ()))); Grupo grupoCreado = repoGrupo.save(grupo); Presupuesto pre = new
-         * Presupuesto(); pre.setCantidadInicio(0.0); pre.setCantidadFinal(0.0);
-         * pre.setFechaInicio(java.sql.Date.from(Instant.now(Clock.systemDefaultZone()))
-         * ); pre.setGrupo(grupoCreado); repoPresupuesto.save(pre);
-         * ArrayList<UsuarioGrupo> ug = new ArrayList<>(); ug.add(new UsuarioGrupo(0,
-         * Boolean.TRUE, usuario, grupoCreado, new ArrayList<>()));
-         * repoUsuarioGrupo.save(ug.get(0)); usuario.setUsuarioGrupo(ug); TokenEntity
-         * confirm=new TokenEntity(usuario); repoToken.save(confirm); SimpleMailMessage
-         * correo=new SimpleMailMessage(); correo.setTo(usuario.getCorreo());
-         * correo.setSubject("Complete su registro");
-         * correo.setFrom("gestiondegastoshiberus@gmail.com"); correo.
-         * setText("Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8080/confirmar?token="
-         * +confirm.getConfirmacion()); service.enviarCorreo(correo);
-         * 
-         * }
-         */
-        m.addAttribute("usuario", feign.agregarUsuario(usuario));
-        // return "Se le ha enviado un correo de confirmación al correo
-        // "+usuario.getCorreo();
+    public String crear(Model m, UsuarioDto usuario) throws ClassNotFoundException, SQLException {
+        
+        feign.crear( usuario.getNombre(), usuario.getCorreo(),clave.encode(usuario.getContrasenya()),
+                usuario.getTelefono(), Boolean.FALSE, false);
         return "redirect:/gestion/login";
     }
 
@@ -143,7 +123,6 @@ public class GestionDeGastosController {
     @GetMapping("/inicio")
     public String inicio(Model m) {
         UsuarioDto usuario = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        // Usuario use=repoUsuario.findById(usuario.getId()).get();
         UsuarioDto use = feign.inicio(usuario.getId());
         m.addAttribute("usuario", use);
         m.addAttribute("grupo", use.getGrupo());
@@ -189,7 +168,7 @@ public class GestionDeGastosController {
         m.addAttribute("movimientos", g.getMovimientos());
         m.addAttribute("presupuesto", g.getPresupuesto());
         return "grupos";
-    }
+    } 
 
     @GetMapping("{idGrupo}/borrar")
     public String borrarGrupos(@PathVariable Integer idGrupo) {
@@ -199,11 +178,11 @@ public class GestionDeGastosController {
 
     @GetMapping("/grupo/{idGrupo}/gestionar")
     public String gestionarGrupos(Model m, @PathVariable Integer idGrupo) {
-
-        m.addAttribute("grupos", feign.gestionarGrupos(idGrupo));
-
+        GestionarResponseDto res=feign.gestionarGrupos(idGrupo);
+        m.addAttribute("grupo", res.getGrupo()) ;
+        m.addAttribute("usuarioGrupo", res.getUsuarioGrupo()) ;
         return "gestionGrupos";
-    }
+    } 
 
     /*
      * //Sin ajax
@@ -275,13 +254,12 @@ public class GestionDeGastosController {
         return "redirect:/gestion/paginaInicial";
     }
 
-    /*@GetMapping("/misGrupos")
+    @GetMapping("/misGrupos")
     public String misGrupos(Model m) {
         UsuarioDto user = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        System.out.print("****************************************************************************"+feign.misGrupos(user.getId()).getUsuarioGrupo()+"******************************************************");
         m.addAttribute("grupos",feign.misGrupos(user.getId()));
         return "verGrupos";
-    }*/
+    }
 
     @GetMapping("/tablaMovimientos")
     @ResponseBody

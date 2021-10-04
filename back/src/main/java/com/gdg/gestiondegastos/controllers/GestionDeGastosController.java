@@ -78,8 +78,8 @@ public class GestionDeGastosController {
     }
 
     @PostMapping("/crear")
-    public String crear(Usuario usuario) throws ClassNotFoundException, SQLException {
-
+    public void crear(Usuario usuario) throws ClassNotFoundException, SQLException {
+        repoUsuario.save(usuario);
         Grupo grupo = new Grupo();
         grupo.setNombre("Mi presupuesto personal");
         grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
@@ -106,7 +106,7 @@ public class GestionDeGastosController {
                 "Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8080/confirmar?token="
                         + confirm.getConfirmacion());
         service.enviarCorreo(correo);
-        return "Se le ha enviado un correo de confirmación al correo " + usuario.getCorreo();
+        //return "Se le ha enviado un correo de confirmación al correo " + usuario.getCorreo();
 
     }
 
