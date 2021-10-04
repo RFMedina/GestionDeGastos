@@ -78,6 +78,7 @@ public class GestionDeGastosController {
 
     @GetMapping("/login") // Pagina de inicio principal
     public String principal2(Model m) {
+        generarDatos.generarDatos();
         // m.addAttribute("usuario", new Usuario());
         
         return "login";
@@ -124,13 +125,13 @@ public class GestionDeGastosController {
     }
 
     @PostMapping("/inicio/guardarGrupo")
-    public String guardarGrupo(Grupo grupo, Double presupuesto) {
+    public String guardarGrupo(Grupo grupo, Double pPresupuesto) {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
         Grupo grupoCreado = repoGrupo.save(grupo);
         Presupuesto pre = new Presupuesto();
-        pre.setCantidadInicio(presupuesto);
-        pre.setCantidadFinal(presupuesto);
+        pre.setCantidadInicio(pPresupuesto);
+        pre.setCantidadFinal(pPresupuesto);
         pre.setFechaInicio(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
         pre.setGrupo(grupoCreado);
         repoPresupuesto.save(pre);
