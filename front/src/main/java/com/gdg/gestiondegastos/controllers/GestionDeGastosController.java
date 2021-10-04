@@ -192,7 +192,7 @@ public class GestionDeGastosController {
     }
 
     @GetMapping("{idGrupo}/borrar")
-    public String verGrupos(@PathVariable Integer idGrupo) {
+    public String borrarGrupos(@PathVariable Integer idGrupo) {
         feign.borrarGrupos(idGrupo);
         return "redirect:/gestion/misGrupos";
     }

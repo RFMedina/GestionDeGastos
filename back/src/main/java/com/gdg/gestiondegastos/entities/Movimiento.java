@@ -5,6 +5,7 @@
  */
 package com.gdg.gestiondegastos.entities;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;

@@ -20,5 +20,6 @@ import lombok.NoArgsConstructor;
 public class UsuarioGrupoDto {
     private Boolean rol;
     private UsuarioDto usuario;
+    private GrupoDto grupo;
     private List<UsuarioDto> usuarios;
 }
