@@ -21,5 +21,6 @@ public class UsuarioGrupoDto {
     private Boolean rol;
     private Integer id;
     private UsuarioDto usuario;
+    private GrupoDto grupo;
     private List<UsuarioDto> usuarios;
 }

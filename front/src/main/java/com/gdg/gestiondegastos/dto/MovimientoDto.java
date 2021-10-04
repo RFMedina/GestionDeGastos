@@ -16,13 +16,13 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MovimientoDto { 
+public class MovimientoDto {
     private Integer id;
     private String categoria;
-    
+
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime fecha;
-    
+    private Date fecha;
+
     private String concepto;
     private Double cantidad;
     private UsuarioGrupoDto usuarioGrupo;

@@ -32,7 +32,7 @@ public class UsuarioDto implements UserDetails{
     private String contrasenya;
     private List<UsuarioGrupo> usuarioGrupo;
     private Double presupuestoPersonal;
-    private List<Movimiento> movimientos;
+    private List<MovimientoDto> movimientos;
     private List<Contactos> contactos;
     private TokenEntity token;
     private List<GrantedAuthority> roles=new ArrayList<GrantedAuthority>();

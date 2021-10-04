@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  *
@@ -24,6 +25,7 @@ import lombok.ToString;
 public class GrupoDto2 {
     private Integer id;
     private String nombre;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime fechaCreacion;
     private PresupuestoDto presupuesto;
     private Grupo grupo;
