@@ -244,7 +244,7 @@ public class GestionDeGastosController {
     }
 
     @GetMapping("/grupo/{idGrupo}/gestionar") // Terminado
-    public Map<String, Object> gestionarGrupos(@PathVariable Integer idGrupo) {
+    public Map<String, Object> gestionarGrupos(@RequestParam Integer idUsuario,@PathVariable Integer idGrupo) {
 
         Map<String, Object> m = new HashMap<>();
 
@@ -252,12 +252,13 @@ public class GestionDeGastosController {
 
         m.put("usuarioGrupo", repoUsuarioGrupo.leerPorGrupo(idGrupo).stream()
                 .map(x -> mapper.map(x, UsuarioGrupoDto.class)).collect(Collectors.toList()));
-
+        //DIEGO ESTUVO AQUI
+        m.put("usuYGrupo", repoUsuarioGrupo.leerPorUsuarioYGrupo(idUsuario, idGrupo).getRol());
         return m;
     }
 
     @GetMapping("/grupo/{idGrupo}/borrarUsuario")
-    public Boolean borrarUsuario(Integer idUsuarioGrupo, Integer idGrupo) {
+    public Boolean borrarUsuario(@RequestParam Integer idUsuarioGrupo,@PathVariable Integer idGrupo) {
         repoUsuarioGrupo.deleteById(idUsuarioGrupo);
         if (repoUsuarioGrupo.leerPorGrupo(idGrupo).isEmpty()) {
             repoGrupo.deleteById(idGrupo);

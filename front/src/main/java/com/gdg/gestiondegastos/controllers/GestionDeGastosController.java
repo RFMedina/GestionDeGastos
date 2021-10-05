@@ -7,18 +7,12 @@ import com.gdg.gestiondegastos.dto.MovimientoDto;
 import com.gdg.gestiondegastos.dto.NuevoGrupoDto;
 import com.gdg.gestiondegastos.dto.NuevoMovDto;
 import java.sql.SQLException;
-import java.util.stream.Collectors;
-
-import com.gdg.gestiondegastos.dto.MovimientoGrupoDto;
 import com.gdg.gestiondegastos.dto.TablaBSDto;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gdg.gestiondegastos.dto.UsuarioDto;
-import com.gdg.gestiondegastos.dto.UsuarioDto3;
-import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Usuario;
-import com.gdg.gestiondegastos.entities.UsuarioGrupo;
 import com.gdg.gestiondegastos.feign.BackFeign;
 import com.gdg.gestiondegastos.repositories.GrupoRepository;
 import com.gdg.gestiondegastos.repositories.MovimientosRepository;
@@ -30,10 +24,6 @@ import com.gdg.gestiondegastos.services.CorreoService;
 import org.modelmapper.ModelMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -196,9 +186,13 @@ public class GestionDeGastosController {
 
     @GetMapping("/grupo/{idGrupo}/gestionar")
     public String gestionarGrupos(Model m, @PathVariable Integer idGrupo) {
-        GestionarResponseDto res = feign.gestionarGrupos(idGrupo);
+        UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        GestionarResponseDto res = feign.gestionarGrupos(usuValidado.getId(), idGrupo);
         m.addAttribute("grupo", res.getGrupo());
         m.addAttribute("usuarioGrupo", res.getUsuarioGrupo());
+        m.addAttribute("yo", usuValidado);
+        m.addAttribute("isAdmin", res.getUsuYGrupo());
+
         return "gestionGrupos";
     }
 
@@ -214,10 +208,11 @@ public class GestionDeGastosController {
     @GetMapping("/grupo/{idGrupo}/borrarUsuario")
     public String borrarUsuario(Integer idUsuarioGrupo, Integer idGrupo) {
         Boolean b = feign.borrarUsuario(idUsuarioGrupo, idGrupo);
-        if (b)
+        if (b) {
             return "redirect:/gestion/inicio";
-        else
+        } else {
             return "redirect:/gestion/grupo/{idGrupo}";
+        }
     }
 
     @GetMapping("/grupo/nuevoUsuarioGrupo")
