@@ -106,7 +106,8 @@ public class GestionDeGastosController {
                 "Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8080/confirmar?token="
                         + confirm.getConfirmacion());
         service.enviarCorreo(correo);
-        //return "Se le ha enviado un correo de confirmación al correo " + usuario.getCorreo();
+        // return "Se le ha enviado un correo de confirmación al correo " +
+        // usuario.getCorreo();
 
     }
 
