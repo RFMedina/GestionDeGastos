@@ -94,7 +94,7 @@ public class GestionDeGastosController {
             pre.setGrupo(grupoCreado);
             repoPresupuesto.save(pre);
             ArrayList<UsuarioGrupo> ug = new ArrayList<>();
-            ug.add(new UsuarioGrupo(0, Boolean.TRUE, usuario, grupoCreado, new ArrayList<>()));
+            ug.add(new UsuarioGrupo(0, Boolean.FALSE, usuario, grupoCreado, new ArrayList<>()));
             repoUsuarioGrupo.save(ug.get(0));
             usuario.setUsuarioGrupo(ug);
             usuario.setVerificado(false);
