@@ -120,15 +120,15 @@ public class GestionDeGastosController {
     }
 
     @RequestMapping(value = "/confirmar", method = { RequestMethod.GET, RequestMethod.POST })
-    public String confirmarCuenta(@RequestParam("token") String token) {
+    public Boolean confirmarCuenta(@RequestParam("token") String token) {
         TokenEntity t = repoToken.findByConfirmacion(token);
         if (t != null) {
             Usuario usuario = repoUsuario.findByCorreo(t.getUsuario().getCorreo());
             usuario.setVerificado(true);
             repoUsuario.save(usuario);
-            return "Usuario validado con exito";
+            return true;
         } else {
-            return "El link ha caducado.";
+            return false;
         }
     }
 
