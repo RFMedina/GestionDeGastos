@@ -115,7 +115,7 @@ public class GestionDeGastosController {
     private AuthenticationManager am;
 
     @PostMapping("/ingresar") // hacer login
-    public String ingresar(Model m, String correo[], String[] contrasenya) {
+    public String ingresar(Model m, String correo[], String[] contrasenya, RedirectAttributes redirectAttrs) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(correo[0], contrasenya[0]);
         Authentication auth = am.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(auth);
@@ -123,6 +123,7 @@ public class GestionDeGastosController {
         if (v) {
             return "redirect:/gestion/inicio";
         } else {
+            redirectAttrs.addFlashAttribute("msg", "Usted no está validado o sus creadenciales son erroneas");
             return "redirect:/gestion/login";
         }
     }
@@ -216,7 +217,7 @@ public class GestionDeGastosController {
     }
 
     @GetMapping("/grupo/nuevoUsuarioGrupo")
-    public String anadirUsuario(Model m, String correo, @PathVariable Integer idGrupo) {
+    public String anadirUsuario(Model m, String correo, @RequestParam Integer idGrupo) {
         feign.anadirUsuario(correo, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }

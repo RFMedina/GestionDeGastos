@@ -6,7 +6,7 @@
 
 <body>
     <div>
-        <form action="/gestion/grupo/cambiarNombre">
+        <form action="/gestion/grupo/cambiarNombre" method="get">
             <div style="float:left; width: 70%;">
                 <input class="cantidad" name="nombre" type="text" th:value="${grupo.nombre}" />
                 <input class="cantidad" name="idGrupo" type="hidden" th:value="${grupo.id}" />
@@ -15,7 +15,7 @@
                 nombre</button>
         </form>
 
-        <form action="/gestion/grupo/nuevoUsuarioGrupo">
+        <form action="/gestion/grupo/nuevoUsuarioGrupo" method="get">
             <div style="float:left; width: 70%;">
                 <input class="cantidad" name="correo" placeholder="Pon el correo del usuario">
                 <input type="hidden" name="idGrupo" th:value="${grupo.id}"/>
