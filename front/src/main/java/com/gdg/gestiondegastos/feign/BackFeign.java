@@ -107,10 +107,10 @@ public interface BackFeign {
     public GrupoDto2 verGrupos(@RequestParam Integer idGrupo);
     
     @GetMapping("/grupo/{idGrupo}/gestionar")
-    public GestionarResponseDto gestionarGrupos(@RequestParam Integer idGrupo);
+    public GestionarResponseDto gestionarGrupos(@RequestParam Integer idUsuario, @RequestParam Integer idGrupo);
     
     @GetMapping("/grupo/{idGrupo}/borrarUsuario")
-    public Boolean borrarUsuario(Integer idUsuarioGrupo, @PathVariable Integer idGrupo);
+    public Boolean borrarUsuario(@RequestParam Integer idUsuarioGrupo, @PathVariable Integer idGrupo);
     
     @GetMapping("/grupo/nuevoUsuarioGrupo")
     public void anadirUsuario(String correo, @RequestParam Integer idGrupo);

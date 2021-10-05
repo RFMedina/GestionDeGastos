@@ -28,16 +28,16 @@
                     <th>Nombre</th>
                     <th>Correo</th>
                     <th>Teléfono</th>
-                    <th></th>
+                    <th th:if="${isAdmin}">Accion</th>
                 </tr>
             </thead>
             <tbody>
-                <tr th:each="ug:${usuarioGrupo}" class="item">
+                <tr th:each="ug,index:${usuarioGrupo}" class="item">
                     <td class='align-middle' th:text="${ug.usuario.nombre}"></td>
                     <td class='align-middle' th:text="${ug.usuario.correo}"></td>
                     <td class='align-middle' th:text="${ug.usuario.telefono}"></td>
-                    <td><a class="botonRojo"
-                            th:href="@{|${grupo.id}/borrarUsuario|(idUsuarioGrupo=${ug.id},idGrupo=${grupo.id})}">Eliminar</a>
+                    <td th:if="${isAdmin}"><a class="botonRojo" 
+                        th:if="${yo.id != ug.usuario.id || index.size == 1}"    th:href="@{|${grupo.id}/borrarUsuario|(idUsuarioGrupo=${ug.id},idGrupo=${grupo.id})}">Eliminar</a>
                     </td>
                 </tr>
             </tbody>
