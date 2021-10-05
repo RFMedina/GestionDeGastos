@@ -27,11 +27,16 @@
             return moment(value).format('DD/MM/YYYY HH:MM');
         }
 
-        function formatValor(value, row, index) {
-            if (value >= 0) {
-                return "<span class='verde'>" + value + '€' + "<span>"
+        function formatValor(data) {
+            var numero = parseFloat(data).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            if (data >= 0) {
+                return "<span class='verde' >" + numero + '€' + "<span>"
             } else {
-                return "<span class='rojo'>" + value + '€' + "<span>"
+                return "<span class='rojo'>" + numero + '€' + "<span>"
             }
         }
     </script>
