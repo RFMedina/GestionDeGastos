@@ -78,39 +78,42 @@ public class GestionDeGastosController {
     }
 
     @PostMapping("/crear")
-    public void crear(Usuario usuario) throws ClassNotFoundException, SQLException {
-        repoUsuario.save(usuario);
-        Grupo grupo = new Grupo();
-        grupo.setNombre("Mi presupuesto personal");
-        grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
-        Grupo grupoCreado = repoGrupo.save(grupo);
-        Presupuesto pre = new Presupuesto();
-        pre.setCantidadInicio(0.0);
-        pre.setCantidadFinal(0.0);
-        pre.setFechaInicio(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
-        pre.setGrupo(grupoCreado);
-        repoPresupuesto.save(pre);
-        ArrayList<UsuarioGrupo> ug = new ArrayList<>();
-        ug.add(new UsuarioGrupo(0, Boolean.TRUE, usuario, grupoCreado, new ArrayList<>()));
-        repoUsuarioGrupo.save(ug.get(0));
-        usuario.setUsuarioGrupo(ug);
-        usuario.setVerificado(false);
-        usuario.setModoOscuro(false);
-        TokenEntity confirm = new TokenEntity(usuario);
-        repoToken.save(confirm);
-        SimpleMailMessage correo = new SimpleMailMessage();
-        correo.setTo(usuario.getCorreo());
-        correo.setSubject("Complete su registro");
-        correo.setFrom("gestiondegastoshiberus@gmail.com");
-        correo.setText(
-                "Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8080/confirmar?token="
-                        + confirm.getConfirmacion());
-        service.enviarCorreo(correo);
-        //return "Se le ha enviado un correo de confirmación al correo " + usuario.getCorreo();
-
+    public Boolean crear(Usuario usuario) throws ClassNotFoundException, SQLException {
+        if(repoUsuario.findByCorreo(usuario.getCorreo())==null){
+            repoUsuario.save(usuario);
+            Grupo grupo = new Grupo();
+            grupo.setNombre("Mi presupuesto personal");
+            grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
+            Grupo grupoCreado = repoGrupo.save(grupo);
+            Presupuesto pre = new Presupuesto();
+            pre.setCantidadInicio(0.0);
+            pre.setCantidadFinal(0.0);
+            pre.setFechaInicio(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
+            pre.setGrupo(grupoCreado);
+            repoPresupuesto.save(pre);
+            ArrayList<UsuarioGrupo> ug = new ArrayList<>();
+            ug.add(new UsuarioGrupo(0, Boolean.TRUE, usuario, grupoCreado, new ArrayList<>()));
+            repoUsuarioGrupo.save(ug.get(0));
+            usuario.setUsuarioGrupo(ug);
+            usuario.setVerificado(false);
+            usuario.setModoOscuro(false);
+            TokenEntity confirm = new TokenEntity(usuario);
+            repoToken.save(confirm);
+            SimpleMailMessage correo = new SimpleMailMessage();
+            correo.setTo(usuario.getCorreo());
+            correo.setSubject("Complete su registro");
+            correo.setFrom("gestiondegastoshiberus@gmail.com");
+            correo.setText(
+                    "Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8082/gestion/confirmar?token="
+                            + confirm.getConfirmacion());
+            service.enviarCorreo(correo);
+            return true;
+        }else{
+            return false;
+        }
     }
 
-    @RequestMapping(value = "/confirmar", method = { RequestMethod.GET, RequestMethod.POST })
+    @GetMapping("/confirmar")
     public Boolean confirmarCuenta(@RequestParam("token") String token) {
         TokenEntity t = repoToken.findByConfirmacion(token);
         if (t != null) {

@@ -97,12 +97,18 @@ public class GestionDeGastosController {
     @PostMapping("/crear")
     public String crear(Model m, UsuarioDto usuario) throws ClassNotFoundException, SQLException {
         
-        feign.crear( usuario.getNombre(), usuario.getCorreo(),clave.encode(usuario.getContrasenya()),
+        Boolean b=feign.crear( usuario.getNombre(), usuario.getCorreo(),clave.encode(usuario.getContrasenya()),
                 usuario.getTelefono(), Boolean.FALSE, false);
-        return "redirect:/gestion/login";
+        if(b){
+            m.addAttribute("msg", "Usuario registrado con exito");
+            return "redirect:/gestion/login";
+        }else{
+            m.addAttribute("msg", "Usuario ya registrado, pruebe con otro");
+            return "redirect:/gestion/agregar";
+        }
     }
     
-    @PostMapping("confirmar")
+    @GetMapping("confirmar")
     public String confirmarCuenta(Model m, String token){
         Boolean t=feign.confirmarCuenta(token);
         if(t){
@@ -127,9 +133,9 @@ public class GestionDeGastosController {
         Boolean v = feign.ingresar(correo[0], contrasenya[0]);
         System.out.println("Bo:" + v);
         if (v) {
-            return "redirect:inicio";
+            return "redirect:/gestion/inicio";
         } else {
-            return "login";
+            return "redirect:/gestion/login";
         }
     }
 
