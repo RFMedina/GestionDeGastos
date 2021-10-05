@@ -72,6 +72,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.2/fullpage.min.js"></script>
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
   <script>
+    
     function mostrarFormularioNuevoMovimiento(idGrupo) {
       $.ajax({
         url: "/gestion/grupo/" +
@@ -80,7 +81,8 @@
         success: function (formularioEditar) {
           bootbox
             .dialog({
-              title: "Añade nuevo movimiento",
+              onEscape:true,
+              closeButton: false,
               message: formularioEditar,
             })
             .find("div.modal-content")
@@ -101,7 +103,8 @@
         success: function (formularioEditar) {
           bootbox
             .dialog({
-              title: "Añade nuevo grupo",
+              onEscape:true,
+              closeButton: false,
               message: formularioEditar,
             })
             .find("div.modal-content")
