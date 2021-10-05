@@ -32,8 +32,8 @@ public class UsuarioDto {
    private Boolean modoOscuro;
    private Boolean verificado;
    private List<UsuarioGrupoDto2> usuarioGrupo;
-   
-   //Añaddido por JoseMari 
+
+   // Añaddido por JoseMari
    private Double presupuestoPersonal;
    private List<MovimientoDto> movimientos;
    private GrupoDto grupo;

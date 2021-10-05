@@ -16,6 +16,13 @@ public interface MovimientosRepository extends JpaRepository<Movimiento, Integer
                         + " or (:search is null or m.usuarioGrupo.usuario.nombre like concat('%', :search, '%')) "
                         + ")")
         public Page<Movimiento> leerPorGrupo(Integer id_grupo, String search, Pageable paginable);
+        
+    @Query("select m from Movimiento m " + " where m.usuarioGrupo.usuario.id = :id_usuario" + " and ( "
+                        + " (:search is null or m.concepto like concat('%', :search, '%') ) "
+                        + " or (:search is null or m.categoria like concat('%', :search, '%')) "
+                        + " or (:search is null or m.usuarioGrupo.usuario.nombre like concat('%', :search, '%')) "
+                        + ")")
+        public Page<Movimiento> leerPorUsuario(Integer id_usuario, String search, Pageable paginable);
     
     @Query("select m from Movimiento m where m.usuarioGrupo.grupo.id = :id_grupo")
     public List<Movimiento> leerPorGrupo(Integer id_grupo);

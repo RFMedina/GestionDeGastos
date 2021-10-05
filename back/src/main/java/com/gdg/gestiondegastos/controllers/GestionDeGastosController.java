@@ -4,6 +4,7 @@ import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -32,17 +33,7 @@ import com.gdg.gestiondegastos.repositories.TokenRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioGrupoRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioRepository;
 import com.gdg.gestiondegastos.services.CorreoService;
-import java.sql.SQLException;
-import java.time.Clock;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -180,7 +171,7 @@ public class GestionDeGastosController {
                 .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal())));
 
         user.setMovimientos(repoMovimientos.leerPorUsuarioGrupo(idUsuario).stream()
-                .map(x -> mapper.map(x, MovimientoDto.class)).collect(Collectors.toList()));
+                .map(x -> mapper.map(x, MovimientoDto.class)).sorted((x, y) -> -1).collect(Collectors.toList()));
 
         user.setGrupo(repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
                 .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).findFirst().get());
@@ -314,6 +305,7 @@ public class GestionDeGastosController {
     @PostMapping("/grupo/guardarMovimiento")
     public void guardarMovimiento(Movimiento mov, Integer idUsuarioGrupo, Integer idGrupo) {
         mov.setUsuarioGrupo(repoUsuarioGrupo.findById(idUsuarioGrupo).get());
+        mov.setFecha(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
         Movimiento movNuevo = repoMovimientos.save(mov);
         Presupuesto p = repoPresupuesto.findByIdGrupo(idGrupo);
         p.setCantidadFinal(p.getCantidadFinal() + movNuevo.getCantidad());
@@ -385,7 +377,7 @@ public class GestionDeGastosController {
 
         Pageable pa = PageRequest.of(offset / limit, limit, sT);
 
-        Page<Movimiento> p = repoMovimientos.leerPorGrupo(idUsuario, search, pa);
+        Page<Movimiento> p = repoMovimientos.leerPorUsuario(idUsuario, search, pa);
 
         return new TablaBSDto(p.getTotalElements(),
                 p.get().map(
