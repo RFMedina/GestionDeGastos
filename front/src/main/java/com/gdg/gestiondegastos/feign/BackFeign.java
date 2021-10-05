@@ -124,32 +124,6 @@ public interface BackFeign {
     @GetMapping("/misGrupos")
     public GrupoDto5 misGrupos(@RequestParam Integer idUsuario);
     
-    /*
-    
-    
-    @PostMapping("/crear")
-    public void crear(@SpringQueryMap Usuario usuario);
-    
-    
-    
- 
-    /*  
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-*/
+    @PostMapping("/confirmar")
+    public Boolean confirmarCuenta(@RequestParam String token);
 }

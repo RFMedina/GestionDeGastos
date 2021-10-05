@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -99,6 +100,19 @@ public class GestionDeGastosController {
         feign.crear( usuario.getNombre(), usuario.getCorreo(),clave.encode(usuario.getContrasenya()),
                 usuario.getTelefono(), Boolean.FALSE, false);
         return "redirect:/gestion/login";
+    }
+    
+    @PostMapping("confirmar")
+    public String confirmarCuenta(Model m, String token){
+        Boolean t=feign.confirmarCuenta(token);
+        if(t){
+            m.addAttribute("msg", "Usuario verificado con exito");
+            return "redirect:/gestion/login";
+        }else{
+            m.addAttribute("msg", "El usuario no se ha verificado");
+            return "redirect:/gestion/error";
+        }
+        
     }
 
     @Autowired
