@@ -17,6 +17,7 @@ import com.gdg.gestiondegastos.dto.MovimientoDto;
 import com.gdg.gestiondegastos.dto.MovimientoGrupoDto;
 import com.gdg.gestiondegastos.dto.PresupuestoDto;
 import com.gdg.gestiondegastos.dto.TablaBSDto;
+import com.gdg.gestiondegastos.dto.TokenEntityDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto2;
 import com.gdg.gestiondegastos.dto.UsuarioGrupoDto;
@@ -41,6 +42,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -113,13 +115,16 @@ public class GestionDeGastosController {
         }
     }
 
+    @Transactional
     @GetMapping("/confirmar")
-    public Boolean confirmarCuenta(@RequestParam("token") String token) {
+    public Boolean confirmarCuenta(@RequestParam String token) {
         TokenEntity t = repoToken.findByConfirmacion(token);
         if (t != null) {
             Usuario usuario = repoUsuario.findByCorreo(t.getUsuario().getCorreo());
+           // UsuarioDto user=mapper.map(usuario, UsuarioDto.class);
             usuario.setVerificado(true);
             repoUsuario.save(usuario);
+            repoToken.borrarToken(t.getId());
             return true;
         } else {
             return false;
@@ -139,9 +144,6 @@ public class GestionDeGastosController {
         return m;
     }
 
-    // Nota de Jorge: El problema estaba en que dentro de grupo hay un campo
-    // presupuesto y se estaba intentando rellenar. He cambiado el parámetro de
-    // presupuesto a pPresupuesto.
     @PostMapping("/inicio/guardarGrupo")
     public void guardarGrupo(Grupo grupo, Double pPresupuesto, Integer pIdUsuario) {
         grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
@@ -162,9 +164,7 @@ public class GestionDeGastosController {
     @PostMapping("/ingresar")
     public Boolean ingresar(String correo[], String[] contrasenya) {
         Usuario usuario = repoUsuario.findByCorreo(correo[0]);
-        if (!usuario.getVerificado())
-            return false;
-        return (usuario.getNombre() != null);
+        return usuario.getVerificado();
     }
 
     @GetMapping("/inicio") // Terminado
@@ -174,7 +174,8 @@ public class GestionDeGastosController {
                 .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal())));
 
         user.setMovimientos(repoMovimientos.leerPorUsuarioGrupo(idUsuario).stream()
-                .map(x -> mapper.map(x, MovimientoDto.class)).sorted((x, y) -> -1).collect(Collectors.toList()));
+                .map(x -> mapper.map(x, MovimientoDto.class)).sorted((x, y) -> -1).collect(Collectors.toList()).stream()
+                .limit(4).collect(Collectors.toList()));
 
         user.setGrupo(repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
                 .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).findFirst().get());
@@ -258,12 +259,10 @@ public class GestionDeGastosController {
     @GetMapping("/grupo/{idGrupo}/borrarUsuario")
     public Boolean borrarUsuario(Integer idUsuarioGrupo, Integer idGrupo) {
         repoUsuarioGrupo.deleteById(idUsuarioGrupo);
-
         if (repoUsuarioGrupo.leerPorGrupo(idGrupo).isEmpty()) {
             repoGrupo.deleteById(idGrupo);
             return true;
         }
-
         return false;
     }
 
