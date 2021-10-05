@@ -46,6 +46,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -95,10 +96,29 @@ public class GestionDeGastosController {
 
     @PostMapping("/crear")
     public String crear(Model m, UsuarioDto usuario) throws ClassNotFoundException, SQLException {
-
-        feign.crear(usuario.getNombre(), usuario.getCorreo(), clave.encode(usuario.getContrasenya()),
+        
+        Boolean b=feign.crear( usuario.getNombre(), usuario.getCorreo(),clave.encode(usuario.getContrasenya()),
                 usuario.getTelefono(), Boolean.FALSE, false);
-        return "redirect:/gestion/login";
+        if(b){
+            m.addAttribute("msg", "Usuario registrado con exito");
+            return "redirect:/gestion/login";
+        }else{
+            m.addAttribute("msg", "Usuario ya registrado, pruebe con otro");
+            return "redirect:/gestion/agregar";
+        }
+    }
+    
+    @GetMapping("/confirmar")
+    public String confirmarCuenta(Model m, String token){
+        Boolean t=feign.confirmarCuenta(token);
+        if(t){
+            m.addAttribute("msg", "Usuario verificado con exito");
+            return "redirect:/gestion/login";
+        }else{
+            m.addAttribute("msg", "El usuario no se ha verificado");
+            return "redirect:/gestion/error";
+        }
+        
     }
 
     @Autowired
@@ -109,13 +129,11 @@ public class GestionDeGastosController {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(correo[0], contrasenya[0]);
         Authentication auth = am.authenticate(token);
         SecurityContextHolder.getContext().setAuthentication(auth);
-        // Usuario usuario = repoUsuario.findByCorreo(correo[0]);
         Boolean v = feign.ingresar(correo[0], contrasenya[0]);
-        System.out.println("Bo:" + v);
         if (v) {
-            return "redirect:inicio";
+            return "redirect:/gestion/inicio";
         } else {
-            return "login";
+            return "redirect:/gestion/login";
         }
     }
 

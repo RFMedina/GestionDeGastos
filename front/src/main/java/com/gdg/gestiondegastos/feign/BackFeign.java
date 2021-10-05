@@ -45,63 +45,63 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/gestionback")
 public interface BackFeign {
 
-        @GetMapping("/tablaMovimientos")
-        public TablaBSDto obtenerMovimientos2(@RequestParam Integer idUsuario, @RequestParam String search,
-                        @RequestParam String sort, @RequestParam String order, @RequestParam Integer offset,
-                        @RequestParam Integer limit);
+    @GetMapping("/tablaMovimientos")
+    public TablaBSDto obtenerMovimientos2(@RequestParam Integer idUsuario, @RequestParam String search,
+                    @RequestParam String sort, @RequestParam String order, @RequestParam Integer offset,
+                    @RequestParam Integer limit);
 
-        @GetMapping("/tablaGrupos")
-        public TablaBSDto obtenerMovimientos(@RequestParam Integer idGrupo, @RequestParam String search,
-                        @RequestParam String sort, @RequestParam String order, @RequestParam Integer offset,
-                        @RequestParam Integer limit);
+    @GetMapping("/tablaGrupos")
+    public TablaBSDto obtenerMovimientos(@RequestParam Integer idGrupo, @RequestParam String search,
+                    @RequestParam String sort, @RequestParam String order, @RequestParam Integer offset,
+                    @RequestParam Integer limit);
 
-        @GetMapping("/inicio/nuevoGrupo")
-        public NuevoGrupoDto nuevoGrupo(@RequestParam Integer idUsuario);
+    @GetMapping("/inicio/nuevoGrupo")
+    public NuevoGrupoDto nuevoGrupo(@RequestParam Integer idUsuario);
 
-        @PostMapping("/inicio/guardarGrupo")
-        public void guardarGrupo(@RequestParam Integer id, @RequestParam String nombre,
-                        @RequestParam Double pPresupuesto, @RequestParam Integer pIdUsuario);
+    @PostMapping("/inicio/guardarGrupo")
+    public void guardarGrupo(@RequestParam Integer id, @RequestParam String nombre,
+                    @RequestParam Double pPresupuesto, @RequestParam Integer pIdUsuario);
 
-        @GetMapping("/grupo/{idGrupo}/nuevoMovimiento")
-        public NuevoMovDto nuevoMovimientos(@RequestParam Integer idGrupo, @RequestParam Integer idUsuario);
+    @GetMapping("/grupo/{idGrupo}/nuevoMovimiento")
+    public NuevoMovDto nuevoMovimientos(@RequestParam Integer idGrupo, @RequestParam Integer idUsuario);
 
-        @PostMapping("/grupo/guardarMovimiento")
-        public void guardarMovimiento(@RequestParam Integer id, @RequestParam String categoria,
-                        @RequestParam Double cantidad, @RequestParam String concepto,
-                        @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fecha,
-                        @RequestParam Integer idUsuarioGrupo, @RequestParam Integer idGrupo);
+    @PostMapping("/grupo/guardarMovimiento")
+    public void guardarMovimiento(@RequestParam Integer id, @RequestParam String categoria,
+                    @RequestParam Double cantidad, @RequestParam String concepto,
+                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fecha,
+                    @RequestParam Integer idUsuarioGrupo, @RequestParam Integer idGrupo);
 
-        @GetMapping("/agregar")
-        public UsuarioDto agregarUsuario(@SpringQueryMap Usuario usuario);
+    @GetMapping("/agregar")
+    public UsuarioDto agregarUsuario(@SpringQueryMap Usuario usuario);
 
    
     @PostMapping("/crear") 
-    public void crear(@RequestParam String nombre, @RequestParam String correo, @RequestParam String contrasenya,
+    public Boolean crear(@RequestParam String nombre, @RequestParam String correo, @RequestParam String contrasenya,
             @RequestParam String telefono, @RequestParam Boolean modoOscuro, @RequestParam Boolean verificado);
      
 
-        @PostMapping("/ingresar")
-        public Boolean ingresar(@RequestParam String correo, @RequestParam String contrasenya);
+    @PostMapping("/ingresar")
+    public Boolean ingresar(@RequestParam String correo, @RequestParam String contrasenya);
 
-        @GetMapping("/inicio")
-        public UsuarioDto inicio(@RequestParam Integer idUsuario);
+    @GetMapping("/inicio")
+    public UsuarioDto inicio(@RequestParam Integer idUsuario);
 
-        @GetMapping("/perfil")
-        public UsuarioDto3 perfil(@RequestParam Integer idUsuario);
+    @GetMapping("/perfil")
+    public UsuarioDto3 perfil(@RequestParam Integer idUsuario);
 
-        @PostMapping("/guardarPerfil")
-        public void guardarPerfil(@RequestParam Integer id, @RequestParam String contrasenya,
-                        @RequestParam String nombre, @RequestParam String correo, @RequestParam String telefono,
-                        @RequestParam Boolean modoOscuro, @RequestParam Boolean verificado);
+    @PostMapping("/guardarPerfil")
+    public void guardarPerfil(@RequestParam Integer id, @RequestParam String contrasenya,
+                    @RequestParam String nombre, @RequestParam String correo, @RequestParam String telefono,
+                    @RequestParam Boolean modoOscuro, @RequestParam Boolean verificado);
 
-        @GetMapping("/contrasenya")
-        public UsuarioDto contrasenya(@RequestParam Integer idUsuario);
+    @GetMapping("/contrasenya")
+    public UsuarioDto contrasenya(@RequestParam Integer idUsuario);
 
-        @PostMapping("/guardarcontrasenya")
-        public void guardarContrasenya(@RequestParam String contrasenya, @RequestParam Integer idUsuario);
+    @PostMapping("/guardarcontrasenya")
+    public void guardarContrasenya(@RequestParam String contrasenya, @RequestParam Integer idUsuario);
 
-        @GetMapping("/misMovimientos")
-        public UsuarioDto misMov(@RequestParam Integer idUsuario);
+    @GetMapping("/misMovimientos")
+    public UsuarioDto misMov(@RequestParam Integer idUsuario);
 
     @GetMapping("/grupo/{idGrupo}")
     public GrupoDto2 verGrupos(@RequestParam Integer idGrupo);
@@ -124,4 +124,6 @@ public interface BackFeign {
     @GetMapping("/misGrupos")
     public GrupoDto5 misGrupos(@RequestParam Integer idUsuario);
     
+    @GetMapping("/confirmar")
+    public Boolean confirmarCuenta(@RequestParam String token);
 }

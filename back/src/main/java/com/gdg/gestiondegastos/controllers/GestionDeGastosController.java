@@ -17,6 +17,7 @@ import com.gdg.gestiondegastos.dto.MovimientoDto;
 import com.gdg.gestiondegastos.dto.MovimientoGrupoDto;
 import com.gdg.gestiondegastos.dto.PresupuestoDto;
 import com.gdg.gestiondegastos.dto.TablaBSDto;
+import com.gdg.gestiondegastos.dto.TokenEntityDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto2;
 import com.gdg.gestiondegastos.dto.UsuarioGrupoDto;
@@ -41,6 +42,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -78,49 +80,54 @@ public class GestionDeGastosController {
     }
 
     @PostMapping("/crear")
-    public void crear(Usuario usuario) throws ClassNotFoundException, SQLException {
-        repoUsuario.save(usuario);
-        Grupo grupo = new Grupo();
-        grupo.setNombre("Mi presupuesto personal");
-        grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
-        Grupo grupoCreado = repoGrupo.save(grupo);
-        Presupuesto pre = new Presupuesto();
-        pre.setCantidadInicio(0.0);
-        pre.setCantidadFinal(0.0);
-        pre.setFechaInicio(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
-        pre.setGrupo(grupoCreado);
-        repoPresupuesto.save(pre);
-        ArrayList<UsuarioGrupo> ug = new ArrayList<>();
-        ug.add(new UsuarioGrupo(0, Boolean.TRUE, usuario, grupoCreado, new ArrayList<>()));
-        repoUsuarioGrupo.save(ug.get(0));
-        usuario.setUsuarioGrupo(ug);
-        usuario.setVerificado(false);
-        usuario.setModoOscuro(false);
-        TokenEntity confirm = new TokenEntity(usuario);
-        repoToken.save(confirm);
-        SimpleMailMessage correo = new SimpleMailMessage();
-        correo.setTo(usuario.getCorreo());
-        correo.setSubject("Complete su registro");
-        correo.setFrom("gestiondegastoshiberus@gmail.com");
-        correo.setText(
-                "Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8080/confirmar?token="
-                        + confirm.getConfirmacion());
-        service.enviarCorreo(correo);
-        // return "Se le ha enviado un correo de confirmación al correo " +
-        // usuario.getCorreo();
-
+    public Boolean crear(Usuario usuario) throws ClassNotFoundException, SQLException {
+        if(repoUsuario.findByCorreo(usuario.getCorreo())==null){
+            repoUsuario.save(usuario);
+            Grupo grupo = new Grupo();
+            grupo.setNombre("Mi presupuesto personal");
+            grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
+            Grupo grupoCreado = repoGrupo.save(grupo);
+            Presupuesto pre = new Presupuesto();
+            pre.setCantidadInicio(0.0);
+            pre.setCantidadFinal(0.0);
+            pre.setFechaInicio(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
+            pre.setGrupo(grupoCreado);
+            repoPresupuesto.save(pre);
+            ArrayList<UsuarioGrupo> ug = new ArrayList<>();
+            ug.add(new UsuarioGrupo(0, Boolean.TRUE, usuario, grupoCreado, new ArrayList<>()));
+            repoUsuarioGrupo.save(ug.get(0));
+            usuario.setUsuarioGrupo(ug);
+            usuario.setVerificado(false);
+            usuario.setModoOscuro(false);
+            TokenEntity confirm = new TokenEntity(usuario);
+            repoToken.save(confirm);
+            SimpleMailMessage correo = new SimpleMailMessage();
+            correo.setTo(usuario.getCorreo());
+            correo.setSubject("Complete su registro");
+            correo.setFrom("gestiondegastoshiberus@gmail.com");
+            correo.setText(
+                    "Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8082/gestion/confirmar?token="
+                            + confirm.getConfirmacion());
+            service.enviarCorreo(correo);
+            return true;
+        }else{
+            return false;
+        }
     }
 
-    @RequestMapping(value = "/confirmar", method = { RequestMethod.GET, RequestMethod.POST })
-    public String confirmarCuenta(@RequestParam("token") String token) {
+    @Transactional
+    @GetMapping("/confirmar")
+    public Boolean confirmarCuenta(@RequestParam String token) {
         TokenEntity t = repoToken.findByConfirmacion(token);
         if (t != null) {
             Usuario usuario = repoUsuario.findByCorreo(t.getUsuario().getCorreo());
+           // UsuarioDto user=mapper.map(usuario, UsuarioDto.class);
             usuario.setVerificado(true);
             repoUsuario.save(usuario);
-            return "Usuario validado con exito";
+            repoToken.borrarToken(t.getId());
+            return true;
         } else {
-            return "El link ha caducado.";
+            return false;
         }
     }
 
@@ -137,9 +144,6 @@ public class GestionDeGastosController {
         return m;
     }
 
-    // Nota de Jorge: El problema estaba en que dentro de grupo hay un campo
-    // presupuesto y se estaba intentando rellenar. He cambiado el parámetro de
-    // presupuesto a pPresupuesto.
     @PostMapping("/inicio/guardarGrupo")
     public void guardarGrupo(Grupo grupo, Double pPresupuesto, Integer pIdUsuario) {
         grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
@@ -160,9 +164,7 @@ public class GestionDeGastosController {
     @PostMapping("/ingresar")
     public Boolean ingresar(String correo[], String[] contrasenya) {
         Usuario usuario = repoUsuario.findByCorreo(correo[0]);
-        if (!usuario.getVerificado())
-            return false;
-        return (usuario.getNombre() != null);
+        return usuario.getVerificado();
     }
 
     @GetMapping("/inicio") // Terminado
@@ -257,12 +259,10 @@ public class GestionDeGastosController {
     @GetMapping("/grupo/{idGrupo}/borrarUsuario")
     public Boolean borrarUsuario(Integer idUsuarioGrupo, Integer idGrupo) {
         repoUsuarioGrupo.deleteById(idUsuarioGrupo);
-
         if (repoUsuarioGrupo.leerPorGrupo(idGrupo).isEmpty()) {
             repoGrupo.deleteById(idGrupo);
             return true;
         }
-
         return false;
     }
 

@@ -28,8 +28,8 @@ public class TokenEntity {
     
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name="token_id")
-    private Integer tokenid;
+    @Column(name="id")
+    private Integer id;
     
     @Column(name="confirmacion")
     private String confirmacion;
