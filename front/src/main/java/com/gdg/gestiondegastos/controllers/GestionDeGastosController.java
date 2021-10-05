@@ -49,6 +49,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/gestion")
@@ -95,27 +96,26 @@ public class GestionDeGastosController {
     }
 
     @PostMapping("/crear")
-    public String crear(Model m, UsuarioDto usuario) throws ClassNotFoundException, SQLException {
-        
+    public String crear(Model m, UsuarioDto usuario, RedirectAttributes redirectAttrs) throws ClassNotFoundException, SQLException {
         Boolean b=feign.crear( usuario.getNombre(), usuario.getCorreo(),clave.encode(usuario.getContrasenya()),
                 usuario.getTelefono(), Boolean.FALSE, false);
         if(b){
-            m.addAttribute("msg", "Usuario registrado con exito");
+            redirectAttrs.addFlashAttribute("msg", "Usuario registrado con exito. Revise su bandeja de entrada y verifique su cuenta");
             return "redirect:/gestion/login";
         }else{
-            m.addAttribute("msg", "Usuario ya registrado, pruebe con otro");
+            redirectAttrs.addFlashAttribute("msg", "Usuario ya registrado, pruebe con otro");
             return "redirect:/gestion/agregar";
         }
     }
     
     @GetMapping("/confirmar")
-    public String confirmarCuenta(Model m, String token){
+    public String confirmarCuenta(Model m, String token, RedirectAttributes redirectAttrs){
         Boolean t=feign.confirmarCuenta(token);
         if(t){
-            m.addAttribute("msg", "Usuario verificado con exito");
+            redirectAttrs.addFlashAttribute("msg", "Usuario verificado con exito");
             return "redirect:/gestion/login";
         }else{
-            m.addAttribute("msg", "El usuario no se ha verificado");
+            redirectAttrs.addFlashAttribute("msg", "El usuario no se ha verificado");
             return "redirect:/gestion/error";
         }
         
