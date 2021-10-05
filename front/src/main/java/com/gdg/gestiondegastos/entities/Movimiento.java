@@ -35,7 +35,7 @@ public class Movimiento {
 
     // @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime fecha;
+    private Date fecha;
 
     private String concepto;
     private Double cantidad;
