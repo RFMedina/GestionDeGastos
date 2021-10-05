@@ -326,7 +326,7 @@ public class GestionDeGastosController {
                         + "\n Importe: " + mov.getCantidad() + "\n Añadido por: "
                         + repoUsuarioGrupo.findById(idUsuarioGrupo).get().getUsuario().getNombre()
                         + "\n Acceda a su grupo para ver todos los movimientos con el siguiente link "
-                        + "\n http://localhost:8080/gestion");
+                        + "\n http://localhost:8082/gestion/grupo/"+idGrupo);
                 service.enviarCorreo(correo);
             }
         }
