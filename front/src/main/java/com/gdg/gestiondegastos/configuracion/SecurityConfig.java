@@ -38,7 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
     protected void configure(HttpSecurity http) throws Exception {
         
         
-        http.csrf().disable().authorizeRequests().antMatchers("/gestion/agregar").anonymous().antMatchers("/gestion/crear").anonymous().antMatchers("/gestion").permitAll().antMatchers("/gestion/ingresar").anonymous()
+        http.csrf().disable().authorizeRequests().antMatchers("/gestion/agregar").anonymous().antMatchers("/gestion/crear").anonymous().antMatchers("/gestion").permitAll().antMatchers("/gestion/confirmar").permitAll().antMatchers("/gestion/ingresar").anonymous()
         .antMatchers("/gestion/**").authenticated().antMatchers("/ingresar").authenticated()
             .and().formLogin().loginPage("/gestion/login").permitAll().successForwardUrl("/gestion/paginaPrincipal").failureForwardUrl("/gestion/login");
         //http.formLogin().loginPage("/gestion/login").successForwardUrl("/gestion/paginaPrincipal").failureForwardUrl("/gestion/login");

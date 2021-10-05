@@ -19,7 +19,7 @@
                 <input class="inputLogin" style="width: 100%;" id="correo" name="correo" type="email"
                     th:field="*{correo}" />
                 <input class="inputLogin" style="width: 100%;" id="tlf" name="tlf" type="number"
-                   th:field="*{telefono}" />
+                    th:field="*{telefono}" />
                 <a type="button" class="btnCambiarPass" th:onclick="cambiarContraseña()">Cambiar
                     contraseña</a>
                 <button class="btnLogin btnLoginColor" style="width: 100%;" type="submit">Guardar</button>
@@ -34,7 +34,8 @@
                 success: function (formulario) {
                     bootbox
                         .dialog({
-                            title: "Cambia la contraseña",
+                            onEscape: true,
+                            closeButton: false,
                             message: formulario,
                         })
                         .find("div.modal-content")

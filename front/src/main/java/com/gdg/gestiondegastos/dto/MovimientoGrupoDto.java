@@ -1,6 +1,5 @@
 package com.gdg.gestiondegastos.dto;
 
-import java.time.LocalDateTime;
 import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Data;
