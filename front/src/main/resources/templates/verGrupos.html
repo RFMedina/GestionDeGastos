@@ -34,7 +34,7 @@
                     </thead>
                     <tbody>
 
-                        <tr style="cursor: pointer;" type="url" id="grupo" th:each="ug:${grupos.grupos}"
+                        <tr style="cursor: pointer;" type="url" id="grupo" th:each="ug,index:${grupos.grupos}"
                             th:onclick="|mostrarGrupo(${ug.id})|">
                             <td class="negritaPrincipal" th:text="${ug.nombre}"></td>
                             <td th:text="${#dates.format(ug.fechaCreacion, 'dd-MM-yy HH:mm') }"></td>
@@ -43,7 +43,7 @@
                                 ${p.cantidadFinal >= 0} ? 'Verde' : 'Rojo'"></td>
                             </th:block>
                             <td>
-                                <a class="botonRojo" th:href="@{|${ug.id}/borrar|}">Eliminar grupo</a>
+                                <a th:if="${!index.first}" class="botonRojo" th:href="@{|${ug.id}/borrar|}">Eliminar grupo</a>
                             </td>
 
                         </tr>
