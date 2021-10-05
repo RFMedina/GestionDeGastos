@@ -235,7 +235,8 @@ public class GestionDeGastosController {
     //
     @PostMapping("/grupo/guardarMovimiento")
     public String guardarMovimiento(Model m, MovimientoDto mov, Integer idUsuarioGrupo, Integer idGrupo) {
-        feign.guardarMovimiento(mov.getId(), mov.getCategoria(), mov.getCantidad(), mov.getConcepto(), mov.getFecha(), idUsuarioGrupo, idGrupo);
+        feign.guardarMovimiento(mov.getId(), mov.getCategoria(), mov.getCantidad(), mov.getConcepto(), mov.getFecha(),
+                idUsuarioGrupo, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }
 
