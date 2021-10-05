@@ -7,18 +7,12 @@ import com.gdg.gestiondegastos.dto.MovimientoDto;
 import com.gdg.gestiondegastos.dto.NuevoGrupoDto;
 import com.gdg.gestiondegastos.dto.NuevoMovDto;
 import java.sql.SQLException;
-import java.util.stream.Collectors;
-
-import com.gdg.gestiondegastos.dto.MovimientoGrupoDto;
 import com.gdg.gestiondegastos.dto.TablaBSDto;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import com.gdg.gestiondegastos.dto.UsuarioDto;
-import com.gdg.gestiondegastos.dto.UsuarioDto3;
-import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Usuario;
-import com.gdg.gestiondegastos.entities.UsuarioGrupo;
 import com.gdg.gestiondegastos.feign.BackFeign;
 import com.gdg.gestiondegastos.repositories.GrupoRepository;
 import com.gdg.gestiondegastos.repositories.MovimientosRepository;
@@ -30,10 +24,6 @@ import com.gdg.gestiondegastos.services.CorreoService;
 import org.modelmapper.ModelMapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -46,7 +36,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
@@ -95,8 +84,8 @@ public class GestionDeGastosController {
 
     @PostMapping("/crear")
     public String crear(Model m, UsuarioDto usuario) throws ClassNotFoundException, SQLException {
-        
-        feign.crear( usuario.getNombre(), usuario.getCorreo(),clave.encode(usuario.getContrasenya()),
+
+        feign.crear(usuario.getNombre(), usuario.getCorreo(), clave.encode(usuario.getContrasenya()),
                 usuario.getTelefono(), Boolean.FALSE, false);
         return "redirect:/gestion/login";
     }
@@ -168,7 +157,7 @@ public class GestionDeGastosController {
         m.addAttribute("movimientos", g.getMovimientos());
         m.addAttribute("presupuesto", g.getPresupuesto());
         return "grupos";
-    } 
+    }
 
     @GetMapping("{idGrupo}/borrar")
     public String borrarGrupos(@PathVariable Integer idGrupo) {
@@ -178,11 +167,14 @@ public class GestionDeGastosController {
 
     @GetMapping("/grupo/{idGrupo}/gestionar")
     public String gestionarGrupos(Model m, @PathVariable Integer idGrupo) {
-        GestionarResponseDto res=feign.gestionarGrupos(idGrupo);
-        m.addAttribute("grupo", res.getGrupo()) ;
-        m.addAttribute("usuarioGrupo", res.getUsuarioGrupo()) ;
+        UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        GestionarResponseDto res = feign.gestionarGrupos(usuValidado.getId(), idGrupo);
+        m.addAttribute("grupo", res.getGrupo());
+        m.addAttribute("usuarioGrupo", res.getUsuarioGrupo());
+        m.addAttribute("isAdmin", res.getUsuYGrupo());
+
         return "gestionGrupos";
-    } 
+    }
 
     /*
      * //Sin ajax
@@ -195,11 +187,12 @@ public class GestionDeGastosController {
     // Con ajax
     @GetMapping("/grupo/{idGrupo}/borrarUsuario")
     public String borrarUsuario(Integer idUsuarioGrupo, Integer idGrupo) {
-        Boolean b=feign.borrarUsuario(idUsuarioGrupo, idGrupo);
-        if(b)
+        Boolean b = feign.borrarUsuario(idUsuarioGrupo, idGrupo);
+        if (b) {
             return "redirect:/gestion/inicio";
-        else
+        } else {
             return "redirect:/gestion/grupo/{idGrupo}";
+        }
     }
 
     @GetMapping("/grupo/nuevoUsuarioGrupo")
@@ -209,7 +202,7 @@ public class GestionDeGastosController {
     }
 
     @GetMapping("grupo/cambiarNombre")
-    public String cambiarNombreGrupo(String nombre,@PathVariable Integer idGrupo) {
+    public String cambiarNombreGrupo(String nombre, @PathVariable Integer idGrupo) {
         feign.cambiarNombreGrupo(nombre, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }
@@ -232,19 +225,20 @@ public class GestionDeGastosController {
     @GetMapping("/grupo/{idGrupo}/nuevoMovimiento")
     public String nuevoMovimientos(Model m, @PathVariable Integer idGrupo) {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        NuevoMovDto mov = feign.nuevoMovimientos(idGrupo, usuValidado.getId()) ;
-        m.addAttribute("movimiento",mov.getMovimiento());
-        m.addAttribute("idUsuarioGrupo",mov.getIdUsuarioGrupo() );
-        m.addAttribute("idGrupo",mov.getIdGrupo());
+        NuevoMovDto mov = feign.nuevoMovimientos(idGrupo, usuValidado.getId());
+        m.addAttribute("movimiento", mov.getMovimiento());
+        m.addAttribute("idUsuarioGrupo", mov.getIdUsuarioGrupo());
+        m.addAttribute("idGrupo", mov.getIdGrupo());
         return "nuevoMov";
     }
 
     //
     @PostMapping("/grupo/guardarMovimiento")
     public String guardarMovimiento(Model m, MovimientoDto mov, Integer idUsuarioGrupo, Integer idGrupo) {
-        feign.guardarMovimiento(mov.getId(), mov.getCategoria(), mov.getCantidad(),mov.getConcepto(),mov.getFecha(), idUsuarioGrupo, idGrupo);
+        feign.guardarMovimiento(mov.getId(), mov.getCategoria(), mov.getCantidad(), mov.getConcepto(), mov.getFecha(), idUsuarioGrupo, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }
+
     @GetMapping("/logout")
     public String logout(HttpServletRequest request, HttpServletResponse response) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -257,7 +251,7 @@ public class GestionDeGastosController {
     @GetMapping("/misGrupos")
     public String misGrupos(Model m) {
         UsuarioDto user = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-        m.addAttribute("grupos",feign.misGrupos(user.getId()));
+        m.addAttribute("grupos", feign.misGrupos(user.getId()));
         return "verGrupos";
     }
 

@@ -28,7 +28,7 @@
                     <th>Nombre</th>
                     <th>Correo</th>
                     <th>Teléfono</th>
-                    <th></th>
+                    <th th:if="${isAdmin}">Accion</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,7 +36,7 @@
                     <td class='align-middle' th:text="${ug.usuario.nombre}"></td>
                     <td class='align-middle' th:text="${ug.usuario.correo}"></td>
                     <td class='align-middle' th:text="${ug.usuario.telefono}"></td>
-                    <td><a class="botonRojo"
+                    <td><a class="botonRojo" th:if="${isAdmin}"
                             th:href="@{|${grupo.id}/borrarUsuario|(idUsuarioGrupo=${ug.id},idGrupo=${grupo.id})}">Eliminar</a>
                     </td>
                 </tr>
