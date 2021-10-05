@@ -171,6 +171,7 @@ public class GestionDeGastosController {
         GestionarResponseDto res = feign.gestionarGrupos(usuValidado.getId(), idGrupo);
         m.addAttribute("grupo", res.getGrupo());
         m.addAttribute("usuarioGrupo", res.getUsuarioGrupo());
+        m.addAttribute("yo", usuValidado);
         m.addAttribute("isAdmin", res.getUsuYGrupo());
 
         return "gestionGrupos";
