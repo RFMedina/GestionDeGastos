@@ -5,8 +5,8 @@
  */
 package com.gdg.gestiondegastos.services;
 
+import javax.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import org.springframework.stereotype.Service;
  */
 @Service("correoService")
 public class CorreoService {
-    private JavaMailSender javaMS;
+    public JavaMailSender javaMS;
     
     @Autowired
     public CorreoService(JavaMailSender jms){
@@ -25,7 +25,7 @@ public class CorreoService {
     }
     
     @Async
-    public void enviarCorreo(SimpleMailMessage correo){
+    public void enviarCorreo(MimeMessage correo){
         javaMS.send(correo);
     }
 }

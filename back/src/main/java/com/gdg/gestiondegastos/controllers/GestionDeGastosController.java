@@ -1,5 +1,6 @@
 package com.gdg.gestiondegastos.controllers;
 
+import com.gdg.gestiondegastos.dto.ContactosDto;
 import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
@@ -21,12 +22,15 @@ import com.gdg.gestiondegastos.dto.TokenEntityDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto2;
 import com.gdg.gestiondegastos.dto.UsuarioGrupoDto;
+import com.gdg.gestiondegastos.dto.UsuarioInvDto;
+import com.gdg.gestiondegastos.entities.Contactos;
 import com.gdg.gestiondegastos.entities.Grupo;
 import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Presupuesto;
 import com.gdg.gestiondegastos.entities.TokenEntity;
 import com.gdg.gestiondegastos.entities.Usuario;
 import com.gdg.gestiondegastos.entities.UsuarioGrupo;
+import com.gdg.gestiondegastos.repositories.ContactosRepository;
 import com.gdg.gestiondegastos.repositories.GrupoRepository;
 import com.gdg.gestiondegastos.repositories.MovimientosRepository;
 import com.gdg.gestiondegastos.repositories.PresupuestoRepository;
@@ -34,6 +38,8 @@ import com.gdg.gestiondegastos.repositories.TokenRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioGrupoRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioRepository;
 import com.gdg.gestiondegastos.services.CorreoService;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +48,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -67,6 +74,8 @@ public class GestionDeGastosController {
     private MovimientosRepository repoMovimientos;
     @Autowired
     private TokenRepository repoToken;
+    @Autowired
+    private ContactosRepository repoContactos;
     @Autowired
     private ModelMapper mapper;
     @Autowired
@@ -101,14 +110,19 @@ public class GestionDeGastosController {
             usuario.setModoOscuro(false);
             TokenEntity confirm = new TokenEntity(usuario);
             repoToken.save(confirm);
-            SimpleMailMessage correo = new SimpleMailMessage();
-            correo.setTo(usuario.getCorreo());
-            correo.setSubject("Complete su registro");
-            correo.setFrom("gestiondegastoshiberus@gmail.com");
-            correo.setText(
-                    "Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8082/gestion/confirmar?token="
-                            + confirm.getConfirmacion());
-            service.enviarCorreo(correo);
+            try{
+                MimeMessage message=service.javaMS.createMimeMessage();
+                message.setSubject("Complete su registro");
+                MimeMessageHelper helper = new MimeMessageHelper(message,"utf-8");
+                String html="<p>Confirme su cuenta haciendo click en el siguiente enlace de validación:</p>"
+                            + "<button><a href='http://localhost:8082/gestion/confirmar?token="+confirm.getConfirmacion()+"'>Pulse aqui para validar</a></button>";
+                helper.setFrom("gestiondegastoshiberus@gmail.com");
+                helper.setTo(usuario.getCorreo());
+                helper.setText(html,true);
+                service.javaMS.send(message);
+            }catch(MessagingException e){
+                e.printStackTrace();
+            }
             return true;
         }else{
             return false;
@@ -121,7 +135,6 @@ public class GestionDeGastosController {
         TokenEntity t = repoToken.findByConfirmacion(token);
         if (t != null) {
             Usuario usuario = repoUsuario.findByCorreo(t.getUsuario().getCorreo());
-           // UsuarioDto user=mapper.map(usuario, UsuarioDto.class);
             usuario.setVerificado(true);
             repoUsuario.save(usuario);
             repoToken.borrarToken(t.getId());
@@ -312,19 +325,45 @@ public class GestionDeGastosController {
                 .collect(Collectors.toList());
         for (String c : listaCorreo) {
             if (!c.equals(repoUsuarioGrupo.findById(idUsuarioGrupo).get().getUsuario().getCorreo())) {
-                SimpleMailMessage correo = new SimpleMailMessage();
-                correo.setTo(c);
-                correo.setSubject("Nuevo movimiento en su grupo " + repoGrupo.findById(idGrupo).get().getNombre());
-                correo.setFrom("gestiondegastoshiberus@gmail.com");
-                correo.setText("Se ha añadido un nuevo moviemiento a su grupo "
-                        + repoGrupo.findById(idGrupo).get().getNombre() + "\n " + "     Concepto: " + mov.getConcepto()
-                        + "\n Importe: " + mov.getCantidad() + "\n Añadido por: "
-                        + repoUsuarioGrupo.findById(idUsuarioGrupo).get().getUsuario().getNombre()
-                        + "\n Acceda a su grupo para ver todos los movimientos con el siguiente link "
-                        + "\n http://localhost:8082/gestion/grupo/"+idGrupo);
-                service.enviarCorreo(correo);
+                try{
+                    MimeMessage message=service.javaMS.createMimeMessage();
+                    message.setSubject("Nuevo movimiento añadido a su grupo "+repoGrupo.findById(idGrupo).get().getNombre());
+                    MimeMessageHelper helper = new MimeMessageHelper(message,"utf-8");
+                    String html="<h3>Nuevo movimiento añadido a su grupo "+repoGrupo.findById(idGrupo).get().getNombre()+"</h3>"+
+                                "<p>Se ha añadido un nuevo movimiento a su grupo "+repoGrupo.findById(idGrupo).get().getNombre()+""
+                                + "<br> Concepto: "+mov.getConcepto()+""
+                                + "<br> Importe: "+mov.getCantidad()
+                                + "<br> Añadido por: "+repoUsuarioGrupo.findById(idUsuarioGrupo).get().getUsuario().getNombre()
+                                + "<br> Acceda a su grupo para ver todos los movimientos: </p>"
+                                + "<button><a href='http://localhost:8082/gestion/grupo/"+idGrupo+"'>Pulse aqui ver los movimientos</a></button>";
+                    helper.setFrom("gestiondegastoshiberus@gmail.com");
+                    helper.setTo(c);
+                    helper.setText(html,true);
+                    service.javaMS.send(message);
+                }catch(MessagingException e){
+                    e.printStackTrace();
+                }
             }
         }
+    }
+    
+    @GetMapping("/misContactos")
+    public Map<String, Object> misContactos(Integer idUsuario){
+        Map<String, Object> m=new HashMap<>();
+        m.put("contactos", repoContactos.findByUsuarioHost(idUsuario).stream()
+                .map(x->mapper.map(x.getUsuarioInv(), UsuarioDto2.class)).collect(Collectors.toList()));
+        return m;
+    }
+    
+    @GetMapping("/misContactos/nuevoContacto") // Terminado
+    public Map<String, Object> nuevoContacto(Integer idUsuario) {
+
+        Map<String, Object> m = new HashMap<>();
+
+        Contactos c=new Contactos();
+        c.setUsuarioHost(repoContactos.leerPorUsuarioHost(idUsuario));
+        m.put("contacto", mapper.map(c, ContactosDto.class));
+        return m;
     }
 
     @GetMapping("/misGrupos") // Terminaddo
