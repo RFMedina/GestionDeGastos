@@ -113,13 +113,13 @@ public interface BackFeign {
     public Boolean borrarUsuario(@RequestParam Integer idUsuarioGrupo, @PathVariable Integer idGrupo);
     
     @GetMapping("/grupo/nuevoUsuarioGrupo")
-    public void anadirUsuario(String correo, @RequestParam Integer idGrupo);
+    public void anadirUsuario(@RequestParam String correo, @RequestParam Integer idGrupo);
     
     @GetMapping("{idGrupo}/borrar")
     public void borrarGrupos(@RequestParam Integer idGrupo);
     
     @GetMapping("grupo/cambiarNombre")
-    public void cambiarNombreGrupo(String nombre, @RequestParam Integer idGrupo);
+    public void cambiarNombreGrupo(@RequestParam String nombre, @RequestParam Integer idGrupo);
     
     @GetMapping("/misGrupos")
     public GrupoDto5 misGrupos(@RequestParam Integer idUsuario);

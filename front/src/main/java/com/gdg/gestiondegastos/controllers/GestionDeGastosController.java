@@ -217,13 +217,13 @@ public class GestionDeGastosController {
     }
 
     @GetMapping("/grupo/nuevoUsuarioGrupo")
-    public String anadirUsuario(Model m, String correo, @RequestParam Integer idGrupo) {
+    public String anadirUsuario(String correo, @RequestParam Integer idGrupo) {
         feign.anadirUsuario(correo, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }
 
     @GetMapping("grupo/cambiarNombre")
-    public String cambiarNombreGrupo(String nombre, @PathVariable Integer idGrupo) {
+    public String cambiarNombreGrupo(String nombre, @RequestParam Integer idGrupo) {
         feign.cambiarNombreGrupo(nombre, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }
