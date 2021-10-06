@@ -39,7 +39,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter{
         
         
         http.csrf().disable().authorizeRequests().antMatchers("/gestion/agregar").anonymous().antMatchers("/gestion/crear").anonymous().antMatchers("/gestion").permitAll().antMatchers("/gestion/confirmar").permitAll().antMatchers("/gestion/ingresar").anonymous()
-        .antMatchers("/gestion/**").authenticated().antMatchers("/ingresar").authenticated()
+        .antMatchers("/gestion/**").authenticated().antMatchers("/ingresar").authenticated().antMatchers("/inicio").authenticated()
             .and().formLogin().loginPage("/gestion/login").permitAll().successForwardUrl("/gestion/paginaPrincipal").failureForwardUrl("/gestion/login");
         //http.formLogin().loginPage("/gestion/login").successForwardUrl("/gestion/paginaPrincipal").failureForwardUrl("/gestion/login");
         http.logout().logoutSuccessUrl("/gestion").invalidateHttpSession(true).deleteCookies("JSESSIONID").clearAuthentication(true);

@@ -87,28 +87,28 @@ public class GestionDeGastosController {
 
     @PostMapping("/crear")
     public String crear(Model m, UsuarioDto usuario, RedirectAttributes redirectAttrs) throws ClassNotFoundException, SQLException {
-        Boolean b=feign.crear( usuario.getNombre(), usuario.getCorreo(),clave.encode(usuario.getContrasenya()),
+        Boolean b = feign.crear(usuario.getNombre(), usuario.getCorreo(), clave.encode(usuario.getContrasenya()),
                 usuario.getTelefono(), Boolean.FALSE, false);
-        if(b){
+        if (b) {
             redirectAttrs.addFlashAttribute("msg", "Usuario registrado con exito. Revise su bandeja de entrada y verifique su cuenta");
             return "redirect:/gestion/login";
-        }else{
+        } else {
             redirectAttrs.addFlashAttribute("msg", "Usuario ya registrado, pruebe con otro");
             return "redirect:/gestion/agregar";
         }
     }
-    
+
     @GetMapping("/confirmar")
-    public String confirmarCuenta(Model m, String token, RedirectAttributes redirectAttrs){
-        Boolean t=feign.confirmarCuenta(token);
-        if(t){
+    public String confirmarCuenta(Model m, String token, RedirectAttributes redirectAttrs) {
+        Boolean t = feign.confirmarCuenta(token);
+        if (t) {
             redirectAttrs.addFlashAttribute("msg", "Usuario verificado con exito");
             return "redirect:/gestion/login";
-        }else{
+        } else {
             redirectAttrs.addFlashAttribute("msg", "El usuario no se ha verificado");
             return "redirect:/gestion/error";
         }
-        
+
     }
 
     @Autowired
@@ -116,11 +116,12 @@ public class GestionDeGastosController {
 
     @PostMapping("/ingresar") // hacer login
     public String ingresar(Model m, String correo[], String[] contrasenya, RedirectAttributes redirectAttrs) {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(correo[0], contrasenya[0]);
-        Authentication auth = am.authenticate(token);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+
         Boolean v = feign.ingresar(correo[0], contrasenya[0]);
         if (v) {
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(correo[0], contrasenya[0]);
+            Authentication auth = am.authenticate(token);
+            SecurityContextHolder.getContext().setAuthentication(auth);
             return "redirect:/gestion/inicio";
         } else {
             redirectAttrs.addFlashAttribute("msg", "Usted no está validado o sus creadenciales son erroneas");
