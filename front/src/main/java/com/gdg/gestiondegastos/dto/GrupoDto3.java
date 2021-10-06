@@ -23,4 +23,5 @@ public class GrupoDto3 {
     private String nombre;
     private Date fechaCreacion;
     private List<PresupuestoDto> presupuesto;
+    private Boolean rol;
 }

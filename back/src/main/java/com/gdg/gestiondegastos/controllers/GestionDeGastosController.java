@@ -370,7 +370,11 @@ public class GestionDeGastosController {
     public Map<String, Object> misGrupos(Integer idUsuario) {
         Map<String, Object> m = new HashMap<>();
         m.put("grupos", repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
-                .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).collect(Collectors.toList()));
+                .map(x -> {
+                    GrupoDto dto=mapper.map(x.getGrupo(), GrupoDto.class);
+                    dto.setRol(x.getRol());
+                    return dto;
+                 }).collect(Collectors.toList()));
         return m;
     }
 
