@@ -5,8 +5,6 @@
  */
 package com.gdg.gestiondegastos.dto;
 
-import java.util.Date;
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,10 +16,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class GrupoDto3 {
-    private Integer id;
-    private String nombre;
-    private Date fechaCreacion;
-    private List<PresupuestoDto> presupuesto;
-    private Boolean rol;
+public class NuevoContactoDto {
+    private UsuarioDto3 usuarioHost;
+    private Integer idUsuarioInv;
 }

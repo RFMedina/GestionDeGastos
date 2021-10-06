@@ -15,7 +15,7 @@
                 nombre</button>
         </form>
 
-        <form action="/gestion/grupo/nuevoUsuarioGrupo">
+        <form action="/gestion/grupo/nuevoUsuarioGrupo" th:if="${grupo.id != usuarioGrupo[0].usuario.id}">
             <div style="float:left; width: 70%;">
                 <input class="cantidad" name="correo" placeholder="Pon el correo del usuario">
                 <input type="hidden" name="idGrupo" th:value="${grupo.id}"/>
@@ -28,7 +28,7 @@
                     <th>Nombre</th>
                     <th>Correo</th>
                     <th>Teléfono</th>
-                    <th th:if="${isAdmin}">Accion</th>
+                    <th th:if="${isAdmin && grupo.id != usuarioGrupo[0].usuario.id}">Accion</th>
                 </tr>
             </thead>
             <tbody>
@@ -36,8 +36,8 @@
                     <td class='align-middle' th:text="${ug.usuario.nombre}"></td>
                     <td class='align-middle' th:text="${ug.usuario.correo}"></td>
                     <td class='align-middle' th:text="${ug.usuario.telefono}"></td>
-                    <td th:if="${isAdmin}"><a class="botonRojo" 
-                        th:if="${yo.id != ug.usuario.id || index.size == 1}"    th:href="@{|${grupo.id}/borrarUsuario|(idUsuarioGrupo=${ug.id},idGrupo=${grupo.id})}">Eliminar</a>
+                    <td th:if="${isAdmin && grupo.id != usuarioGrupo[0].usuario.id}"><a class="botonRojo" 
+                        th:if="${yo.id != ug.usuario.id || (yo.id == ug.usuario.id && index.size == 1 && grupo.id != ug.usuario.id)}"    th:href="@{|${grupo.id}/borrarUsuario|(idUsuarioGrupo=${ug.id},idGrupo=${grupo.id})}">Eliminar</a>
                     </td>
                 </tr>
             </tbody>

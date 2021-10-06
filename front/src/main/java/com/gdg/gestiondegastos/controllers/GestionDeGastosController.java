@@ -1,9 +1,11 @@
 package com.gdg.gestiondegastos.controllers;
 
+import com.gdg.gestiondegastos.dto.ContactoDto;
 import com.gdg.gestiondegastos.dto.GestionarResponseDto;
 import com.gdg.gestiondegastos.dto.GrupoDto;
 import com.gdg.gestiondegastos.dto.GrupoDto2;
 import com.gdg.gestiondegastos.dto.MovimientoDto;
+import com.gdg.gestiondegastos.dto.NuevoContactoDto;
 import com.gdg.gestiondegastos.dto.NuevoGrupoDto;
 import com.gdg.gestiondegastos.dto.NuevoMovDto;
 import java.sql.SQLException;
@@ -87,42 +89,44 @@ public class GestionDeGastosController {
 
     @PostMapping("/crear")
     public String crear(Model m, UsuarioDto usuario, RedirectAttributes redirectAttrs) throws ClassNotFoundException, SQLException {
-        Boolean b=feign.crear( usuario.getNombre(), usuario.getCorreo(),clave.encode(usuario.getContrasenya()),
+        Boolean b = feign.crear(usuario.getNombre(), usuario.getCorreo(), clave.encode(usuario.getContrasenya()),
                 usuario.getTelefono(), Boolean.FALSE, false);
-        if(b){
+        if (b) {
             redirectAttrs.addFlashAttribute("msg", "Usuario registrado con exito. Revise su bandeja de entrada y verifique su cuenta");
             return "redirect:/gestion/login";
-        }else{
+        } else {
             redirectAttrs.addFlashAttribute("msg", "Usuario ya registrado, pruebe con otro");
             return "redirect:/gestion/agregar";
         }
     }
-    
+
     @GetMapping("/confirmar")
-    public String confirmarCuenta(Model m, String token, RedirectAttributes redirectAttrs){
-        Boolean t=feign.confirmarCuenta(token);
-        if(t){
+    public String confirmarCuenta(Model m, String token, RedirectAttributes redirectAttrs) {
+        Boolean t = feign.confirmarCuenta(token);
+        if (t) {
             redirectAttrs.addFlashAttribute("msg", "Usuario verificado con exito");
             return "redirect:/gestion/login";
-        }else{
+        } else {
             redirectAttrs.addFlashAttribute("msg", "El usuario no se ha verificado");
             return "redirect:/gestion/error";
         }
-        
+
     }
 
     @Autowired
     private AuthenticationManager am;
 
     @PostMapping("/ingresar") // hacer login
-    public String ingresar(Model m, String correo[], String[] contrasenya) {
-        UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(correo[0], contrasenya[0]);
-        Authentication auth = am.authenticate(token);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+    public String ingresar(Model m, String correo[], String[] contrasenya, RedirectAttributes redirectAttrs) {
+
         Boolean v = feign.ingresar(correo[0], contrasenya[0]);
         if (v) {
+            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(correo[0], contrasenya[0]);
+            Authentication auth = am.authenticate(token);
+            SecurityContextHolder.getContext().setAuthentication(auth);
             return "redirect:/gestion/inicio";
         } else {
+            redirectAttrs.addFlashAttribute("msg", "Usted no está validado o sus creadenciales son erroneas");
             return "redirect:/gestion/login";
         }
     }
@@ -216,13 +220,13 @@ public class GestionDeGastosController {
     }
 
     @GetMapping("/grupo/nuevoUsuarioGrupo")
-    public String anadirUsuario(Model m, String correo, @PathVariable Integer idGrupo) {
+    public String anadirUsuario(String correo, @RequestParam Integer idGrupo) {
         feign.anadirUsuario(correo, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }
 
     @GetMapping("grupo/cambiarNombre")
-    public String cambiarNombreGrupo(String nombre, @PathVariable Integer idGrupo) {
+    public String cambiarNombreGrupo(String nombre, @RequestParam Integer idGrupo) {
         feign.cambiarNombreGrupo(nombre, idGrupo);
         return "redirect:/gestion/grupo/" + idGrupo;
     }
@@ -301,9 +305,22 @@ public class GestionDeGastosController {
         return "verMovimientos";
     }
 
-    @GetMapping("/contactos")
+    @GetMapping("/misContactos")
     public String contactos(Model m) {
+        UsuarioDto u=(UsuarioDto)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        ContactoDto c=feign.misContactos(u.getId());
+        c.setId(u.getId());
+        m.addAttribute("contactos", c.getContactos());
+        m.addAttribute("idUsuario", c.getId());
         return "contactos";
+    }
+    
+    @GetMapping("/misContactos/nuevoContacto")
+    public String nuevoContacto(Model m) {
+        UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        NuevoContactoDto c = feign.nuevoContacto(usuValidado.getId());
+        m.addAttribute("contacto", c.getUsuarioHost());
+        return "nuevoContacto";
     }
 
 }

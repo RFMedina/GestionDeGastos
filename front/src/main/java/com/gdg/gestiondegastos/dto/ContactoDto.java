@@ -5,29 +5,19 @@
  */
 package com.gdg.gestiondegastos.dto;
 
-import com.gdg.gestiondegastos.entities.Grupo;
-import com.gdg.gestiondegastos.entities.Presupuesto;
-import java.util.Date;
 import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 /**
  *
- * @author Joche
+ * @author Usuario
  */
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
-public class GrupoDto {
+public class ContactoDto {
     private Integer id;
-    private String nombre;
-    private Date fechaCreacion;
-    private List<PresupuestoDto> presupuesto;
-    private Boolean rol;
-    
-
+    private List<UsuarioDto3> contactos;
 }
