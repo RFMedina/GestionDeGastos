@@ -5,11 +5,13 @@
  */
 package com.gdg.gestiondegastos.feign;
 
+import com.gdg.gestiondegastos.dto.ContactoDto;
 import com.gdg.gestiondegastos.dto.GestionarResponseDto;
 import com.gdg.gestiondegastos.dto.GrupoDto;
 import com.gdg.gestiondegastos.dto.GrupoDto2;
 import com.gdg.gestiondegastos.dto.GrupoDto4;
 import com.gdg.gestiondegastos.dto.GrupoDto5;
+import com.gdg.gestiondegastos.dto.NuevoContactoDto;
 import com.gdg.gestiondegastos.dto.NuevoGrupoDto;
 import com.gdg.gestiondegastos.dto.NuevoMovDto;
 import com.gdg.gestiondegastos.dto.TablaBSDto;
@@ -29,6 +31,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -126,4 +129,10 @@ public interface BackFeign {
     
     @GetMapping("/confirmar")
     public Boolean confirmarCuenta(@RequestParam String token);
+    
+    @GetMapping("/misContactos")
+    public ContactoDto misContactos(@RequestParam Integer idUsuario);
+    
+    @GetMapping("/misContactos/nuevoContacto")
+    public NuevoContactoDto nuevoContacto(@RequestParam Integer idUsuario);
 }

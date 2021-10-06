@@ -1,9 +1,11 @@
 package com.gdg.gestiondegastos.controllers;
 
+import com.gdg.gestiondegastos.dto.ContactoDto;
 import com.gdg.gestiondegastos.dto.GestionarResponseDto;
 import com.gdg.gestiondegastos.dto.GrupoDto;
 import com.gdg.gestiondegastos.dto.GrupoDto2;
 import com.gdg.gestiondegastos.dto.MovimientoDto;
+import com.gdg.gestiondegastos.dto.NuevoContactoDto;
 import com.gdg.gestiondegastos.dto.NuevoGrupoDto;
 import com.gdg.gestiondegastos.dto.NuevoMovDto;
 import java.sql.SQLException;
@@ -302,9 +304,22 @@ public class GestionDeGastosController {
         return "verMovimientos";
     }
 
-    @GetMapping("/contactos")
+    @GetMapping("/misContactos")
     public String contactos(Model m) {
+        UsuarioDto u=(UsuarioDto)(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        ContactoDto c=feign.misContactos(u.getId());
+        c.setId(u.getId());
+        m.addAttribute("contactos", c.getContactos());
+        m.addAttribute("idUsuario", c.getId());
         return "contactos";
+    }
+    
+    @GetMapping("/misContactos/nuevoContacto")
+    public String nuevoContacto(Model m) {
+        UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+        NuevoContactoDto c = feign.nuevoContacto(usuValidado.getId());
+        m.addAttribute("contacto", c.getUsuarioHost());
+        return "nuevoContacto";
     }
 
 }

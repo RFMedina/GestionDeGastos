@@ -17,7 +17,7 @@
 
 
             <div class="divHrPrincipal">
-                <a type="button" class="botonAzul" th:onclick="|mostrarFormularioNuevoGrupo()|">Añadir contacto</a>
+                <a type="button" class="botonAzul" th:onclick="|mostrarFormularioNuevoContacto(${idUsuario})|">Añadir contacto</a>
                 <hr />
             </div>
 
@@ -32,10 +32,10 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr style="cursor: pointer;" type="url" id="contactos">
-                            <td class="negritaPrincipal">Juan Maslevale Questerica</td>
-                            <td>Juan@Juan.com</td>
-                            <td>123123123</td>
+                        <tr style="cursor: pointer;" type="url" id="contactos" th:each="u:${contactos}">
+                            <td th:text="${u.nombre}">Juan Maslevale Questerica</td>
+                            <td th:text="${u.correo}">Juan@Juan.com</td>
+                            <td th:text="${u.telefono}">123123123</td>
                             <td>
                                 <a class="botonRojo">Eliminar usuario</a>
                             </td>
