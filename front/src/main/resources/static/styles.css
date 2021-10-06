@@ -21,12 +21,8 @@ body {
 }
 
 img {
-  margin: 0 auto;
+  margin-left: 280px;
   width: 35px;
-}
-
-#logoInicio {
-  margin: 0 auto;
 }
 
 .no-records-found {
@@ -819,12 +815,16 @@ select:focus {
 .btn-mode.spiderman {
   border-right: 1px solid transparent;
 }
+.btn-mode.hulk {
+  border-right: 1px solid transparent;
+}
 
 .btn-mode.moon:hover,
 .btn-mode.sun:hover,
 .btn-mode.thanos:hover,
 .btn-mode.batman:hover,
-.btn-mode.spiderman:hover {
+.btn-mode.spiderman:hover,
+.btn-mode.hulk:hover {
   color: #242424 !important;
 }
 

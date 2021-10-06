@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.2/fullpage.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
     <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0-beta2/css/all.css">
-    <link id="style" rel="stylesheet" type="text/css" href="/stylesModoThanos.css" />
+    <link id="style" rel="stylesheet" type="text/css" href="/styles.css" />
 
 </head>
 
@@ -91,6 +91,9 @@
             <div id="id-spiderman" class="btn-mode spiderman" title="Modo Spiderman">
                 <i class="fa-light fa-spider-web" onclick='setStyle("/stylesModoSpiderman.css")'></i>
             </div>
+            <div id="id-hulk" class="btn-mode hulk" title="Modo Hulk">
+                <i class="fa-regular fa-bahai" onclick='setStyle("/stylesModoHulk.css")'></i>
+            </div>
             <div id="id-thanos" class="btn-mode thanos" title="Modo Thanos">
                 <i class="fa-solid fa-boxing-glove" onclick='setStyle("/stylesModoThanos.css")'></i>
             </div>
@@ -105,81 +108,7 @@
     <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
     <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
-
-    <script>
-        document.getElementById('id-sun').onclick = function () {
-            document.getElementById('id-moon').classList.remove('activo')
-            document.getElementById('id-thanos').classList.remove('activo')
-            document.getElementById('id-batman').classList.remove('activo')
-            document.getElementById('id-spiderman').classList.remove('activo')
-            this.classList.add('activo')
-        }
-
-        document.getElementById('id-moon').onclick = function () {
-            document.getElementById('id-sun').classList.remove('activo')
-            document.getElementById('id-thanos').classList.remove('activo')
-            document.getElementById('id-batman').classList.remove('activo')
-            document.getElementById('id-spiderman').classList.remove('activo')
-            this.classList.add('activo')
-        }
-
-        document.getElementById('id-thanos').onclick = function () {
-            document.getElementById('id-sun').classList.remove('activo')
-            document.getElementById('id-moon').classList.remove('activo')
-            document.getElementById('id-batman').classList.remove('activo')
-            document.getElementById('id-spiderman').classList.remove('activo')
-            this.classList.add('activo')
-        }
-
-        document.getElementById('id-batman').onclick = function () {
-            document.getElementById('id-sun').classList.remove('activo')
-            document.getElementById('id-moon').classList.remove('activo')
-            document.getElementById('id-thanos').classList.remove('activo')
-            document.getElementById('id-spiderman').classList.remove('activo')
-            this.classList.add('activo')
-        }
-
-        document.getElementById('id-spiderman').onclick = function () {
-            document.getElementById('id-sun').classList.remove('activo')
-            document.getElementById('id-moon').classList.remove('activo')
-            document.getElementById('id-thanos').classList.remove('activo')
-            document.getElementById('id-batman').classList.remove('activo')
-            this.classList.add('activo')
-        }
-
-
-
-        var cssStyle = document.getElementById('style');
-
-        window.onload = function () {
-            if (localStorage && localStorage.getItem("style"))
-                cssStyle.href = localStorage.getItem("style");
-
-        };
-
-        function setStyle(newStyle) {
-            cssStyle.href = newStyle;
-
-            if (localStorage)
-                localStorage.setItem("style", newStyle);
-        };
-
-
-
-        const lista = document.querySelectorAll('.lista');
-
-        function inicio() {
-            window.location("/gestion/inicio")
-        }
-
-        function activarSombra() {
-            lista.forEach((item) =>
-                item.classList.remove('active'));
-            this.classList.add('active');
-        }
-
-        lista.forEach((item) => item.addEventListener('mouseover', activarSombra));
-    </script>
+    <script src="/funcionesLayout.js"></script>
 
 </body>
 
