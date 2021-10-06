@@ -268,20 +268,15 @@ public class GestionDeGastosController {
     }
 
     @GetMapping("/grupo/nuevoUsuarioGrupo")
-    public String anadirUsuario(String correo, @RequestParam Integer idGrupo) {
+    public void anadirUsuario( String correo, @RequestParam Integer idGrupo) {
         Usuario nuevoUsuario = repoUsuario.findByCorreo(correo);
         UsuarioGrupo usuariosGrupo = repoUsuarioGrupo.leerPorUsuarioYGrupo(nuevoUsuario.getId(), idGrupo);
         Map<String, Object> m = new HashMap<>();
         if (usuariosGrupo == null) {
-            if (nuevoUsuario != null) {
+            if (nuevoUsuario!=null) {
                 repoUsuarioGrupo.anadirUsuario(nuevoUsuario.getId(), idGrupo, 0);
-            } else {
-                return "Usuario no encontrado";
             }
-        } else {
-            return "El usuario que intenta agregar ya se encuentra en el grupo";
         }
-        return "Usuario agregado";
     }
 
     @GetMapping("grupo/cambiarNombre")
