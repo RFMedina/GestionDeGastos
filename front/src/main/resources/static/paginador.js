@@ -22,6 +22,25 @@ function mostrarFormularioNuevoMovimiento(idGrupo) {
   });
 }
 
+function mostrarFormularioNuevoContacto(idUsuario) {
+  $.ajax({
+    url: "/gestion/nuevoContacto",
+    success: function (formularioEditar) {
+      bootbox
+        .dialog({
+          onEscape: true,
+          closeButton: false,
+          message: formularioEditar,
+        })
+        .find("div.modal-content")
+        .addClass("largeWidth");
+    },
+    error: function (err) {
+      alert("Si la URL esta mal. Codigo 404");
+    },
+  });
+}
+
 function mostrarMiembrosGrupo(idGrupo) {
   $.ajax({
     url: idGrupo + "/gestionar",
