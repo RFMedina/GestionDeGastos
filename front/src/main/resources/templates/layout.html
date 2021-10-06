@@ -8,7 +8,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fullPage.js/3.1.2/fullpage.min.css" />
     <link rel="stylesheet" href="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.css">
-    <link id="style" rel="stylesheet" type="text/css" href="/styles.css" />
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v6.0.0-beta2/css/all.css">
+    <link id="style" rel="stylesheet" type="text/css" href="/stylesModoThanos.css" />
 
 </head>
 
@@ -78,11 +79,20 @@
 
         <a id="logoInicio" th:href="@{/gestion/inicio}"><img src="/cartera_blanca.svg" alt=""></a>
         <div class="container-btn-mode">
-            <div id="id-sun" class="btn-mode sun activo">
-                <i class="fas fa-sun" onclick='setStyle("/styles.css")'></i>
+            <div id="id-sun" class="btn-mode sun activo" title="Modo Viuda Negra">
+                <i class="fas fa-spider-black-widow" onclick='setStyle("/styles.css")'></i>
             </div>
-            <div id="id-moon" class="btn-mode moon">
-                <i class="fas fa-moon" onclick='setStyle("/stylesModoOscuro.css")'></i>
+            <div id="id-moon" class="btn-mode moon" title="Modo Capitán América">
+                <i class="fa-solid fa-circle-c" onclick='setStyle("/stylesModoOscuro.css")'></i>
+            </div>
+            <div id="id-batman" class="btn-mode batman" title="Modo Batman">
+                <i class="fa-solid fa-bat" onclick='setStyle("/stylesModoBatman.css")'></i>
+            </div>
+            <div id="id-spiderman" class="btn-mode spiderman" title="Modo Spiderman">
+                <i class="fa-light fa-spider-web" onclick='setStyle("/stylesModoSpiderman.css")'></i>
+            </div>
+            <div id="id-thanos" class="btn-mode thanos" title="Modo Thanos">
+                <i class="fa-solid fa-boxing-glove" onclick='setStyle("/stylesModoThanos.css")'></i>
             </div>
         </div>
     </nav>
@@ -97,18 +107,47 @@
     <script src="https://unpkg.com/bootstrap-table@1.18.3/dist/bootstrap-table.min.js"></script>
 
     <script>
-        /*Si clicamos en el botón del sol, borrarémos la clase css dark-mode del div 
-con id page y se aplicará el estilo active al sol*/
         document.getElementById('id-sun').onclick = function () {
             document.getElementById('id-moon').classList.remove('activo')
+            document.getElementById('id-thanos').classList.remove('activo')
+            document.getElementById('id-batman').classList.remove('activo')
+            document.getElementById('id-spiderman').classList.remove('activo')
             this.classList.add('activo')
         }
-        /*Si clicamos en el botón de la luna, añadiremos la clase css dark-mode del div 
-        con id page y se aplicará el estilo active a la luna*/
+
         document.getElementById('id-moon').onclick = function () {
             document.getElementById('id-sun').classList.remove('activo')
+            document.getElementById('id-thanos').classList.remove('activo')
+            document.getElementById('id-batman').classList.remove('activo')
+            document.getElementById('id-spiderman').classList.remove('activo')
             this.classList.add('activo')
         }
+
+        document.getElementById('id-thanos').onclick = function () {
+            document.getElementById('id-sun').classList.remove('activo')
+            document.getElementById('id-moon').classList.remove('activo')
+            document.getElementById('id-batman').classList.remove('activo')
+            document.getElementById('id-spiderman').classList.remove('activo')
+            this.classList.add('activo')
+        }
+
+        document.getElementById('id-batman').onclick = function () {
+            document.getElementById('id-sun').classList.remove('activo')
+            document.getElementById('id-moon').classList.remove('activo')
+            document.getElementById('id-thanos').classList.remove('activo')
+            document.getElementById('id-spiderman').classList.remove('activo')
+            this.classList.add('activo')
+        }
+
+        document.getElementById('id-spiderman').onclick = function () {
+            document.getElementById('id-sun').classList.remove('activo')
+            document.getElementById('id-moon').classList.remove('activo')
+            document.getElementById('id-thanos').classList.remove('activo')
+            document.getElementById('id-batman').classList.remove('activo')
+            this.classList.add('activo')
+        }
+
+
 
         var cssStyle = document.getElementById('style');
 
