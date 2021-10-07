@@ -36,7 +36,7 @@
 
             <div style="float:left; width: 74.3%;">
                 <input class="cantidad" id="cantidad" placeholder="Introduce la cantidad" step="0.01" type="number"
-                    th:field="*{cantidad}" required />
+                       th:field="*{cantidad}" min="-100000000" max="100000000" required /><!<!-- Diego a 07/10/2021 -->
             </div>
             <div style="float:left;">
                 <label class="switch">
