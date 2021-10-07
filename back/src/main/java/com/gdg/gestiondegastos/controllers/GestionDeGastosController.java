@@ -201,10 +201,14 @@ public class GestionDeGastosController {
 
         return user;
     }
-
+    //Diego was here 07/10/2021
     @PostMapping("/guardarPerfil")
     public void guardarPerfil(Usuario usuario) {
+        if(repoUsuario.countByCorreo(usuario.getCorreo())==0){
         repoUsuario.save(usuario);
+        
+        }
+        
     }
 
     @GetMapping("/contrasenya") // Terminado
