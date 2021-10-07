@@ -268,8 +268,7 @@ public class GestionDeGastosController {
 
         m.put("grupo", mapper.map(repoGrupo.findById(idGrupo).get(), GrupoDto.class));
         
-        m.put("contactos", repoContactos.findByUsuarioHost(idUsuario).stream()
-                .map(x->mapper.map(x.getUsuarioInv(), UsuarioDto2.class)).collect(Collectors.toList()));
+        m.put("contactos", repoContactos.findByUsuarioHost(idUsuario).stream().map(x->mapper.map(x.getUsuarioInv(), UsuarioDto2.class)).collect(Collectors.toList()));
 
         m.put("usuarioGrupo", repoUsuarioGrupo.leerPorGrupo(idGrupo).stream()
                 .map(x -> mapper.map(x, UsuarioGrupoDto.class)).collect(Collectors.toList()));
