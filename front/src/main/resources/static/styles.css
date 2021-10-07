@@ -836,3 +836,7 @@ select:focus {
   background-color: #f7f7f7;
   color: #226acb !important;
 }
+
+.alert {
+  width: 30%;
+}

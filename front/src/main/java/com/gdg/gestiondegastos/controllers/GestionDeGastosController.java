@@ -92,10 +92,10 @@ public class GestionDeGastosController {
         Boolean b = feign.crear(usuario.getNombre(), usuario.getCorreo(), clave.encode(usuario.getContrasenya()),
                 usuario.getTelefono(), Boolean.FALSE, false);
         if (b) {
-            redirectAttrs.addFlashAttribute("msg", "Usuario registrado con exito. Revise su bandeja de entrada y verifique su cuenta");
+            redirectAttrs.addFlashAttribute("success", "Usuario registrado con exito. Revise su bandeja de entrada y verifique su cuenta");
             return "redirect:/gestion/login";
         } else {
-            redirectAttrs.addFlashAttribute("msg", "Usuario ya registrado, pruebe con otro");
+            redirectAttrs.addFlashAttribute("error", "Usuario ya registrado, pruebe con otro");
             return "redirect:/gestion/agregar";
         }
     }
@@ -104,11 +104,11 @@ public class GestionDeGastosController {
     public String confirmarCuenta(Model m, String token, RedirectAttributes redirectAttrs) {
         Boolean t = feign.confirmarCuenta(token);
         if (t) {
-            redirectAttrs.addFlashAttribute("msg", "Usuario verificado con exito");
+            redirectAttrs.addFlashAttribute("success", "Usuario verificado con exito");
             return "redirect:/gestion/login";
         } else {
-            redirectAttrs.addFlashAttribute("msg", "El usuario no se ha verificado");
-            return "redirect:/gestion/error";
+            redirectAttrs.addFlashAttribute("error", "El usuario no se ha verificado");
+            return "redirect:/gestion/login";
         }
 
     }
@@ -126,7 +126,7 @@ public class GestionDeGastosController {
             SecurityContextHolder.getContext().setAuthentication(auth);
             return "redirect:/gestion/inicio";
         } else {
-            redirectAttrs.addFlashAttribute("msg", "Usted no está validado o sus creadenciales son erroneas");
+            redirectAttrs.addFlashAttribute("error", "Usted no está validado o sus credenciales son erroneas");
             return "redirect:/gestion/login";
         }
     }
@@ -193,6 +193,7 @@ public class GestionDeGastosController {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         GestionarResponseDto res = feign.gestionarGrupos(usuValidado.getId(), idGrupo);
         m.addAttribute("grupo", res.getGrupo());
+        m.addAttribute("contactos", res.getContactos());
         m.addAttribute("usuarioGrupo", res.getUsuarioGrupo());
         m.addAttribute("yo", usuValidado);
         m.addAttribute("isAdmin", res.getUsuYGrupo());
@@ -319,8 +320,24 @@ public class GestionDeGastosController {
     public String nuevoContacto(Model m) {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         NuevoContactoDto c = feign.nuevoContacto(usuValidado.getId());
-        m.addAttribute("contacto", c.getUsuarioHost());
+        m.addAttribute("idUsuarioH", c.getIdUsuarioH());
         return "nuevoContacto";
     }
-
+    
+    @GetMapping("/misContactos/guardarContacto")
+    public String guardarContacto(Integer idUsuarioH, String correo, RedirectAttributes redirectAttrs){
+        if(feign.guardarContacto(idUsuarioH, correo))
+            redirectAttrs.addFlashAttribute("success","Contacto añadido");
+        else
+            redirectAttrs.addFlashAttribute("error", "El correo no está registrado o ya lo tiene como amigo");
+        return "redirect:/gestion/misContactos";
+    }
+    
+    @GetMapping("/misContactos/eliminarContacto")
+    public String eliminarContacto(Integer idUsuarioH, Integer idUsuarioI){
+        if(feign.eliminarContacto(idUsuarioH,idUsuarioI))
+            return "redirect:/gestion/misContactos";
+        else
+            return "redirect:/gestion/error";
+    }
 }

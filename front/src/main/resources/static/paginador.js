@@ -22,9 +22,9 @@ function mostrarFormularioNuevoMovimiento(idGrupo) {
   });
 }
 
-function mostrarFormularioNuevoContacto(idUsuario) {
+function mostrarFormularioNuevoContacto(idUsuarioH) {
   $.ajax({
-    url: "/gestion/nuevoContacto",
+    url: "/gestion/misContactos/nuevoContacto",
     success: function (formularioEditar) {
       bootbox
         .dialog({

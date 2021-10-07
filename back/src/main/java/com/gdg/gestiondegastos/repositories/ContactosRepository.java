@@ -23,6 +23,13 @@ public interface ContactosRepository extends JpaRepository<Contactos, Integer>{
     @Modifying
     @Query(value="INSERT INTO contactos(usuario_host, usuario_inv) values (:usuario_host,:usuario_inv)", nativeQuery=true)
     @Transactional
-    public void anadirContacto(@Param("usuario_host")Integer id_usuario, @Param("usuario_inv")Integer id_grupo);
+    public void anadirContacto(@Param("usuario_host")Integer idUsuarioH, @Param("usuario_inv")Integer idUsuarioI);
+    
+    @Modifying
+    @Query("delete from Contactos c where c.usuarioHost.id = :idUsuarioH and c.usuarioInv.id= :idUsuarioI")
+    @Transactional
+    public void borrarContacto(Integer idUsuarioH, Integer idUsuarioI);
+    
+    //public void deleteByUsuarioHostAndUsuarioInv(@Param("usuarioHost") Integer usuarioH, @Param("usuarioInv") Integer usuarioI);
             
 }

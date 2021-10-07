@@ -2,6 +2,8 @@
 
 <head>
     <title>Gestión de grupos</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="http://www.jorgerubira.com/cdn/AbleDropDownList.js" ></script>
 </head>
 
 <body>
@@ -17,7 +19,9 @@
 
         <form action="/gestion/grupo/nuevoUsuarioGrupo" th:if="${grupo.id != usuarioGrupo[0].usuario.id}">
             <div style="float:left; width: 70%;">
-                <input class="cantidad" name="correo" placeholder="Pon el correo del usuario">
+                <select name="correo">
+                    <option th:each="c:${contactos}" th:value="${c.correo}" th:text="${c.correo}"></option>
+                </select>
                 <input type="hidden" name="idGrupo" th:value="${grupo.id}"/>
             </div>
             <button style="float:left; width: 30%;" type="submit" class="botonAzul">Añadir usuario</button>

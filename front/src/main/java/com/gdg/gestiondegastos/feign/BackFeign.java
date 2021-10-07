@@ -135,4 +135,10 @@ public interface BackFeign {
     
     @GetMapping("/misContactos/nuevoContacto")
     public NuevoContactoDto nuevoContacto(@RequestParam Integer idUsuario);
+    
+    @GetMapping("/misContactos/guardarContacto")
+    public Boolean guardarContacto(@RequestParam Integer idUsuarioH, @RequestParam String correo);
+    
+    @GetMapping("/misContactos/eliminarContacto")
+    public Boolean eliminarContacto(@RequestParam Integer idUsuarioH, @RequestParam Integer idUsuarioI);
 }

@@ -17,6 +17,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class NuevoContactoDto {
-    private UsuarioDto3 usuarioHost;
+    private Integer idUsuarioH;
     private Integer idUsuarioInv;
 }
