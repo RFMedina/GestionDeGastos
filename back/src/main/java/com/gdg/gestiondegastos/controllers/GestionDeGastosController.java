@@ -177,7 +177,12 @@ public class GestionDeGastosController {
     @PostMapping("/ingresar")
     public Boolean ingresar(String correo[], String[] contrasenya) {
         Usuario usuario = repoUsuario.findByCorreo(correo[0]);
-        return usuario.getVerificado();
+        if(usuario!=null){
+            return usuario.getVerificado();
+        }else{
+            return false;
+        }
+        
     }
 
     @GetMapping("/inicio") // Terminado
