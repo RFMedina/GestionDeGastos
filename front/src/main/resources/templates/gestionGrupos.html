@@ -2,8 +2,9 @@
 
 <head>
     <title>Gestión de grupos</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-    <script src="http://www.jorgerubira.com/cdn/AbleDropDownList.js" ></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <script src="http://www.jorgerubira.com/cdn/AbleDropDownList.js"></script>
 </head>
 
 <body>
@@ -19,12 +20,13 @@
 
         <form action="/gestion/grupo/nuevoUsuarioGrupo" th:if="${grupo.id != usuarioGrupo[0].usuario.id}">
             <div style="float:left; width: 70%;">
-                <select name="correo">
+                <select name="correo" style="height: 40px;">
                     <option th:each="c:${contactos}" th:value="${c.correo}" th:text="${c.correo}"></option>
                 </select>
-                <input type="hidden" name="idGrupo" th:value="${grupo.id}"/>
+                <input type="hidden" name="idGrupo" th:value="${grupo.id}" />
             </div>
-            <button style="float:left; width: 30%;" type="submit" class="botonAzul">Añadir usuario</button>
+            <button style="float:left; width: 30%; margin-bottom: 20px;" type="submit" class="botonAzul">Añadir
+                usuario</button>
         </form>
         <table class="tablaPrincipal">
             <thead>
@@ -40,8 +42,9 @@
                     <td class='align-middle' th:text="${ug.usuario.nombre}"></td>
                     <td class='align-middle' th:text="${ug.usuario.correo}"></td>
                     <td class='align-middle' th:text="${ug.usuario.telefono}"></td>
-                    <td th:if="${isAdmin && grupo.id != usuarioGrupo[0].usuario.id}"><a class="botonRojo" 
-                        th:if="${yo.id != ug.usuario.id || (yo.id == ug.usuario.id && index.size == 1 && grupo.id != ug.usuario.id)}"    th:href="@{|${grupo.id}/borrarUsuario|(idUsuarioGrupo=${ug.id},idGrupo=${grupo.id})}">Eliminar</a>
+                    <td th:if="${isAdmin && grupo.id != usuarioGrupo[0].usuario.id}"><a class="botonRojo"
+                            th:if="${yo.id != ug.usuario.id || (yo.id == ug.usuario.id && index.size == 1 && grupo.id != ug.usuario.id)}"
+                            th:href="@{|${grupo.id}/borrarUsuario|(idUsuarioGrupo=${ug.id},idGrupo=${grupo.id})}">Eliminar</a>
                     </td>
                 </tr>
             </tbody>
