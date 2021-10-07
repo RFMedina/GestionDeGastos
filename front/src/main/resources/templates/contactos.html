@@ -7,6 +7,11 @@
 
     <script src="https://www.w3schools.com/lib/w3.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $("#success").fadeTo(2000, 500).slideUp(500, function(){
+            $("#success").slideUp(500);
+        });
+    </script>
 </head>
 
 <body>
@@ -14,7 +19,7 @@
         <div class="divPrincipal" style="margin: 0 auto; margin-top: 20%;">
             <div class="divHrPrincipal">
             </div>
-            <div class="alert alert-success" role="alert" th:text="${success}" th:if="${success}"></div>
+            <div id="success" class="alert alert-success" role="alert" th:text="${success}" th:if="${success}"></div>
             
             <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
 
