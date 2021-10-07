@@ -334,10 +334,11 @@ public class GestionDeGastosController {
     }
     
     @GetMapping("/misContactos/eliminarContacto")
-    public String eliminarContacto(Integer idUsuarioH, Integer idUsuarioI){
-        if(feign.eliminarContacto(idUsuarioH,idUsuarioI))
+    public String eliminarContacto(Integer idUsuarioH, Integer idUsuarioI, RedirectAttributes redirectAttrs){
+        if(feign.eliminarContacto(idUsuarioH,idUsuarioI)){
+            redirectAttrs.addFlashAttribute("success","Contacto eliminado con éxito");
             return "redirect:/gestion/misContactos";
-        else
+        }else
             return "redirect:/gestion/error";
     }
 }
