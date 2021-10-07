@@ -193,7 +193,7 @@ public class GestionDeGastosController {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         GestionarResponseDto res = feign.gestionarGrupos(usuValidado.getId(), idGrupo);
         m.addAttribute("grupo", res.getGrupo());
-        //m.addAttribute("contactos", res.getContactos());
+        m.addAttribute("contactos", res.getContactos());
         m.addAttribute("usuarioGrupo", res.getUsuarioGrupo());
         m.addAttribute("yo", usuValidado);
         m.addAttribute("isAdmin", res.getUsuYGrupo());

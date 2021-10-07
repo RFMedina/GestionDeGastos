@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class GestionarResponseDto {
     private GrupoDto4 grupo;
-    private List<ContactoDto> contactos;
+    private List<UsuarioDto3> contactos;
     private List<UsuarioGrupoDto> usuarioGrupo;
     private Boolean usuYGrupo;
 }
