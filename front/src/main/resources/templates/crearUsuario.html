@@ -15,6 +15,7 @@
 </head>
 <body>
     <div align="center">
+        <div class="alert alert-danger" role="alert" th:text="${error}" th:if="${error}"></div>
         <div class="card">
             <form action="crear" method="post" th:object="${usuario}" onsubmit="" name="form">
                 <img src="/cartera_negra.svg" alt="" class="imgLogin">
