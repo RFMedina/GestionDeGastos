@@ -9,11 +9,11 @@
 
 <body>
     <div>
-        <form method="post" action="inicio/guardarContacto">
+        <form method="get" action="misContactos/guardarContacto">
             <div style="float:left; width: 100%;">
-                <input class="cantidad" name="correo" placeholder="Pon el correo del usuario">
+                <input id="correo" class="cantidad" name="correo" placeholder="Pon el correo del usuario">
 
-                <input type="hidden" name="idContacto" />
+                <input id="idUsuarioH" type="hidden" name="idUsuarioH" th:value="${idUsuarioH}"/>
             </div>
 
             <div>

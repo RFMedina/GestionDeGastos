@@ -193,6 +193,7 @@ public class GestionDeGastosController {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         GestionarResponseDto res = feign.gestionarGrupos(usuValidado.getId(), idGrupo);
         m.addAttribute("grupo", res.getGrupo());
+        m.addAttribute("contactos", res.getContactos());
         m.addAttribute("usuarioGrupo", res.getUsuarioGrupo());
         m.addAttribute("yo", usuValidado);
         m.addAttribute("isAdmin", res.getUsuYGrupo());
@@ -319,8 +320,24 @@ public class GestionDeGastosController {
     public String nuevoContacto(Model m) {
         UsuarioDto usuValidado = (UsuarioDto) (SecurityContextHolder.getContext().getAuthentication().getPrincipal());
         NuevoContactoDto c = feign.nuevoContacto(usuValidado.getId());
-        m.addAttribute("contacto", c.getUsuarioHost());
+        m.addAttribute("idUsuarioH", c.getIdUsuarioH());
         return "nuevoContacto";
     }
-
+    
+    @GetMapping("/misContactos/guardarContacto")
+    public String guardarContacto(Integer idUsuarioH, String correo, RedirectAttributes redirectAttrs){
+        if(feign.guardarContacto(idUsuarioH, correo))
+            redirectAttrs.addFlashAttribute("success","Contacto añadido");
+        else
+            redirectAttrs.addFlashAttribute("error", "El correo no está registrado o ya lo tiene como amigo");
+        return "redirect:/gestion/misContactos";
+    }
+    
+    @GetMapping("/misContactos/eliminarContacto")
+    public String eliminarContacto(Integer idUsuarioH, Integer idUsuarioI){
+        if(feign.eliminarContacto(idUsuarioH,idUsuarioI))
+            return "redirect:/gestion/misContactos";
+        else
+            return "redirect:/gestion/error";
+    }
 }
