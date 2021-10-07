@@ -262,6 +262,9 @@ public class GestionDeGastosController {
         Map<String, Object> m = new HashMap<>();
 
         m.put("grupo", mapper.map(repoGrupo.findById(idGrupo).get(), GrupoDto.class));
+        
+        m.put("contactos", repoContactos.findByUsuarioHost(idUsuario).stream()
+                .map(x->mapper.map(x.getUsuarioInv(), UsuarioDto2.class)).collect(Collectors.toList()));
 
         m.put("usuarioGrupo", repoUsuarioGrupo.leerPorGrupo(idGrupo).stream()
                 .map(x -> mapper.map(x, UsuarioGrupoDto.class)).collect(Collectors.toList()));
@@ -359,11 +362,38 @@ public class GestionDeGastosController {
     public Map<String, Object> nuevoContacto(Integer idUsuario) {
 
         Map<String, Object> m = new HashMap<>();
-
-        Contactos c=new Contactos();
-        c.setUsuarioHost(repoContactos.leerPorUsuarioHost(idUsuario));
-        m.put("contacto", mapper.map(c, ContactosDto.class));
+        m.put("idUsuarioH", idUsuario);
         return m;
+    }
+    
+    @GetMapping("/misContactos/guardarContacto")
+    public Boolean guardarContacto(Integer idUsuarioH, String correo){
+        Usuario u=repoUsuario.findByCorreo(correo);
+        List<Contactos> listaC=repoContactos.findByUsuarioHost(idUsuarioH);
+        Boolean i=false;
+        for(Contactos co:listaC){
+            if(co.getUsuarioInv().getId().equals(u.getId())){
+                i=true;
+                break;
+            }
+        }
+        if(!i){
+            if(!u.getId().equals(idUsuarioH)){
+                if(u!=null){
+                    repoContactos.anadirContacto(idUsuarioH, u.getId());
+                    return true;
+                }else
+                    return false;
+            }else
+                return false;
+        }else
+            return false;
+    }
+    
+    @GetMapping("/misContactos/eliminarContacto")
+    public Boolean eliminarContacto(Integer idUsuarioH, Integer idUsuarioI){
+        repoContactos.borrarContacto(idUsuarioH, idUsuarioI);
+        return true;
     }
 
     @GetMapping("/misGrupos") // Terminaddo
