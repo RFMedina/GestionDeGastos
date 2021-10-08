@@ -385,17 +385,22 @@ public class GestionDeGastosController {
                 break;
             }
         }
-        if(!i){
-            if(!u.getId().equals(idUsuarioH)){
-                if(u!=null){
-                    repoContactos.anadirContacto(idUsuarioH, u.getId());
-                    return true;
+        if(u!=null){
+            if(!i){
+                if(!u.getId().equals(idUsuarioH)){
+                    if(u!=null){
+                        repoContactos.anadirContacto(idUsuarioH, u.getId());
+                        return true;
+                    }else
+                        return false;
                 }else
                     return false;
             }else
                 return false;
-        }else
+        }else{
             return false;
+        }
+        
     }
     
     @GetMapping("/misContactos/eliminarContacto")
