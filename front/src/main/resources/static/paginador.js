@@ -9,7 +9,27 @@ function mostrarFormularioNuevoMovimiento(idGrupo) {
     success: function (formularioEditar) {
       bootbox
         .dialog({
-          title: "Añade nuevo movimiento",
+          onEscape: true,
+          closeButton: false,
+          message: formularioEditar,
+        })
+        .find("div.modal-content")
+        .addClass("largeWidth");
+    },
+    error: function (err) {
+      alert("Si la URL esta mal. Codigo 404");
+    },
+  });
+}
+
+function mostrarFormularioNuevoContacto(idUsuarioH) {
+  $.ajax({
+    url: "/gestion/misContactos/nuevoContacto",
+    success: function (formularioEditar) {
+      bootbox
+        .dialog({
+          onEscape: true,
+          closeButton: false,
           message: formularioEditar,
         })
         .find("div.modal-content")
@@ -27,7 +47,8 @@ function mostrarMiembrosGrupo(idGrupo) {
     success: function (formularioEditar) {
       bootbox
         .dialog({
-          title: "Gestión de usuarios",
+          onEscape: true,
+          closeButton: false,
           message: formularioEditar,
         })
         .find("div.modal-content")

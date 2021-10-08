@@ -30,16 +30,16 @@ INSERT INTO grupo (nombre,fecha_creacion) VALUES ('Grupo Sofi-Martin', now());
 
 --#USUARIO-GRUPO# 0=false >=0=true
 
-INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (1,1,1);
-INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (2,2,1);
-INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (3,3,1);
-INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (4,4,1);
-INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (5,5,1);
+INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (1,1,0);
+INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (2,2,0);
+INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (3,3,0);
+INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (4,4,0);
+INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (5,5,0);
 INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (1,6,0);
 INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (2,6,1);
 INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (5,6,0);
-INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (3,7,1);
-INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (4,7,0);
+INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (3,7,0);
+INSERT INTO usuario_grupo (id_usuario,id_grupo,rol) VALUES (4,7,1);
 
 --#MOVIMIENTO# categoria: Entretenimiento, Alimentacion, Ropa, Hogar, Higiene, Transporte, Comunicacion, Medicina, Regalo, Mascota
 

@@ -1,5 +1,6 @@
 package com.gdg.gestiondegastos.controllers;
 
+import com.gdg.gestiondegastos.dto.ContactosDto;
 import java.sql.SQLException;
 import java.time.Clock;
 import java.time.Instant;
@@ -17,15 +18,19 @@ import com.gdg.gestiondegastos.dto.MovimientoDto;
 import com.gdg.gestiondegastos.dto.MovimientoGrupoDto;
 import com.gdg.gestiondegastos.dto.PresupuestoDto;
 import com.gdg.gestiondegastos.dto.TablaBSDto;
+import com.gdg.gestiondegastos.dto.TokenEntityDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto;
 import com.gdg.gestiondegastos.dto.UsuarioDto2;
 import com.gdg.gestiondegastos.dto.UsuarioGrupoDto;
+import com.gdg.gestiondegastos.dto.UsuarioInvDto;
+import com.gdg.gestiondegastos.entities.Contactos;
 import com.gdg.gestiondegastos.entities.Grupo;
 import com.gdg.gestiondegastos.entities.Movimiento;
 import com.gdg.gestiondegastos.entities.Presupuesto;
 import com.gdg.gestiondegastos.entities.TokenEntity;
 import com.gdg.gestiondegastos.entities.Usuario;
 import com.gdg.gestiondegastos.entities.UsuarioGrupo;
+import com.gdg.gestiondegastos.repositories.ContactosRepository;
 import com.gdg.gestiondegastos.repositories.GrupoRepository;
 import com.gdg.gestiondegastos.repositories.MovimientosRepository;
 import com.gdg.gestiondegastos.repositories.PresupuestoRepository;
@@ -33,6 +38,8 @@ import com.gdg.gestiondegastos.repositories.TokenRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioGrupoRepository;
 import com.gdg.gestiondegastos.repositories.UsuarioRepository;
 import com.gdg.gestiondegastos.services.CorreoService;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +48,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,6 +75,8 @@ public class GestionDeGastosController {
     @Autowired
     private TokenRepository repoToken;
     @Autowired
+    private ContactosRepository repoContactos;
+    @Autowired
     private ModelMapper mapper;
     @Autowired
     private CorreoService service;
@@ -78,49 +89,58 @@ public class GestionDeGastosController {
     }
 
     @PostMapping("/crear")
-    public void crear(Usuario usuario) throws ClassNotFoundException, SQLException {
-        repoUsuario.save(usuario);
-        Grupo grupo = new Grupo();
-        grupo.setNombre("Mi presupuesto personal");
-        grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
-        Grupo grupoCreado = repoGrupo.save(grupo);
-        Presupuesto pre = new Presupuesto();
-        pre.setCantidadInicio(0.0);
-        pre.setCantidadFinal(0.0);
-        pre.setFechaInicio(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
-        pre.setGrupo(grupoCreado);
-        repoPresupuesto.save(pre);
-        ArrayList<UsuarioGrupo> ug = new ArrayList<>();
-        ug.add(new UsuarioGrupo(0, Boolean.TRUE, usuario, grupoCreado, new ArrayList<>()));
-        repoUsuarioGrupo.save(ug.get(0));
-        usuario.setUsuarioGrupo(ug);
-        usuario.setVerificado(false);
-        usuario.setModoOscuro(false);
-        TokenEntity confirm = new TokenEntity(usuario);
-        repoToken.save(confirm);
-        SimpleMailMessage correo = new SimpleMailMessage();
-        correo.setTo(usuario.getCorreo());
-        correo.setSubject("Complete su registro");
-        correo.setFrom("gestiondegastoshiberus@gmail.com");
-        correo.setText(
-                "Confirme su cuenta haciendo click en el siguiente enlace de validación: \n http://localhost:8080/confirmar?token="
-                        + confirm.getConfirmacion());
-        service.enviarCorreo(correo);
-        // return "Se le ha enviado un correo de confirmación al correo " +
-        // usuario.getCorreo();
-
+    public Boolean crear(Usuario usuario) throws ClassNotFoundException, SQLException {
+        if(repoUsuario.findByCorreo(usuario.getCorreo())==null){
+            repoUsuario.save(usuario);
+            Grupo grupo = new Grupo();
+            grupo.setNombre("Mi presupuesto personal");
+            grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
+            Grupo grupoCreado = repoGrupo.save(grupo);
+            Presupuesto pre = new Presupuesto();
+            pre.setCantidadInicio(0.0);
+            pre.setCantidadFinal(0.0);
+            pre.setFechaInicio(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
+            pre.setGrupo(grupoCreado);
+            repoPresupuesto.save(pre);
+            ArrayList<UsuarioGrupo> ug = new ArrayList<>();
+            ug.add(new UsuarioGrupo(0, Boolean.FALSE, usuario, grupoCreado, new ArrayList<>()));
+            repoUsuarioGrupo.save(ug.get(0));
+            usuario.setUsuarioGrupo(ug);
+            usuario.setVerificado(false);
+            usuario.setModoOscuro(false);
+            TokenEntity confirm = new TokenEntity(usuario);
+            repoToken.save(confirm);
+            try{
+                MimeMessage message=service.javaMS.createMimeMessage();
+                message.setSubject("Complete su registro");
+                MimeMessageHelper helper = new MimeMessageHelper(message,"utf-8");
+                String html="<p>Confirme su cuenta haciendo click en el siguiente enlace de validación:</p>"
+                            + "<button><a href='http://localhost:8082/gestion/confirmar?token="+confirm.getConfirmacion()+"'>Pulse aqui para validar</a></button>";
+                helper.setFrom("gestiondegastoshiberus@gmail.com");
+                helper.setTo(usuario.getCorreo());
+                helper.setText(html,true);
+                service.javaMS.send(message);
+            }catch(MessagingException e){
+                e.printStackTrace();
+            }
+            return true;
+        }else{
+            return false;
+        }
     }
 
-    @RequestMapping(value = "/confirmar", method = { RequestMethod.GET, RequestMethod.POST })
-    public String confirmarCuenta(@RequestParam("token") String token) {
+    @Transactional
+    @GetMapping("/confirmar")
+    public Boolean confirmarCuenta(@RequestParam String token) {
         TokenEntity t = repoToken.findByConfirmacion(token);
         if (t != null) {
             Usuario usuario = repoUsuario.findByCorreo(t.getUsuario().getCorreo());
             usuario.setVerificado(true);
             repoUsuario.save(usuario);
-            return "Usuario validado con exito";
+            repoToken.borrarToken(t.getId());
+            return true;
         } else {
-            return "El link ha caducado.";
+            return false;
         }
     }
 
@@ -137,9 +157,6 @@ public class GestionDeGastosController {
         return m;
     }
 
-    // Nota de Jorge: El problema estaba en que dentro de grupo hay un campo
-    // presupuesto y se estaba intentando rellenar. He cambiado el parámetro de
-    // presupuesto a pPresupuesto.
     @PostMapping("/inicio/guardarGrupo")
     public void guardarGrupo(Grupo grupo, Double pPresupuesto, Integer pIdUsuario) {
         grupo.setFechaCreacion(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())));
@@ -160,9 +177,12 @@ public class GestionDeGastosController {
     @PostMapping("/ingresar")
     public Boolean ingresar(String correo[], String[] contrasenya) {
         Usuario usuario = repoUsuario.findByCorreo(correo[0]);
-        if (!usuario.getVerificado())
+        if(usuario!=null){
+            return usuario.getVerificado();
+        }else{
             return false;
-        return (usuario.getNombre() != null);
+        }
+        
     }
 
     @GetMapping("/inicio") // Terminado
@@ -171,7 +191,7 @@ public class GestionDeGastosController {
         user.setPresupuestoPersonal(user.getUsuarioGrupo().stream().map(x -> x.getGrupo().getPresupuesto()).findFirst()
                 .get().stream().collect(Collectors.summingDouble(p -> p.getCantidadFinal())));
 
-        user.setMovimientos(repoMovimientos.leerPorUsuarioGrupo(idUsuario).stream()
+        user.setMovimientos(repoMovimientos.leerPorUsuario(idUsuario).stream()
                 .map(x -> mapper.map(x, MovimientoDto.class)).sorted((x, y) -> -1).collect(Collectors.toList()).stream()
                 .limit(4).collect(Collectors.toList()));
 
@@ -186,10 +206,14 @@ public class GestionDeGastosController {
 
         return user;
     }
-
+    //Diego was here 07/10/2021
     @PostMapping("/guardarPerfil")
     public void guardarPerfil(Usuario usuario) {
+        if(repoUsuario.countByCorreo(usuario.getCorreo())==0){
         repoUsuario.save(usuario);
+        
+        }
+        
     }
 
     @GetMapping("/contrasenya") // Terminado
@@ -242,45 +266,41 @@ public class GestionDeGastosController {
     }
 
     @GetMapping("/grupo/{idGrupo}/gestionar") // Terminado
-    public Map<String, Object> gestionarGrupos(@PathVariable Integer idGrupo) {
+    public Map<String, Object> gestionarGrupos(@RequestParam Integer idUsuario,@PathVariable Integer idGrupo) {
 
         Map<String, Object> m = new HashMap<>();
 
         m.put("grupo", mapper.map(repoGrupo.findById(idGrupo).get(), GrupoDto.class));
+        
+        m.put("contactos", repoContactos.findByUsuarioHost(idUsuario).stream().map(x->mapper.map(x.getUsuarioInv(), UsuarioDto2.class)).collect(Collectors.toList()));
 
         m.put("usuarioGrupo", repoUsuarioGrupo.leerPorGrupo(idGrupo).stream()
                 .map(x -> mapper.map(x, UsuarioGrupoDto.class)).collect(Collectors.toList()));
-
+        //DIEGO ESTUVO AQUI
+        m.put("usuYGrupo", repoUsuarioGrupo.leerPorUsuarioYGrupo(idUsuario, idGrupo).getRol());
         return m;
     }
 
     @GetMapping("/grupo/{idGrupo}/borrarUsuario")
-    public Boolean borrarUsuario(Integer idUsuarioGrupo, Integer idGrupo) {
+    public Boolean borrarUsuario(@RequestParam Integer idUsuarioGrupo,@PathVariable Integer idGrupo) {
         repoUsuarioGrupo.deleteById(idUsuarioGrupo);
-
         if (repoUsuarioGrupo.leerPorGrupo(idGrupo).isEmpty()) {
             repoGrupo.deleteById(idGrupo);
             return true;
         }
-
         return false;
     }
 
     @GetMapping("/grupo/nuevoUsuarioGrupo")
-    public String anadirUsuario(String correo, @RequestParam Integer idGrupo) {
+    public void anadirUsuario( String correo, @RequestParam Integer idGrupo) {
         Usuario nuevoUsuario = repoUsuario.findByCorreo(correo);
         UsuarioGrupo usuariosGrupo = repoUsuarioGrupo.leerPorUsuarioYGrupo(nuevoUsuario.getId(), idGrupo);
         Map<String, Object> m = new HashMap<>();
         if (usuariosGrupo == null) {
-            if (nuevoUsuario != null) {
+            if (nuevoUsuario!=null) {
                 repoUsuarioGrupo.anadirUsuario(nuevoUsuario.getId(), idGrupo, 0);
-            } else {
-                return "Usuario no encontrado";
             }
-        } else {
-            return "El usuario que intenta agregar ya se encuentra en el grupo";
         }
-        return "Usuario agregado";
     }
 
     @GetMapping("grupo/cambiarNombre")
@@ -316,26 +336,83 @@ public class GestionDeGastosController {
                 .collect(Collectors.toList());
         for (String c : listaCorreo) {
             if (!c.equals(repoUsuarioGrupo.findById(idUsuarioGrupo).get().getUsuario().getCorreo())) {
-                SimpleMailMessage correo = new SimpleMailMessage();
-                correo.setTo(c);
-                correo.setSubject("Nuevo movimiento en su grupo " + repoGrupo.findById(idGrupo).get().getNombre());
-                correo.setFrom("gestiondegastoshiberus@gmail.com");
-                correo.setText("Se ha añadido un nuevo moviemiento a su grupo "
-                        + repoGrupo.findById(idGrupo).get().getNombre() + "\n " + "     Concepto: " + mov.getConcepto()
-                        + "\n Importe: " + mov.getCantidad() + "\n Añadido por: "
-                        + repoUsuarioGrupo.findById(idUsuarioGrupo).get().getUsuario().getNombre()
-                        + "\n Acceda a su grupo para ver todos los movimientos con el siguiente link "
-                        + "\n http://localhost:8080/gestion");
-                service.enviarCorreo(correo);
+                try{
+                    MimeMessage message=service.javaMS.createMimeMessage();
+                    message.setSubject("Nuevo movimiento añadido a su grupo "+repoGrupo.findById(idGrupo).get().getNombre());
+                    MimeMessageHelper helper = new MimeMessageHelper(message,"utf-8");
+                    String html="<h3>Nuevo movimiento añadido a su grupo "+repoGrupo.findById(idGrupo).get().getNombre()+"</h3>"+
+                                "<p>Se ha añadido un nuevo movimiento a su grupo "+repoGrupo.findById(idGrupo).get().getNombre()+""
+                                + "<br> Concepto: "+mov.getConcepto()+""
+                                + "<br> Importe: "+mov.getCantidad()
+                                + "<br> Añadido por: "+repoUsuarioGrupo.findById(idUsuarioGrupo).get().getUsuario().getNombre()
+                                + "<br> Acceda a su grupo para ver todos los movimientos: </p>"
+                                + "<button><a href='http://localhost:8082/gestion/grupo/"+idGrupo+"'>Pulse aqui ver los movimientos</a></button>";
+                    helper.setFrom("gestiondegastoshiberus@gmail.com");
+                    helper.setTo(c);
+                    helper.setText(html,true);
+                    service.javaMS.send(message);
+                }catch(MessagingException e){
+                    e.printStackTrace();
+                }
             }
         }
+    }
+    
+    @GetMapping("/misContactos")
+    public Map<String, Object> misContactos(Integer idUsuario){
+        Map<String, Object> m=new HashMap<>();
+        m.put("contactos", repoContactos.findByUsuarioHost(idUsuario).stream()
+                .map(x->mapper.map(x.getUsuarioInv(), UsuarioDto2.class)).collect(Collectors.toList()));
+        return m;
+    }
+    
+    @GetMapping("/misContactos/nuevoContacto") // Terminado
+    public Map<String, Object> nuevoContacto(Integer idUsuario) {
+
+        Map<String, Object> m = new HashMap<>();
+        m.put("idUsuarioH", idUsuario);
+        return m;
+    }
+    
+    @GetMapping("/misContactos/guardarContacto")
+    public Boolean guardarContacto(Integer idUsuarioH, String correo){
+        Usuario u=repoUsuario.findByCorreo(correo);
+        List<Contactos> listaC=repoContactos.findByUsuarioHost(idUsuarioH);
+        Boolean i=false;
+        for(Contactos co:listaC){
+            if(co.getUsuarioInv().getId().equals(u.getId())){
+                i=true;
+                break;
+            }
+        }
+        if(!i){
+            if(!u.getId().equals(idUsuarioH)){
+                if(u!=null){
+                    repoContactos.anadirContacto(idUsuarioH, u.getId());
+                    return true;
+                }else
+                    return false;
+            }else
+                return false;
+        }else
+            return false;
+    }
+    
+    @GetMapping("/misContactos/eliminarContacto")
+    public Boolean eliminarContacto(Integer idUsuarioH, Integer idUsuarioI){
+        repoContactos.borrarContacto(idUsuarioH, idUsuarioI);
+        return true;
     }
 
     @GetMapping("/misGrupos") // Terminaddo
     public Map<String, Object> misGrupos(Integer idUsuario) {
         Map<String, Object> m = new HashMap<>();
         m.put("grupos", repoUsuarioGrupo.leerPorUsuario(idUsuario).stream()
-                .map(x -> mapper.map(x.getGrupo(), GrupoDto.class)).collect(Collectors.toList()));
+                .map(x -> {
+                    GrupoDto dto=mapper.map(x.getGrupo(), GrupoDto.class);
+                    dto.setRol(x.getRol());
+                    return dto;
+                 }).collect(Collectors.toList()));
         return m;
     }
 

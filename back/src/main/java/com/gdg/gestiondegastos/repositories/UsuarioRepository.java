@@ -10,7 +10,9 @@ import org.springframework.transaction.annotation.Transactional;
 public interface UsuarioRepository extends JpaRepository<Usuario,Integer>{
     public Usuario findByCorreo( @Param("correo") String correo);
     
-     
+     //Diego a 07/10/2021
+    public long countByCorreo(@Param("correo") String correo);
+    
     @Modifying
     @Query("update Usuario u set u.contrasenya = :contrasenya where u.id = :id_usuario")
     public void updateContrasenya(Integer id_usuario, String contrasenya);

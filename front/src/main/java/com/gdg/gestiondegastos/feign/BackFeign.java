@@ -5,11 +5,13 @@
  */
 package com.gdg.gestiondegastos.feign;
 
+import com.gdg.gestiondegastos.dto.ContactoDto;
 import com.gdg.gestiondegastos.dto.GestionarResponseDto;
 import com.gdg.gestiondegastos.dto.GrupoDto;
 import com.gdg.gestiondegastos.dto.GrupoDto2;
 import com.gdg.gestiondegastos.dto.GrupoDto4;
 import com.gdg.gestiondegastos.dto.GrupoDto5;
+import com.gdg.gestiondegastos.dto.NuevoContactoDto;
 import com.gdg.gestiondegastos.dto.NuevoGrupoDto;
 import com.gdg.gestiondegastos.dto.NuevoMovDto;
 import com.gdg.gestiondegastos.dto.TablaBSDto;
@@ -32,6 +34,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.MediaType;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,43 +51,47 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/gestionback")
 public interface BackFeign {
 
+    @PostMapping("/crearChat")
+    public void crearChat(@RequestParam String grupo) throws ExecutionException, InterruptedException;
+    
     @PostMapping("/mensajes")
-    public void guardarMensaje(@RequestBody Map<String, List<String>> mensaje, @RequestParam String grupo);
-
-    @PostMapping("/mensajes/{grupo}")
-    public Map<String, List<Mensaje>> obtenerMensaje(@PathVariable String grupo);
-
+    public void guardarMensaje(@RequestBody Map<String, List<String>> mensaje, @RequestParam String grupo) throws ExecutionException, InterruptedException;
+    
+    @PostMapping("/mensajes/{grupo}") 
+    public Map<String,List<Mensaje>> obtenerMensaje(@RequestParam String grupo) throws ExecutionException, InterruptedException;
+    
     @GetMapping("/tablaMovimientos")
     public TablaBSDto obtenerMovimientos2(@RequestParam Integer idUsuario, @RequestParam String search,
-            @RequestParam String sort, @RequestParam String order, @RequestParam Integer offset,
-            @RequestParam Integer limit);
+                    @RequestParam String sort, @RequestParam String order, @RequestParam Integer offset,
+                    @RequestParam Integer limit);
 
     @GetMapping("/tablaGrupos")
     public TablaBSDto obtenerMovimientos(@RequestParam Integer idGrupo, @RequestParam String search,
-            @RequestParam String sort, @RequestParam String order, @RequestParam Integer offset,
-            @RequestParam Integer limit);
+                    @RequestParam String sort, @RequestParam String order, @RequestParam Integer offset,
+                    @RequestParam Integer limit);
 
     @GetMapping("/inicio/nuevoGrupo")
     public NuevoGrupoDto nuevoGrupo(@RequestParam Integer idUsuario);
 
     @PostMapping("/inicio/guardarGrupo")
     public void guardarGrupo(@RequestParam Integer id, @RequestParam String nombre,
-            @RequestParam Double pPresupuesto, @RequestParam Integer pIdUsuario);
+                    @RequestParam Double pPresupuesto, @RequestParam Integer pIdUsuario);
 
     @GetMapping("/grupo/{idGrupo}/nuevoMovimiento")
     public NuevoMovDto nuevoMovimientos(@RequestParam Integer idGrupo, @RequestParam Integer idUsuario);
 
     @PostMapping("/grupo/guardarMovimiento")
     public void guardarMovimiento(@RequestParam Integer id, @RequestParam String categoria,
-            @RequestParam Double cantidad, @RequestParam String concepto,
-            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fecha,
-            @RequestParam Integer idUsuarioGrupo, @RequestParam Integer idGrupo);
+                    @RequestParam Double cantidad, @RequestParam String concepto,
+                    @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date fecha,
+                    @RequestParam Integer idUsuarioGrupo, @RequestParam Integer idGrupo);
 
     @GetMapping("/agregar")
     public UsuarioDto agregarUsuario(@SpringQueryMap Usuario usuario);
 
-    @PostMapping("/crear")
-    public void crear(@RequestParam String nombre, @RequestParam String correo, @RequestParam String contrasenya,
+   
+    @PostMapping("/crear") 
+    public Boolean crear(@RequestParam String nombre, @RequestParam String correo, @RequestParam String contrasenya,
             @RequestParam String telefono, @RequestParam Boolean modoOscuro, @RequestParam Boolean verificado);
 
     @PostMapping("/ingresar")
@@ -98,8 +105,8 @@ public interface BackFeign {
 
     @PostMapping("/guardarPerfil")
     public void guardarPerfil(@RequestParam Integer id, @RequestParam String contrasenya,
-            @RequestParam String nombre, @RequestParam String correo, @RequestParam String telefono,
-            @RequestParam Boolean modoOscuro, @RequestParam Boolean verificado);
+                    @RequestParam String nombre, @RequestParam String correo, @RequestParam String telefono,
+                    @RequestParam Boolean modoOscuro, @RequestParam Boolean verificado);
 
     @GetMapping("/contrasenya")
     public UsuarioDto contrasenya(@RequestParam Integer idUsuario);
@@ -114,21 +121,35 @@ public interface BackFeign {
     public GrupoDto2 verGrupos(@RequestParam Integer idGrupo);
 
     @GetMapping("/grupo/{idGrupo}/gestionar")
-    public GestionarResponseDto gestionarGrupos(@RequestParam Integer idGrupo);
-
+    public GestionarResponseDto gestionarGrupos(@RequestParam Integer idUsuario, @RequestParam Integer idGrupo);
+    
     @GetMapping("/grupo/{idGrupo}/borrarUsuario")
-    public Boolean borrarUsuario(Integer idUsuarioGrupo, @PathVariable Integer idGrupo);
-
+    public Boolean borrarUsuario(@RequestParam Integer idUsuarioGrupo, @PathVariable Integer idGrupo);
+    
     @GetMapping("/grupo/nuevoUsuarioGrupo")
-    public void anadirUsuario(String correo, @RequestParam Integer idGrupo);
-
+    public void anadirUsuario(@RequestParam String correo, @RequestParam Integer idGrupo);
+    
     @GetMapping("{idGrupo}/borrar")
     public void borrarGrupos(@RequestParam Integer idGrupo);
 
     @GetMapping("grupo/cambiarNombre")
-    public void cambiarNombreGrupo(String nombre, @RequestParam Integer idGrupo);
-
+    public void cambiarNombreGrupo(@RequestParam String nombre, @RequestParam Integer idGrupo);
+    
     @GetMapping("/misGrupos")
     public GrupoDto5 misGrupos(@RequestParam Integer idUsuario);
-
+    
+    @GetMapping("/confirmar")
+    public Boolean confirmarCuenta(@RequestParam String token);
+    
+    @GetMapping("/misContactos")
+    public ContactoDto misContactos(@RequestParam Integer idUsuario);
+    
+    @GetMapping("/misContactos/nuevoContacto")
+    public NuevoContactoDto nuevoContacto(@RequestParam Integer idUsuario);
+    
+    @GetMapping("/misContactos/guardarContacto")
+    public Boolean guardarContacto(@RequestParam Integer idUsuarioH, @RequestParam String correo);
+    
+    @GetMapping("/misContactos/eliminarContacto")
+    public Boolean eliminarContacto(@RequestParam Integer idUsuarioH, @RequestParam Integer idUsuarioI);
 }

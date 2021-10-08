@@ -4,7 +4,6 @@
     <title>Nuevo grupo</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -33,8 +32,8 @@
             </div>
 
             <div style="float:left; width: 74%;">
-                <input class="cantidad" id="cantidad" placeholder="Presupuesto del grupo" step="any" required
-                    type="number" th:field="*{presupuesto}" />
+                <input class="cantidad" id="cantidad" placeholder="Presupuesto del grupo" step="0.01" type="number"
+                    required th:field="*{presupuesto}" />
             </div>
             <div style="float:left;">
                 <label class="switch">

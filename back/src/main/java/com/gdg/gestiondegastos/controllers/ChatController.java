@@ -36,6 +36,11 @@ public class ChatController {
         chatService.guardarMensajes(mensaje,grupo);  
     }
     
+    @PostMapping("/crearChat")
+    public void crearChat(@RequestParam String grupo) throws ExecutionException, InterruptedException{
+        chatService.crearChat(grupo);  
+    }
+    
     @PostMapping("/mensajes/{grupo}") 
     public Map<String,List<Mensaje>> obtenerMensaje(@PathVariable String grupo) throws ExecutionException, InterruptedException{
         return chatService.getMensajes(grupo);

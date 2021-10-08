@@ -5,18 +5,19 @@
  */
 package com.gdg.gestiondegastos.dto;
 
-import com.gdg.gestiondegastos.entities.UsuarioGrupo;
-import java.util.List;
+import com.gdg.gestiondegastos.entities.Usuario;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ *
+ * @author Usuario
+ */
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class GestionarResponseDto {
-    private GrupoDto4 grupo;
-    private List<UsuarioDto3> contactos;
-    private List<UsuarioGrupoDto> usuarioGrupo;
-    private Boolean usuYGrupo;
+@AllArgsConstructor
+public class TokenEntityDto {
+    private String confirmacion;
+    private UsuarioDto usuario;
 }

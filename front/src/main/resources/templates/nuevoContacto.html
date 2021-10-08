@@ -1,0 +1,26 @@
+<html xmlns:th="https://www.thymeleaf.org">
+
+<head>
+    <title>Nuevo contacto</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div>
+        <form method="get" action="misContactos/guardarContacto">
+            <div style="float:left; width: 100%;">
+                <input id="correo" class="cantidad" name="correo" placeholder="Pon el correo del usuario">
+
+                <input id="idUsuarioH" type="hidden" name="idUsuarioH" th:value="${idUsuarioH}"/>
+            </div>
+
+            <div>
+                <button type="submit" class="botonAzul" style="width: 98%;">Añadir a contactos</button>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>

@@ -10,6 +10,8 @@ import com.google.cloud.firestore.DocumentReference;
 import com.google.cloud.firestore.DocumentSnapshot;
 import com.google.cloud.firestore.Firestore;
 import com.google.firebase.cloud.FirestoreClient;
+import java.time.Clock;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -34,6 +36,15 @@ public class ChatService {
         Firestore dbFirestore = FirestoreClient.getFirestore();        
         dbFirestore.collection(COLLECCION_FIRESTORE).document(grupo).set(datos);        
     }
+    
+    public void crearChat(String grupo) throws InterruptedException, ExecutionException{        
+        Firestore dbFirestore = FirestoreClient.getFirestore();        
+        Map<String,List<String>> comienzo=new HashMap<>();
+        List<String> lst = List.of("", "¡Hola! Bienvenido al chat");
+        comienzo.put(java.sql.Date.from(Instant.now(Clock.systemDefaultZone())).toString(), lst);
+        dbFirestore.collection(COLLECCION_FIRESTORE).document(grupo).set(comienzo);       
+        
+    }
         
     public Map<String,List<Mensaje>> getMensajes(String grupo) throws InterruptedException, ExecutionException{
         Firestore dbFirestore = FirestoreClient.getFirestore();
@@ -46,13 +57,16 @@ public class ChatService {
         Map<String,List<Mensaje>> mensaje = new HashMap<>();
         List<Mensaje> msjs = new ArrayList<>();
         
-        mensaje=datos.getData().entrySet().stream()
+       
+       if(datos.exists()){    
+            mensaje=datos.getData().entrySet().stream()
                 .collect(Collectors.toMap(x->x.getKey(), x-> List.of(new Mensaje(((List<String>)x.getValue()).get(0),((List<String>)x.getValue()).get(1)))));
                 
-       if(datos.exists()){           
            return mensaje;
        }else{
-           return null;
+           crearChat(grupo);
+           
+           return getMensajes(grupo);
        }    
     }
     
