@@ -28,7 +28,7 @@
                             <th>Nombre del grupo</th>
                             <th>Fecha de creación</th>
                             <th>Presupuesto</th>
-                            <th colspan="2" style="text-align: center;">Acciones</th>
+                            <th style="text-align: center;">Acciones</th>
 
                         </tr>
                     </thead>
@@ -42,9 +42,9 @@
                                 <td style="text-align: center;" th:text="${#numbers.formatDecimal(p.cantidadFinal, 1, 'COMMA', 2, 'POINT')} + '€'" th:class="
                                 ${p.cantidadFinal >= 0} ? 'Verde' : 'Rojo'"></td>
                             </th:block>
-                            <td>
-                                <a th:if="${!index.first && ug.rol }" class="botonRojo" th:href="@{|${ug.id}/borrar|}">Eliminar grupo</a>
-                                <form method="post" th:action="@{mensajes/{grupo}(grupo=${ug.nombre})}"><button class="botonRojo" type="submit">Chat</button></form>
+                            <td colspan="2">
+                                <form method="post" th:action="@{mensajes/{grupo}(grupo=${ug.nombre})}"><button class="botonAzul" style="margin-bottom: 5px;" type="submit">Chat</button></form>
+                                <a th:if="${!index.first && ug.rol }"  class="botonRojo" th:href="@{|${ug.id}/borrar|}">Eliminar grupo</a>
                             </td>
 
                         </tr>
