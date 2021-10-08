@@ -44,7 +44,7 @@
                             </th:block>
                             <td>
                                 <a th:if="${!index.first && ug.rol }" class="botonRojo" th:href="@{|${ug.id}/borrar|}">Eliminar grupo</a>
-                                <form method="post" th:action="@{mensajes/{grupo}(grupo=${ug.nombre})}"><button class="botonRojo" type="submit" th:onclick="|mostrarChatGrupo(${nombreGrupo})|">Chat</button></form>
+                                <form method="post" th:action="@{mensajes/{grupo}(grupo=${ug.nombre})}"><button class="botonRojo" type="submit">Chat</button></form>
                             </td>
 
                         </tr>

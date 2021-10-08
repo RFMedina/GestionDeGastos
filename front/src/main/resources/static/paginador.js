@@ -3,9 +3,9 @@ function refrescarBST() {
 }
 
 /* Esto funciona pero con los ID predefinidos (Es una prueba) */
-function mostrarChatGrupo(nombreGrupo) {
+function mostrarChatGrupo(grupo) {
   $.ajax({
-    url: "/gestion/misGrupos/mensajes/" + nombreGrupo,
+    url: "/gestion/mensajes/" + grupo,
     success: function (formularioEditar) {
       bootbox
         .dialog({
