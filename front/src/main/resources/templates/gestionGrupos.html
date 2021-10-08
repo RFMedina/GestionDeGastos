@@ -10,8 +10,8 @@
 <body>
     <div>
         <form action="/gestion/grupo/cambiarNombre">
-            <div style="float:left; width: 70%;">
-                <input class="cantidad" name="nombre" type="text" th:value="${grupo.nombre}" />
+            <div style="float:left; width: 70%;">                                           <!-- limite para la BBDD en 250 -->
+                <input class="cantidad" name="nombre" type="text" th:value="${grupo.nombre}" maxlength="250" />
                 <input class="cantidad" name="idGrupo" type="hidden" th:value="${grupo.id}" />
             </div>
             <button style="float:left; width: 30%;" type="submit" class="botonAzul">Cambiar
