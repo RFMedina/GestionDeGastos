@@ -1,22 +1,31 @@
 <html xmlns:th="https://www.thymeleaf.org">
-    <head>
-        <title>Titulo</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div class="container">
-            <div th:each="fecha,i:${fechas}">
-                <h5 th:text="${fecha}" />
-                <div th:each="mensaje:${mensajes[i.index]}">
-                    Usuario: <span th:text="${mensaje.usuario}"> </span>
-                    <br/>
-                    <br/>
-                    <span th:text="${mensaje.mensaje}"> </span>
-                    </div>
-                
-                
+
+<head>
+    <title>Titulo</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+</head>
+
+<body>
+    <div class="container">
+        <div th:each="fecha,i:${fechas}">
+            <h5 th:text="${fecha}" />
+            <div th:each="mensaje:${mensajes[i.index]}">
+                Usuario: <span th:text="${mensaje.usuario}"> </span>
+                <br />
+                <br />
+                <span th:text="${mensaje.mensaje}"> </span>
             </div>
+            <input type="text" class="cantidad" style="width: 80%; float:left; margin-right: 10px;">
+            <button style="float:left;
+            height: 43px;
+            width: 43px;
+            border-radius: 50%;
+            border: 2px solid #226ACB;
+            background-color: #f7f7f7;"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>
