@@ -3,6 +3,25 @@ function refrescarBST() {
 }
 
 /* Esto funciona pero con los ID predefinidos (Es una prueba) */
+function mostrarChatGrupo(nombreGrupo) {
+  $.ajax({
+    url: "/gestion/misGrupos/mensajes/" + nombreGrupo,
+    success: function (formularioEditar) {
+      bootbox
+        .dialog({
+          onEscape: true,
+          closeButton: false,
+          message: formularioEditar,
+        })
+        .find("div.modal-content")
+        .addClass("largeWidth");
+    },
+    error: function (err) {
+      alert("Si la URL esta mal. Codigo 404");
+    },
+  });
+}
+
 function mostrarFormularioNuevoMovimiento(idGrupo) {
   $.ajax({
     url: "/gestion/grupo/" + idGrupo + "/nuevoMovimiento",
