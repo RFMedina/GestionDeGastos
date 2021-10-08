@@ -78,13 +78,15 @@
         </button>
 
         <a id="logoInicio" th:href="@{/gestion/inicio}"><img src="/cartera_blanca.svg" alt=""></a>
-        <div class="container-btn-mode">
+        <div class="container-btn-mode" style="margin-right: -450px;">
             <div id="id-sun" class="btn-mode sun activo" title="Modo Viuda Negra">
-                <i class="fas fa-spider-black-widow" onclick='setStyle("/styles.css")'></i>
+                <i class="fa-solid fa-sun" onclick='setStyle("/styles.css")'></i>
             </div>
             <div id="id-moon" class="btn-mode moon" title="Modo Capitán América">
-                <i class="fa-solid fa-circle-c" onclick='setStyle("/stylesModoOscuro.css")'></i>
+                <i class="fa-solid fa-moon" onclick='setStyle("/stylesModoOscuro.css")'></i>
             </div>
+        </div>
+        <div class="container-btn-mode">
             <div id="id-batman" class="btn-mode batman" title="Modo Batman">
                 <i class="fa-solid fa-bat" onclick='setStyle("/stylesModoBatman.css")'></i>
             </div>
